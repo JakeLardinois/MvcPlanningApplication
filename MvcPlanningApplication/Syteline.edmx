@@ -1,0 +1,413 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="WTF_AppModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="coitem">
+          <Key>
+            <PropertyRef Name="co_num" />
+            <PropertyRef Name="co_line" />
+            <PropertyRef Name="co_release" />
+          </Key>
+          <Property Name="co_num" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="co_line" Type="smallint" Nullable="false" />
+          <Property Name="co_release" Type="smallint" Nullable="false" />
+          <Property Name="item" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="qty_ordered" Type="decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="qty_ready" Type="decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="qty_shipped" Type="decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="qty_packed" Type="decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="disc" Type="decimal" Precision="4" Scale="1" Nullable="false" />
+          <Property Name="cost" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="price" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="ref_type" Type="nchar" MaxLength="1" />
+          <Property Name="ref_num" Type="nvarchar" MaxLength="10" />
+          <Property Name="ref_line_suf" Type="smallint" />
+          <Property Name="ref_release" Type="smallint" />
+          <Property Name="due_date" Type="datetime" />
+          <Property Name="ship_date" Type="datetime" />
+          <Property Name="brk_qty##1" Type="decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="brk_qty##2" Type="decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="brk_qty##3" Type="decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="brk_qty##4" Type="decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="brk_qty##5" Type="decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="reprice" Type="tinyint" Nullable="false" />
+          <Property Name="cust_item" Type="nvarchar" MaxLength="30" />
+          <Property Name="qty_invoiced" Type="decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="qty_returned" Type="decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="cgs_total" Type="decimal" Precision="23" Scale="8" Nullable="false" />
+          <Property Name="feat_str" Type="nvarchar" MaxLength="40" />
+          <Property Name="stat" Type="nchar" MaxLength="1" />
+          <Property Name="cust_num" Type="nvarchar" MaxLength="7" />
+          <Property Name="cust_seq" Type="int" />
+          <Property Name="prg_bill_tot" Type="decimal" Precision="23" Scale="8" />
+          <Property Name="prg_bill_app" Type="decimal" Precision="23" Scale="8" />
+          <Property Name="release_date" Type="datetime" />
+          <Property Name="promise_date" Type="datetime" />
+          <Property Name="whse" Type="nvarchar" MaxLength="4" />
+          <Property Name="wks_basis" Type="nchar" MaxLength="1" />
+          <Property Name="wks_value" Type="decimal" Precision="23" Scale="8" />
+          <Property Name="comm_code" Type="nvarchar" MaxLength="12" />
+          <Property Name="trans_nat" Type="nvarchar" MaxLength="2" />
+          <Property Name="process_ind" Type="nvarchar" MaxLength="1" />
+          <Property Name="delterm" Type="nvarchar" MaxLength="4" />
+          <Property Name="unit_weight" Type="decimal" Precision="11" Scale="3" />
+          <Property Name="origin" Type="nvarchar" MaxLength="2" />
+          <Property Name="cons_num" Type="int" />
+          <Property Name="tax_code1" Type="nvarchar" MaxLength="6" />
+          <Property Name="tax_code2" Type="nvarchar" MaxLength="6" />
+          <Property Name="export_value" Type="decimal" Precision="23" Scale="8" />
+          <Property Name="ec_code" Type="nvarchar" MaxLength="2" />
+          <Property Name="transport" Type="nvarchar" MaxLength="3" />
+          <Property Name="pick_date" Type="datetime" />
+          <Property Name="pricecode" Type="nvarchar" MaxLength="3" />
+          <Property Name="u_m" Type="nvarchar" MaxLength="3" Nullable="false" />
+          <Property Name="qty_ordered_conv" Type="decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="price_conv" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="co_cust_num" Type="nvarchar" MaxLength="7" />
+          <Property Name="packed" Type="tinyint" />
+          <Property Name="bol" Type="tinyint" />
+          <Property Name="qty_rsvd" Type="decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="matl_cost" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="lbr_cost" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="fovhd_cost" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="vovhd_cost" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="out_cost" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="cgs_total_matl" Type="decimal" Precision="23" Scale="8" Nullable="false" />
+          <Property Name="cgs_total_lbr" Type="decimal" Precision="23" Scale="8" Nullable="false" />
+          <Property Name="cgs_total_fovhd" Type="decimal" Precision="23" Scale="8" Nullable="false" />
+          <Property Name="cgs_total_vovhd" Type="decimal" Precision="23" Scale="8" Nullable="false" />
+          <Property Name="cgs_total_out" Type="decimal" Precision="23" Scale="8" Nullable="false" />
+          <Property Name="cost_conv" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="matl_cost_conv" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="lbr_cost_conv" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="fovhd_cost_conv" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="vovhd_cost_conv" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="out_cost_conv" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="ship_site" Type="nvarchar" MaxLength="8" />
+          <Property Name="sync_reqd" Type="tinyint" />
+          <Property Name="co_orig_site" Type="nvarchar" MaxLength="8" />
+          <Property Name="cust_po" Type="nvarchar" MaxLength="22" />
+          <Property Name="rma_num" Type="nvarchar" MaxLength="10" />
+          <Property Name="rma_line" Type="smallint" />
+          <Property Name="projected_date" Type="datetime" />
+          <Property Name="consolidate" Type="tinyint" Nullable="false" />
+          <Property Name="inv_freq" Type="nchar" MaxLength="1" />
+          <Property Name="summarize" Type="tinyint" Nullable="false" />
+          <Property Name="NoteExistsFlag" Type="tinyint" Nullable="false" />
+          <Property Name="RecordDate" Type="datetime" Nullable="false" />
+          <Property Name="RowPointer" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="description" Type="nvarchar" MaxLength="40" />
+          <Property Name="config_id" Type="nvarchar" MaxLength="12" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="CreateDate" Type="datetime" Nullable="false" />
+          <Property Name="InWorkflow" Type="tinyint" Nullable="false" />
+          <Property Name="rcpt_rqmt" Type="varchar" MaxLength="1" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="trans_nat_2" Type="nvarchar" MaxLength="2" />
+          <Property Name="suppl_qty_conv_factor" Type="decimal" Precision="18" Scale="10" Nullable="false" />
+          <Property Name="print_kit_components" Type="tinyint" Nullable="false" />
+          <Property Name="due_date_day" Type="datetime" StoreGeneratedPattern="Computed" />
+          <Property Name="external_reservation_ref" Type="nvarchar" MaxLength="80" />
+          <Property Name="non_inv_acct" Type="nvarchar" MaxLength="12" />
+          <Property Name="non_inv_acct_unit1" Type="nvarchar" MaxLength="4" />
+          <Property Name="non_inv_acct_unit2" Type="nvarchar" MaxLength="4" />
+          <Property Name="non_inv_acct_unit3" Type="nvarchar" MaxLength="4" />
+          <Property Name="non_inv_acct_unit4" Type="nvarchar" MaxLength="4" />
+          <Property Name="days_shipped_before_due_date_tolerance" Type="smallint" />
+          <Property Name="days_shipped_after_due_date_tolerance" Type="smallint" />
+          <Property Name="shipped_over_ordered_qty_tolerance" Type="decimal" Precision="7" Scale="4" />
+          <Property Name="shipped_under_ordered_qty_tolerance" Type="decimal" Precision="7" Scale="4" />
+          <Property Name="priority" Type="smallint" />
+          <Property Name="invoice_hold" Type="tinyint" Nullable="false" />
+          <Property Name="manufacturer_id" Type="nvarchar" MaxLength="7" />
+          <Property Name="manufacturer_item" Type="nvarchar" MaxLength="30" />
+          <Property Name="uf_pref_type" Type="nvarchar" MaxLength="8" />
+          <Property Name="qty_picked" Type="decimal" Precision="19" Scale="8" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="WTF_AppModelStoreContainer">
+          <EntitySet Name="coitem" EntityType="Self.coitem" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="WTF_AppModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="coitem">
+          <Key>
+            <PropertyRef Name="co_num" />
+            <PropertyRef Name="co_line" />
+            <PropertyRef Name="co_release" />
+          </Key>
+          <Property Name="co_num" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="co_line" Type="Int16" Nullable="false" />
+          <Property Name="co_release" Type="Int16" Nullable="false" />
+          <Property Name="item" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="qty_ordered" Type="Decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="qty_ready" Type="Decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="qty_shipped" Type="Decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="qty_packed" Type="Decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="disc" Type="Decimal" Precision="4" Scale="1" Nullable="false" />
+          <Property Name="cost" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="price" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="ref_type" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="ref_num" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ref_line_suf" Type="Int16" />
+          <Property Name="ref_release" Type="Int16" />
+          <Property Name="due_date" Type="DateTime" Precision="3" />
+          <Property Name="ship_date" Type="DateTime" Precision="3" />
+          <Property Name="brk_qty__1" Type="Decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="brk_qty__2" Type="Decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="brk_qty__3" Type="Decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="brk_qty__4" Type="Decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="brk_qty__5" Type="Decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="reprice" Type="Byte" Nullable="false" />
+          <Property Name="cust_item" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="qty_invoiced" Type="Decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="qty_returned" Type="Decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="cgs_total" Type="Decimal" Precision="23" Scale="8" Nullable="false" />
+          <Property Name="feat_str" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="stat" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="cust_num" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
+          <Property Name="cust_seq" Type="Int32" />
+          <Property Name="prg_bill_tot" Type="Decimal" Precision="23" Scale="8" />
+          <Property Name="prg_bill_app" Type="Decimal" Precision="23" Scale="8" />
+          <Property Name="release_date" Type="DateTime" Precision="3" />
+          <Property Name="promise_date" Type="DateTime" Precision="3" />
+          <Property Name="whse" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="wks_basis" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="wks_value" Type="Decimal" Precision="23" Scale="8" />
+          <Property Name="comm_code" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="trans_nat" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="process_ind" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="delterm" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="unit_weight" Type="Decimal" Precision="11" Scale="3" />
+          <Property Name="origin" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="cons_num" Type="Int32" />
+          <Property Name="tax_code1" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="tax_code2" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="export_value" Type="Decimal" Precision="23" Scale="8" />
+          <Property Name="ec_code" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="transport" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="pick_date" Type="DateTime" Precision="3" />
+          <Property Name="pricecode" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="u_m" Type="String" MaxLength="3" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="qty_ordered_conv" Type="Decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="price_conv" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="co_cust_num" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
+          <Property Name="packed" Type="Byte" />
+          <Property Name="bol" Type="Byte" />
+          <Property Name="qty_rsvd" Type="Decimal" Precision="19" Scale="8" Nullable="false" />
+          <Property Name="matl_cost" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="lbr_cost" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="fovhd_cost" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="vovhd_cost" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="out_cost" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="cgs_total_matl" Type="Decimal" Precision="23" Scale="8" Nullable="false" />
+          <Property Name="cgs_total_lbr" Type="Decimal" Precision="23" Scale="8" Nullable="false" />
+          <Property Name="cgs_total_fovhd" Type="Decimal" Precision="23" Scale="8" Nullable="false" />
+          <Property Name="cgs_total_vovhd" Type="Decimal" Precision="23" Scale="8" Nullable="false" />
+          <Property Name="cgs_total_out" Type="Decimal" Precision="23" Scale="8" Nullable="false" />
+          <Property Name="cost_conv" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="matl_cost_conv" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="lbr_cost_conv" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="fovhd_cost_conv" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="vovhd_cost_conv" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="out_cost_conv" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="ship_site" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Name="sync_reqd" Type="Byte" />
+          <Property Name="co_orig_site" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Name="cust_po" Type="String" MaxLength="22" FixedLength="false" Unicode="true" />
+          <Property Name="rma_num" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="rma_line" Type="Int16" />
+          <Property Name="projected_date" Type="DateTime" Precision="3" />
+          <Property Name="consolidate" Type="Byte" Nullable="false" />
+          <Property Name="inv_freq" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="summarize" Type="Byte" Nullable="false" />
+          <Property Name="NoteExistsFlag" Type="Byte" Nullable="false" />
+          <Property Name="RecordDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="RowPointer" Type="Guid" Nullable="false" />
+          <Property Name="description" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="config_id" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="InWorkflow" Type="Byte" Nullable="false" />
+          <Property Name="rcpt_rqmt" Type="String" MaxLength="1" FixedLength="false" Unicode="false" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="trans_nat_2" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="suppl_qty_conv_factor" Type="Decimal" Precision="18" Scale="10" Nullable="false" />
+          <Property Name="print_kit_components" Type="Byte" Nullable="false" />
+          <Property Name="due_date_day" Type="DateTime" annotation:StoreGeneratedPattern="Computed" Precision="3" />
+          <Property Name="external_reservation_ref" Type="String" MaxLength="80" FixedLength="false" Unicode="true" />
+          <Property Name="non_inv_acct" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="non_inv_acct_unit1" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="non_inv_acct_unit2" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="non_inv_acct_unit3" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="non_inv_acct_unit4" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="days_shipped_before_due_date_tolerance" Type="Int16" />
+          <Property Name="days_shipped_after_due_date_tolerance" Type="Int16" />
+          <Property Name="shipped_over_ordered_qty_tolerance" Type="Decimal" Precision="7" Scale="4" />
+          <Property Name="shipped_under_ordered_qty_tolerance" Type="Decimal" Precision="7" Scale="4" />
+          <Property Name="priority" Type="Int16" />
+          <Property Name="invoice_hold" Type="Byte" Nullable="false" />
+          <Property Name="manufacturer_id" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
+          <Property Name="manufacturer_item" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="uf_pref_type" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Name="qty_picked" Type="Decimal" Precision="19" Scale="8" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="SytelineDbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="coitems" EntityType="Self.coitem" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="WTF_AppModelStoreContainer" CdmEntityContainer="SytelineDbEntities">
+          <EntitySetMapping Name="coitems">
+            <EntityTypeMapping TypeName="WTF_AppModel.coitem">
+              <MappingFragment StoreEntitySet="coitem">
+                <ScalarProperty Name="co_num" ColumnName="co_num" />
+                <ScalarProperty Name="co_line" ColumnName="co_line" />
+                <ScalarProperty Name="co_release" ColumnName="co_release" />
+                <ScalarProperty Name="item" ColumnName="item" />
+                <ScalarProperty Name="qty_ordered" ColumnName="qty_ordered" />
+                <ScalarProperty Name="qty_ready" ColumnName="qty_ready" />
+                <ScalarProperty Name="qty_shipped" ColumnName="qty_shipped" />
+                <ScalarProperty Name="qty_packed" ColumnName="qty_packed" />
+                <ScalarProperty Name="disc" ColumnName="disc" />
+                <ScalarProperty Name="cost" ColumnName="cost" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="ref_type" ColumnName="ref_type" />
+                <ScalarProperty Name="ref_num" ColumnName="ref_num" />
+                <ScalarProperty Name="ref_line_suf" ColumnName="ref_line_suf" />
+                <ScalarProperty Name="ref_release" ColumnName="ref_release" />
+                <ScalarProperty Name="due_date" ColumnName="due_date" />
+                <ScalarProperty Name="ship_date" ColumnName="ship_date" />
+                <ScalarProperty Name="brk_qty__1" ColumnName="brk_qty##1" />
+                <ScalarProperty Name="brk_qty__2" ColumnName="brk_qty##2" />
+                <ScalarProperty Name="brk_qty__3" ColumnName="brk_qty##3" />
+                <ScalarProperty Name="brk_qty__4" ColumnName="brk_qty##4" />
+                <ScalarProperty Name="brk_qty__5" ColumnName="brk_qty##5" />
+                <ScalarProperty Name="reprice" ColumnName="reprice" />
+                <ScalarProperty Name="cust_item" ColumnName="cust_item" />
+                <ScalarProperty Name="qty_invoiced" ColumnName="qty_invoiced" />
+                <ScalarProperty Name="qty_returned" ColumnName="qty_returned" />
+                <ScalarProperty Name="cgs_total" ColumnName="cgs_total" />
+                <ScalarProperty Name="feat_str" ColumnName="feat_str" />
+                <ScalarProperty Name="stat" ColumnName="stat" />
+                <ScalarProperty Name="cust_num" ColumnName="cust_num" />
+                <ScalarProperty Name="cust_seq" ColumnName="cust_seq" />
+                <ScalarProperty Name="prg_bill_tot" ColumnName="prg_bill_tot" />
+                <ScalarProperty Name="prg_bill_app" ColumnName="prg_bill_app" />
+                <ScalarProperty Name="release_date" ColumnName="release_date" />
+                <ScalarProperty Name="promise_date" ColumnName="promise_date" />
+                <ScalarProperty Name="whse" ColumnName="whse" />
+                <ScalarProperty Name="wks_basis" ColumnName="wks_basis" />
+                <ScalarProperty Name="wks_value" ColumnName="wks_value" />
+                <ScalarProperty Name="comm_code" ColumnName="comm_code" />
+                <ScalarProperty Name="trans_nat" ColumnName="trans_nat" />
+                <ScalarProperty Name="process_ind" ColumnName="process_ind" />
+                <ScalarProperty Name="delterm" ColumnName="delterm" />
+                <ScalarProperty Name="unit_weight" ColumnName="unit_weight" />
+                <ScalarProperty Name="origin" ColumnName="origin" />
+                <ScalarProperty Name="cons_num" ColumnName="cons_num" />
+                <ScalarProperty Name="tax_code1" ColumnName="tax_code1" />
+                <ScalarProperty Name="tax_code2" ColumnName="tax_code2" />
+                <ScalarProperty Name="export_value" ColumnName="export_value" />
+                <ScalarProperty Name="ec_code" ColumnName="ec_code" />
+                <ScalarProperty Name="transport" ColumnName="transport" />
+                <ScalarProperty Name="pick_date" ColumnName="pick_date" />
+                <ScalarProperty Name="pricecode" ColumnName="pricecode" />
+                <ScalarProperty Name="u_m" ColumnName="u_m" />
+                <ScalarProperty Name="qty_ordered_conv" ColumnName="qty_ordered_conv" />
+                <ScalarProperty Name="price_conv" ColumnName="price_conv" />
+                <ScalarProperty Name="co_cust_num" ColumnName="co_cust_num" />
+                <ScalarProperty Name="packed" ColumnName="packed" />
+                <ScalarProperty Name="bol" ColumnName="bol" />
+                <ScalarProperty Name="qty_rsvd" ColumnName="qty_rsvd" />
+                <ScalarProperty Name="matl_cost" ColumnName="matl_cost" />
+                <ScalarProperty Name="lbr_cost" ColumnName="lbr_cost" />
+                <ScalarProperty Name="fovhd_cost" ColumnName="fovhd_cost" />
+                <ScalarProperty Name="vovhd_cost" ColumnName="vovhd_cost" />
+                <ScalarProperty Name="out_cost" ColumnName="out_cost" />
+                <ScalarProperty Name="cgs_total_matl" ColumnName="cgs_total_matl" />
+                <ScalarProperty Name="cgs_total_lbr" ColumnName="cgs_total_lbr" />
+                <ScalarProperty Name="cgs_total_fovhd" ColumnName="cgs_total_fovhd" />
+                <ScalarProperty Name="cgs_total_vovhd" ColumnName="cgs_total_vovhd" />
+                <ScalarProperty Name="cgs_total_out" ColumnName="cgs_total_out" />
+                <ScalarProperty Name="cost_conv" ColumnName="cost_conv" />
+                <ScalarProperty Name="matl_cost_conv" ColumnName="matl_cost_conv" />
+                <ScalarProperty Name="lbr_cost_conv" ColumnName="lbr_cost_conv" />
+                <ScalarProperty Name="fovhd_cost_conv" ColumnName="fovhd_cost_conv" />
+                <ScalarProperty Name="vovhd_cost_conv" ColumnName="vovhd_cost_conv" />
+                <ScalarProperty Name="out_cost_conv" ColumnName="out_cost_conv" />
+                <ScalarProperty Name="ship_site" ColumnName="ship_site" />
+                <ScalarProperty Name="sync_reqd" ColumnName="sync_reqd" />
+                <ScalarProperty Name="co_orig_site" ColumnName="co_orig_site" />
+                <ScalarProperty Name="cust_po" ColumnName="cust_po" />
+                <ScalarProperty Name="rma_num" ColumnName="rma_num" />
+                <ScalarProperty Name="rma_line" ColumnName="rma_line" />
+                <ScalarProperty Name="projected_date" ColumnName="projected_date" />
+                <ScalarProperty Name="consolidate" ColumnName="consolidate" />
+                <ScalarProperty Name="inv_freq" ColumnName="inv_freq" />
+                <ScalarProperty Name="summarize" ColumnName="summarize" />
+                <ScalarProperty Name="NoteExistsFlag" ColumnName="NoteExistsFlag" />
+                <ScalarProperty Name="RecordDate" ColumnName="RecordDate" />
+                <ScalarProperty Name="RowPointer" ColumnName="RowPointer" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="config_id" ColumnName="config_id" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="InWorkflow" ColumnName="InWorkflow" />
+                <ScalarProperty Name="rcpt_rqmt" ColumnName="rcpt_rqmt" />
+                <ScalarProperty Name="trans_nat_2" ColumnName="trans_nat_2" />
+                <ScalarProperty Name="suppl_qty_conv_factor" ColumnName="suppl_qty_conv_factor" />
+                <ScalarProperty Name="print_kit_components" ColumnName="print_kit_components" />
+                <ScalarProperty Name="due_date_day" ColumnName="due_date_day" />
+                <ScalarProperty Name="external_reservation_ref" ColumnName="external_reservation_ref" />
+                <ScalarProperty Name="non_inv_acct" ColumnName="non_inv_acct" />
+                <ScalarProperty Name="non_inv_acct_unit1" ColumnName="non_inv_acct_unit1" />
+                <ScalarProperty Name="non_inv_acct_unit2" ColumnName="non_inv_acct_unit2" />
+                <ScalarProperty Name="non_inv_acct_unit3" ColumnName="non_inv_acct_unit3" />
+                <ScalarProperty Name="non_inv_acct_unit4" ColumnName="non_inv_acct_unit4" />
+                <ScalarProperty Name="days_shipped_before_due_date_tolerance" ColumnName="days_shipped_before_due_date_tolerance" />
+                <ScalarProperty Name="days_shipped_after_due_date_tolerance" ColumnName="days_shipped_after_due_date_tolerance" />
+                <ScalarProperty Name="shipped_over_ordered_qty_tolerance" ColumnName="shipped_over_ordered_qty_tolerance" />
+                <ScalarProperty Name="shipped_under_ordered_qty_tolerance" ColumnName="shipped_under_ordered_qty_tolerance" />
+                <ScalarProperty Name="priority" ColumnName="priority" />
+                <ScalarProperty Name="invoice_hold" ColumnName="invoice_hold" />
+                <ScalarProperty Name="manufacturer_id" ColumnName="manufacturer_id" />
+                <ScalarProperty Name="manufacturer_item" ColumnName="manufacturer_item" />
+                <ScalarProperty Name="uf_pref_type" ColumnName="uf_pref_type" />
+                <ScalarProperty Name="qty_picked" ColumnName="qty_picked" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
