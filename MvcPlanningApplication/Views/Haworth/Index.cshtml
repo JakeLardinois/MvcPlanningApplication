@@ -1,6 +1,63 @@
-﻿@{
+﻿@using MvcFileUploader.HtmlHelper
+@using MvcFileUploader.Models
+
+@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    //option for inline view only
+    var ui = UploadUI.JQueryUI;
+    var toggleUi = ui == UploadUI.Bootstrap ? "jquery" : "bootstrap";
 }
 
 <h2>Haworth Index</h2>
+
+<div class="well">
+    <legend>Upload Dialog</legend>
+    <p class="help-block">jpg/png size max 5 MB, single file upload</p>
+    @(
+ Html.MvcFileUpload()
+        .UploadAt(Url.Action("UploadFile"))
+        .WithFileTypes(@"/(\.|\/)(jpe?g|png)$/i")
+        .WithMaxFileSize(5000000)
+        .AddFormField("entityId", "1234")
+        .RenderPopup("Upload", "#dlgFileUpload", new { @class = "btn btn-large btn-primary" })
+    )
+</div>>
+
+<!-- file upload modal dialog -->
+<!-- Bootstrap 3.1 introduced a change into how remote content gets loaded into the dialog so that a div with class="modal-content" is now required in order to load the
+    content specified by href (see MvcFileUploadModelBuilder.RenderPopup() http://stackoverflow.com/questions/18378720/bootstrap-3-with-remote-modal ) -->
+<!-- Modal -->
+<div class="modal fade" id="dlgFileUpload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Modal title</h4>
+
+            </div>
+            <div class="modal-body"><div class="te"></div></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+@section styles{
+    <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/fileupload")" />
+}
+
+
+@section Scripts{
+    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/fileupload")">
+    </script>
+    <script type="text/javascript">
+        
+    </script>
+}

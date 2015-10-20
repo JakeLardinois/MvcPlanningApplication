@@ -489,7 +489,7 @@ namespace MvcPlanningApplication.Models
                 var strSQL = objQueryDefinitions.GetQuery("SelectCustomerOrdersByPO", new string[] { objStrBldr.ToString(0, objStrBldr.Length - 1) });
 
                 var objCOItems = db.Database.SqlQuery<COItem>(strSQL);
-                foreach (var objCOItem in objCOItems)//loop through the Orders from Syteline and add the data they contain to my Haworth list
+                foreach (var objCOItem in objCOItems)//loop through the Syteline Orders and add the data they contain to my Haworth list
                 {
                     var objOrder = this  //get the haworth Order that has a matching WTF Order
                         .Where(o => o.OrderNumber.Trim().ToUpper().Equals(objCOItem.cust_po.Trim().ToUpper()))
@@ -503,7 +503,7 @@ namespace MvcPlanningApplication.Models
                     objOrder.WTFOrderRequestDate = objCOItem.promise_date ?? DateTime.MinValue;
                 }
 
-                return this //filters out any orders that are correctly entered in our system
+                return this //filters out the orders that are correctly entered in our system
                     .Where(o => string.IsNullOrEmpty(o.WTFOrderNumber) || !o.WTFItemNumber.Trim().Equals(o.ItemNumber.Trim()) ||
                         o.WTFOrderQuantity != o.RequiredQty || o.WTFOrderDueDate.Date != o.DockDate)
                     .ToList();

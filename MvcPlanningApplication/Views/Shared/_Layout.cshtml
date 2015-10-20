@@ -6,74 +6,89 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
 
-
+    @Styles.Render("~/Content/reset")
+    @Styles.Render("~/Content/bootstrapcss")
+    @RenderSection("styles", false)
     @Styles.Render("~/Content/css")
-    @Styles.Render("~/Content/bootstrap")
-
-    
 </head>
 <body>
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#"><img src="@Url.Content("~/content/images/logo.png")" /></a>
-        </div>
+    <div id="container">
+        <header>
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#"><img src="@Url.Content("~/content/images/logo.png")" /></a>
+                    </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-            @(strController.Equals("Home") ? 
-                Html.Raw("<li class=\"active\">" + Html.ActionLink("Home", "Index", "Home") +  "<span class=\"sr-only\">(current)</span></li>") : 
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            @(strController.Equals("Home") ?
+                Html.Raw("<li class=\"active\">" + Html.ActionLink("Home", "Index", "Home") +  "<span class=\"sr-only\">(current)</span></li>") :
                 Html.Raw("<li>" + Html.ActionLink("Home", "Index", "Home") + "</li>"))
 
-            @(strController.Equals("MTD") ? 
-                Html.Raw("<li class=\"active\">" + Html.ActionLink("MTD", "Index", "MTD") +  "<span class=\"sr-only\">(current)</span></li>") : 
+                            @(strController.Equals("MTD") ?
+                Html.Raw("<li class=\"active\">" + Html.ActionLink("MTD", "Index", "MTD") +  "<span class=\"sr-only\">(current)</span></li>") :
                 Html.Raw("<li>" + Html.ActionLink("MTD", "Index", "MTD") + "</li>"))
 
-            @(strController.Equals("JohnDeere") ? 
-                Html.Raw("<li class=\"active\">" + Html.ActionLink("John Deere", "Index", "JohnDeere") +  "<span class=\"sr-only\">(current)</span></li>") : 
+                            @(strController.Equals("JohnDeere") ?
+                Html.Raw("<li class=\"active\">" + Html.ActionLink("John Deere", "Index", "JohnDeere") +  "<span class=\"sr-only\">(current)</span></li>") :
                 Html.Raw("<li>" + Html.ActionLink("John Deere", "Index", "JohnDeere") + "</li>"))
 
-            @(strController.Equals("Briggs") ? 
-                Html.Raw("<li class=\"active\">" + Html.ActionLink("Briggs and Stratton", "Index", "Briggs") +  "<span class=\"sr-only\">(current)</span></li>") : 
+                            @(strController.Equals("Briggs") ?
+                Html.Raw("<li class=\"active\">" + Html.ActionLink("Briggs and Stratton", "Index", "Briggs") +  "<span class=\"sr-only\">(current)</span></li>") :
                 Html.Raw("<li>" + Html.ActionLink("Briggs and Stratton", "Index", "Briggs") + "</li>"))
 
-            @(strController.Equals("Husqvarna") ? 
-                Html.Raw("<li class=\"active\">" + Html.ActionLink("Husqvarna", "Index", "Husqvarna") +  "<span class=\"sr-only\">(current)</span></li>") : 
+                            @(strController.Equals("Husqvarna") ?
+                Html.Raw("<li class=\"active\">" + Html.ActionLink("Husqvarna", "Index", "Husqvarna") +  "<span class=\"sr-only\">(current)</span></li>") :
                 Html.Raw("<li>" + Html.ActionLink("Husqvarna", "Index", "Husqvarna") + "</li>"))
 
-            @(strController.Equals("Haworth") ? 
-                Html.Raw("<li class=\"active\">" + Html.ActionLink("Haworth", "Index", "Haworth") +  "<span class=\"sr-only\">(current)</span></li>") : 
+                            @(strController.Equals("Haworth") ?
+                Html.Raw("<li class=\"active\">" + Html.ActionLink("Haworth", "Index", "Haworth") +  "<span class=\"sr-only\">(current)</span></li>") :
                 Html.Raw("<li>" + Html.ActionLink("Haworth", "Index", "Haworth") + "</li>"))
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Customer Portals <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                <li><a target="_blank" href="https://portal.mtdproducts.com/wps/portal/supplier/login/">MTD</a></li>
-                <li><a target="_blank" href="https://jdsn.deere.com/wps/portal/jdsn">John Deere</a></li>
-                <li><a target="_blank" href="http://www.thepowerportal.com/Login.htm">Briggs and Stratton</a></li>
-                <li><a target="_blank" href="http://portal.us.husqvarna.com">Husqvarna</a></li>
-                <li class="divider"></li>
-                <li><a target="_blank" href="http://haworth.scsolutionsinc.com/snet20/index.asp">Hayworth</a></li>
-                </ul>
-            </li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
-
-    @RenderBody()
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Customer Portals <span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a target="_blank" href="https://portal.mtdproducts.com/wps/portal/supplier/login/">MTD</a></li>
+                                    <li><a target="_blank" href="https://jdsn.deere.com/wps/portal/jdsn">John Deere</a></li>
+                                    <li><a target="_blank" href="http://www.thepowerportal.com/Login.htm">Briggs and Stratton</a></li>
+                                    <li><a target="_blank" href="http://portal.us.husqvarna.com">Husqvarna</a></li>
+                                    <li class="divider"></li>
+                                    <li><a target="_blank" href="http://haworth.scsolutionsinc.com/snet20/index.asp">Hayworth</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+        </header>
+        <div id="content">
+            <div id="PersonalSwitcher"></div>
+            @RenderBody()
+        </div>
+        <footer></footer>
+    </div>
+    
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/themeswitcher")
     @RenderSection("scripts", required: false)
+    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/layout")">
+    </script>
+    <script>
+        var sImagesURL = '@Url.Content("~/Content/images/")';
+    </script>
+
 </body>
 </html>

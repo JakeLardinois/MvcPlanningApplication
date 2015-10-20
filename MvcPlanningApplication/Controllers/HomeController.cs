@@ -16,8 +16,8 @@ namespace MvcPlanningApplication.Controllers
 
         public ActionResult Index()
         {
-            var result = db.BriggsDemandItems
-                .ToList();
+            //var result = db.BriggsDemandItems
+            //    .ToList();
 
             return View();
         }
