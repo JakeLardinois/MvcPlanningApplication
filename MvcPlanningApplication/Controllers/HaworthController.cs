@@ -46,7 +46,7 @@ namespace MvcPlanningApplication.Controllers
                     //and giving it the same value posted with upload
                     x.DeleteUrl = Url.Action("DeleteFile", new { entityId = entityId });
                     x.StorageDirectory = Server.MapPath("~/Content/Uploads/Haworth");
-                    x.UrlPrefix = "/Content/Uploads";// this is used to generate the relative url of the file
+                    x.UrlPrefix = "/Content/Uploads/Haworth";// this is used to generate the relative url of the file
 
 
                     //overriding defaults

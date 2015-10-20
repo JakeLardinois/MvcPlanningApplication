@@ -16,7 +16,8 @@ namespace MvcPlanningApplication
                 "~/Content/html5-reset.css"));
 
             bundles.Add(new StyleBundle("~/Content/fileupload").Include(
-                "~/Content/jquery.fileupload/jquery.fileupload.css"));
+                "~/Content/jquery.fileupload/css/jquery.fileupload.css",
+                "~/Content/jquery.fileupload/css/jquery.fileupload-ui.css"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/Content/site.css"));
@@ -26,7 +27,8 @@ namespace MvcPlanningApplication
             //When the bundle was named ~/Content/bootstrap I kept getting 403 Forbidden errors. This was because a bundle cannot have the same name as a real directory
             //The default css bundle route cannot match a valid folder name because MVC cannot resolve the conflict between a route and a folder.
             bundles.Add(new StyleBundle("~/Content/bootstrapcss").Include(
-                "~/Content/bootstrap-theme-default.css"));
+                "~/Content/bootstrap.css",
+                "~/Content/bootstrap-theme.css"));
 
 
 
@@ -45,8 +47,8 @@ namespace MvcPlanningApplication
                         "~/Scripts/bootstrap.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/fileupload").Include(
-                        "~/Scripts/jquery.fileupload/jquery.iframe-transport",
-                        "~/Scripts/jquery.fileupload/jquery.fileupload.js"));
+                        "~/Scripts/jQuery.FileUpload/jquery.iframe-transport",
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload.js"));
         }
     }
 }

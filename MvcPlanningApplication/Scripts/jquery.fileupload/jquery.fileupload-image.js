@@ -1,5 +1,5 @@
 /*
- * jQuery File Upload Image Preview & Resize Plugin
+ * jQuery File Upload Image Preview & Resize Plugin 1.7.3
  * https://github.com/blueimp/jQuery-File-Upload
  *
  * Copyright 2013, Sebastian Tschan

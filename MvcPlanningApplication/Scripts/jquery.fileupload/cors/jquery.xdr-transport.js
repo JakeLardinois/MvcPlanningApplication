@@ -1,5 +1,5 @@
 /*
- * jQuery XDomainRequest Transport Plugin
+ * jQuery XDomainRequest Transport Plugin 1.1.4
  * https://github.com/blueimp/jQuery-File-Upload
  *
  * Copyright 2011, Sebastian Tschan

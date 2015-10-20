@@ -200,7 +200,6 @@ namespace MvcFileUploader.Models
 
             tag.Attributes.Add("href", linkUrl);
             tag.Attributes.Add("role", "button");
-            tag.Attributes.Add("type", "button");
             tag.Attributes.Add("data-toggle", "modal");
             tag.Attributes.Add("data-target", dataTarget);
 
