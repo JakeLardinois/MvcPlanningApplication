@@ -116,5 +116,46 @@ namespace MvcPlanningApplication.Controllers
                 return new HttpNotFoundResult("File not found");
             }
         }
+
+        public JsonResult GetCurrentFiles()
+        {
+            var CurrentFiles = new List<ViewDataUploadFileResult>();
+            DirectoryInfo directory = new DirectoryInfo(Server.MapPath(@"/Content/Uploads/Haworth"));
+            UrlHelper objUrlHelper = new UrlHelper(this.ControllerContext.RequestContext);
+            var Files = directory.GetFiles();
+
+            foreach (var objFile in Files)
+            {
+                var strMimeType = MimeMapping.GetMimeMapping(objFile.Name);
+
+                CurrentFiles.Add(new ViewDataUploadFileResult { 
+                    name = objFile.Name, 
+                    size = (int)objFile.Length,
+                    type = strMimeType,
+                    url = objUrlHelper.Action("DownloadFile", "Haworth", null) +
+                        "?fileUrl=/Content/Uploads/Haworth/" + objFile.Name + "&mimetype=" + strMimeType,
+                    deleteUrl = objUrlHelper.Action("DeleteFile", "Haworth", null) +
+                        "?entityId=0&fileUrl=/Content/Uploads/Haworth/" + objFile.Name,
+                    thumbnailUrl = "/Content/Uploads/Haworth/" + 
+                        HttpUtility.UrlEncode(objFile.Name) + "?width=80&height=80",
+                    deleteType = "POST",
+                    FullPath = objFile.FullName,
+                    SavedFileName = objFile.Name,
+                    Title = Path.GetFileNameWithoutExtension(objFile.Name)
+                });
+            }
+
+            ////adding thumbnail url for jquery file upload javascript plugin
+            //CurrentFiles.ForEach(x => x.thumbnailUrl = x.url + "?width=80&height=80"); // uses ImageResizer httpmodule to resize images from this url
+
+            ////setting custom download url instead of direct url to file which is default
+            //CurrentFiles.ForEach(x => x.url = Url.Action("DownloadFile", new { fileUrl = x.url, mimetype = x.type }));
+
+
+            var viewresult = Json(new { files = CurrentFiles });
+            viewresult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+
+            return viewresult;
+        }
     }
 }

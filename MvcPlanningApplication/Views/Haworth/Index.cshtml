@@ -9,17 +9,15 @@
 <h2>Haworth Index</h2>
 
 <div class="well">
-    <legend>Upload Dialog</legend>
-    <p class="help-block">jpg/png size max 5 MB, single file upload</p>
     @(
  Html.MvcFileUpload()
         .UploadAt(Url.Action("UploadFile"))
-        .ReturnAt("/Haworth/Index")
-        .WithFileTypes(@"/(\.|\/)(jpe?g|png)$/i")
+        .ReturnAt("/Haworth")
+        .WithFileTypes(@"/(\.|\/)(xls?)$/i")
         .WithMaxFileSize(5000000)
         .AddFormField("entityId", "1234")
-        .UIStyle(UploadUI.JQueryUI)
-        .RenderPopup("Upload", "#dlgFileUpload", new { @class = "btn btn-large btn-primary" })
+        .UIStyle(UploadUI.Bootstrap)
+        .RenderPopup("Manage Files", "#dlgFileUpload", new { @class = "btn btn-large btn-primary" })
     )
 </div>
 
@@ -33,13 +31,12 @@
 </div> <!-- /.modal --> 
 
 @section styles{
+    <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/blueimp")" />
     <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/fileupload")" />
 }
 
 
 @section Scripts{
-    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/fileupload")">
-    </script>
     <script type="text/javascript">
 
     </script>

@@ -1,6 +1,11 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 using System.Web.Mvc.Html;
+
+using System.Collections.Generic;
+using System.IO;
+
+
 namespace MvcPlanningApplication
 {
     public class BundleConfig
@@ -30,15 +35,20 @@ namespace MvcPlanningApplication
                 "~/Content/bootstrap.css",
                 "~/Content/bootstrap-theme.css"));
 
+            bundles.Add(new StyleBundle("~/Content/blueimp", 
+                "http://blueimp.github.io/Gallery/css/blueimp-gallery.min.css"));
+
 
 
 
             bundles.Add(new ScriptBundle("~/bundles/layout").Include(
                         "~/Scripts/layout.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/jquery", "https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js"));
+            bundles.Add(new ScriptBundle("~/bundles/jquery", 
+                "https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/jqueryui", "http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js")); //Note that you must put your version of JqueryUI in jquery.themeswitcher.js or jquery.themeswitcher.min.js...
+            bundles.Add(new ScriptBundle("~/bundles/jqueryui", 
+                "http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js")); //Note that you must put your version of JqueryUI in jquery.themeswitcher.js or jquery.themeswitcher.min.js...
 
             bundles.Add(new ScriptBundle("~/bundles/themeswitcher").Include(
                         "~/Scripts/jquery.themeswitcher.js"));
@@ -46,9 +56,36 @@ namespace MvcPlanningApplication
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                         "~/Scripts/bootstrap.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/fileupload").Include(
-                        "~/Scripts/jQuery.FileUpload/jquery.iframe-transport",
-                        "~/Scripts/jQuery.FileUpload/jquery.fileupload.js"));
+            var BlueImpBundle = new ScriptBundle("~/bundles/blueimp", "http://blueimp.github.io/JavaScript-Templates/js/tmpl.min.js").Include(//The Templates plugin is included to render the upload/download listings
+                        "~/JavaScript-Load-Image/js/load-image.all.min.js",//The Load Image plugin is included for the preview images and image resizing functionality
+                        "~/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js",//The Canvas to Blob plugin is included for image resizing functionality
+                        "~/Gallery/js/jquery.blueimp-gallery.min.js");//blueimp Gallery script
+            BlueImpBundle.Orderer = new NonOrderingBundleOrderer();
+            bundles.Add(BlueImpBundle);
+
+            var FileUploadBundle = new ScriptBundle("~/bundles/fileupload").Include(
+                        "~/Scripts/jQuery.FileUpload/jquery.iframe-transport.js",//The Iframe Transport is required for browsers without support for XHR file uploads
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload.js",//The basic File Upload plugin
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload-process.js",//The File Upload processing plugin
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload-image.js",//The File Upload image preview & resize plugin
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload-audio.js",//The File Upload audio preview plugin
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload-video.js",//The File Upload video preview plugin
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload-validate.js",//The File Upload validation plugin
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload-ui.js");//The File Upload user interface plugin
+            FileUploadBundle.Orderer = new NonOrderingBundleOrderer();
+            bundles.Add(FileUploadBundle);
+
+            bundles.Add(new ScriptBundle("~/bundles/fileuploadJQueryUI").Include(
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload-jquery-ui.js"));//The File Upload jQuery UI plugin
+
         }
+    }
+}
+
+class NonOrderingBundleOrderer : IBundleOrderer
+{
+    public IEnumerable<BundleFile> OrderFiles(BundleContext context, IEnumerable<BundleFile> files)
+    {
+        return files;
     }
 }
