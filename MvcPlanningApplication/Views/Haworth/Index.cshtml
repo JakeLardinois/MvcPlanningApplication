@@ -20,6 +20,10 @@
         .UIStyle(UploadUI.Bootstrap)
         .RenderPopup("Manage Files", "#dlgFileUpload", new { @class = "btn btn-large btn-primary" })
     )
+    <form id="frmGenerateData" method="post" action="@Url.Action("GenerateData", "Haworth")">
+        <input id="Generate" type="submit" value="Generate Data">
+    </form>
+    
 </div>
 
 <!-- file upload modal dialog -->

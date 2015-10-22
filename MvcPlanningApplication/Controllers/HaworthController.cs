@@ -17,15 +17,21 @@ namespace MvcPlanningApplication.Controllers
 
         public ActionResult Index()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult GenerateData(string FileName)
+        {
             //var strArchiveFile = System.Configuration.ConfigurationManager.AppSettings["HaworthArchiveLocation"] + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml";
             ////var objList = new HaworthDispatchList();
-            //var Orders = new HaworthOrders(new Uri("ftp://FTP.HAWORTH.COM/Company113/Company113Ext/XML/Prod/Out"), true);
-            //var RemainingOrders = Orders.RemainingOrders;
+            var Orders = new HaworthOrders(new Uri("ftp://FTP.HAWORTH.COM/Company113/Company113Ext/XML/Prod/Out"), true);
+            var RemainingOrders = Orders.RemainingOrders;
 
-            //Orders.Archive(strArchiveFile);
+            DirectoryInfo directory = new DirectoryInfo(Server.MapPath(@"/Content/Uploads"));
+            Orders.Archive(directory.FullName + "//HaworthOrders.xml");
 
-
-            return View();
+            return RedirectToAction("Index");
         }
 
         public ActionResult Dispatch()

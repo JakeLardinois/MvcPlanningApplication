@@ -32,11 +32,21 @@ $(document).ready(function () {
     $("#FileList").multiselect({
         multiple: false,
         //hide: "explode",
-        //minWidth: 300,
-        //header: false, // "Select a Work Order Type",
-        //noneSelectedText: "Select Type",
         selectedList: 1 //this is what puts the selected value onto the select box...
     });
+
+    $("#Generate")
+        .button()
+        .click(function (event) {
+            objTemp = $('#FileList');
+
+            var input = $("<input>")
+               .attr("type", "hidden")
+               .attr("name", "filename").val(String($('#FileList').val()));
+
+            $('#frmGenerateData').append(input);
+            $("#frmGenerateData").submit();
+     });
 });
 
 

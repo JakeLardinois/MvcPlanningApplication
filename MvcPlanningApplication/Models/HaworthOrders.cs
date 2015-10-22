@@ -7,15 +7,18 @@ using System.Xml;
 using System.Net;
 using System.IO;
 using System.Text;
+using System.Xml.Linq;
 
 
 namespace MvcPlanningApplication.Models
 {
     public class HaworthOrders : List<HaworthOrder>
     {
+        public StringBuilder mStrBldrXML { get; set; }
         public XmlDocument XMLDoc { get; set; }
         public NetworkCredential NetworkCredentials { get; set; }
         private Uri URI { get; set; }
+        private bool mIsFTP { get; set; }
 
 
         public HaworthOrders(string FileNameAndLocation)
@@ -32,9 +35,9 @@ namespace MvcPlanningApplication.Models
         {
             XMLDoc = new System.Xml.XmlDocument();
             URI = HaworthURL;
+            mIsFTP = isFTP;
 
-
-            if (isFTP)
+            if (mIsFTP)
             {
                 List<string> FtpFiles = new List<string>();
                 FtpWebRequest request;
@@ -57,7 +60,7 @@ namespace MvcPlanningApplication.Models
                 responseStream.Close();
                 response.Close();
 
-
+                mStrBldrXML = new StringBuilder();
                 foreach (var strFile in FtpFiles)
                 {
                     request = (FtpWebRequest)WebRequest.Create(URI.AbsoluteUri + "//" + strFile);
@@ -67,7 +70,16 @@ namespace MvcPlanningApplication.Models
                     response = (FtpWebResponse)request.GetResponse();
 
                     responseStream = response.GetResponseStream();
+
+                    //var test = new XmlTextReader(responseStream);
                     XMLDoc.Load(responseStream);
+                    mStrBldrXML.AppendLine(XMLDoc.InnerXml
+                        .Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", string.Empty)
+                        .Replace("<HaworthOrders>", string.Empty)
+                        .Replace("</HaworthOrders>", string.Empty)
+                        .Replace("<FileName>", "<File Name=\"")
+                        .Replace("</FileName>", "\">") + 
+                        "</File>");
                     responseStream.Close();
                     response.Close();
 
@@ -512,12 +524,21 @@ namespace MvcPlanningApplication.Models
 
         public void Archive(string FileNameAndLocation)
         {
-            XmlTextWriter objXMLTextWriter;
-
-
-            objXMLTextWriter = new XmlTextWriter(FileNameAndLocation, null);
+            var objXMLTextWriter = new XmlTextWriter(FileNameAndLocation, null);
             objXMLTextWriter.Formatting = Formatting.Indented;
-            XMLDoc.Save(objXMLTextWriter);
+
+
+            if (mIsFTP)
+            {
+                var objXDocument = XDocument.Parse(mStrBldrXML
+                    .Insert(0, "<HaworthOrders>" + Environment.NewLine)
+                    //.Insert(0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + Environment.NewLine)
+                    .AppendLine("</HaworthOrders>").ToString());
+                objXDocument.Save(objXMLTextWriter);
+            }
+            else
+                XMLDoc.Save(objXMLTextWriter);
+
             objXMLTextWriter.Close();
         }
     }
