@@ -9,11 +9,12 @@
 <h2>Haworth Index</h2>
 
 <div class="well">
+    <select id="FileList"></select>
     @(
  Html.MvcFileUpload()
         .UploadAt(Url.Action("UploadFile"))
         .ReturnAt("/Haworth")
-        .WithFileTypes(@"/(\.|\/)(xls?)$/i")
+        .WithFileTypes(@"/(\.|\/)(xls|xlsx)$/i")
         .WithMaxFileSize(5000000)
         .AddFormField("entityId", "1234")
         .UIStyle(UploadUI.Bootstrap)
@@ -33,11 +34,17 @@
 @section styles{
     <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/blueimp")" />
     <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/fileupload")" />
+    <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/multiselect")" />
 }
 
 
 @section Scripts{
     <script type="text/javascript">
+        var sCurrentFilesURL = '@Url.Action("GetCurrentFiles", "Haworth")';
 
+    </script>
+    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/multiselect")">
+    </script>
+    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/haworthindex")">
     </script>
 }

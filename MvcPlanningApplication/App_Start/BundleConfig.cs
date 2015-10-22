@@ -38,6 +38,9 @@ namespace MvcPlanningApplication
             bundles.Add(new StyleBundle("~/Content/blueimp", 
                 "http://blueimp.github.io/Gallery/css/blueimp-gallery.min.css"));
 
+            bundles.Add(new StyleBundle("~/Content/multiselect").Include(
+                "~/Content/jquery.multiselect.css"));
+
 
 
 
@@ -78,6 +81,11 @@ namespace MvcPlanningApplication
             bundles.Add(new ScriptBundle("~/bundles/fileuploadJQueryUI").Include(
                         "~/Scripts/jQuery.FileUpload/jquery.fileupload-jquery-ui.js"));//The File Upload jQuery UI plugin
 
+            bundles.Add(new ScriptBundle("~/bundles/multiselect").Include(
+                        "~/Scripts/jquery.multiselect.js"));
+
+            bundles.Add(new Bundle("~/bundles/haworthindex").Include(
+                        "~/Scripts/haworthindex.js"));
         }
     }
 }

@@ -329,7 +329,6 @@ else //inline
 
 <!--template and scripts end-->
 <script type="text/javascript">
-    var sGetCurrentFiles = '@Url.Action("GetCurrentFiles", "Haworth")';
 
     // Initialize the jQuery File Upload widget:
     $('#@(formId)').fileupload({url: '@Model.UploadUrl'});
@@ -340,17 +339,40 @@ else //inline
         maxNumberOfFiles: @maxNoOfFiles,
         disableImagePreview: @(Model.DisableImagePreview ? "true" : "false"),
         resizeMaxWidth: 1920,
-        resizeMaxHeight: 1200,
+        resizeMaxHeight: 1200, prependFiles: true,
         acceptFileTypes: @Model.FileTypes});
 
     // Load existing files:
-    $('#@(formId)').addClass('fileupload-processing');
+    $.ajax({
+        dataType: 'json',
+        context: $('#@(formId)')[0]
+    }).always(function () {
+        $(this).fileupload('option', 'done')
+            .call(this, $.Event('done'), { result: objFiles });
+    });
+
+
+    //$('#fileupload')
+    //.bind('fileuploadadd', function (e, data) {
+    //    data.push(objFiles.files);
+    //});
+
+    @*$('#@(formId)').fileupload('add', {
+       
+        //fileInput: objFiles
+        files: objFiles.files
+    });*@
+
+    @*$(this).fileupload('option', { result: objFiles });*@
+
+    // Load existing files:
+    @*$('#@(formId)').addClass('fileupload-processing');
     $.ajax({
         // Uncomment the following to send cross-domain cookies:
         //xhrFields: {withCredentials: true},
         //url: $('#@(formId)').fileupload('option', 'url'),
-        //url: $('#@(formId)').fileupload('option', sGetCurrentFiles),
-        url: sGetCurrentFiles,
+        //url: $('#@(formId)').fileupload('option', sCurrentFilesURL),
+        url: sCurrentFilesURL,
         dataType: 'json',
         context: $('#@(formId)')[0]
     }).always(function () {
@@ -358,6 +380,6 @@ else //inline
     }).done(function (result) {
         $(this).fileupload('option', 'done')
             .call(this, $.Event('done'), { result: result });
-    });
+    });*@
 
 </script>
