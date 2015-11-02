@@ -28,6 +28,18 @@
         <EngineeringDrawingNumber>4538-9700</EngineeringDrawingNumber>
         <RevisionLevel>
         </RevisionLevel>
+		<Characteristics>
+			<ArmStyle>NO_ARM</ArmStyle>
+			<SeatMaterial>PLST</SeatMaterial>
+			<BackJacket>NO_BKJCK</BackJacket>
+			<FireCode>NO_COD Surface Treatment</FireCode>
+			<FrontSide>NO_TREAT</FrontSide>
+			<Seat1Color>TR_FJ</Seat1Color>
+			<Seat2Color>NO_COL</Seat2Color>
+			<Back1ColorInside>TR_FJ</Back1ColorInside>
+			<FrameColor>KR_V</FrameColor>
+			<TrimColor>NO_COL</TrimColor>
+		</Characteristics>
       </PartInformation>
       <ItemNumber>000000001151598</ItemNumber>
       <LegacyPart>453897030000V0</LegacyPart>

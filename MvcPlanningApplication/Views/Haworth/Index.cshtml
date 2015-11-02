@@ -14,7 +14,7 @@
  Html.MvcFileUpload()
         .UploadAt(Url.Action("UploadFile"))
         .ReturnAt("/Haworth")
-        .WithFileTypes(@"/(\.|\/)(xls|xlsx)$/i")
+        .WithFileTypes(@"/(\.|\/)(jpg|xls|xlsx)$/i")
         .WithMaxFileSize(5000000)
         .AddFormField("entityId", "1234")
         .UIStyle(UploadUI.Bootstrap)

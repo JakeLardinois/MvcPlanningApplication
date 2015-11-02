@@ -14,6 +14,7 @@ namespace MvcPlanningApplication.Controllers
 {
     public class HaworthController : Controller
     {
+        public static string VirtualFilePath { get { return @"/Content/Uploads/Haworth"; } }
 
         public ActionResult Index()
         {
@@ -28,7 +29,7 @@ namespace MvcPlanningApplication.Controllers
             var Orders = new HaworthOrders(new Uri("ftp://FTP.HAWORTH.COM/Company113/Company113Ext/XML/Prod/Out"), true);
             var RemainingOrders = Orders.RemainingOrders;
 
-            DirectoryInfo directory = new DirectoryInfo(Server.MapPath(@"/Content/Uploads"));
+            DirectoryInfo directory = new DirectoryInfo(Server.MapPath(VirtualFilePath));
             Orders.Archive(directory.FullName + "//HaworthOrders.xml");
 
             return RedirectToAction("Index");
@@ -126,7 +127,7 @@ namespace MvcPlanningApplication.Controllers
         public JsonResult GetCurrentFiles()
         {
             var CurrentFiles = new List<ViewDataUploadFileResult>();
-            DirectoryInfo directory = new DirectoryInfo(Server.MapPath(@"/Content/Uploads/Haworth"));
+            DirectoryInfo directory = new DirectoryInfo(Server.MapPath(VirtualFilePath));
             UrlHelper objUrlHelper = new UrlHelper(this.ControllerContext.RequestContext);
             var Files = directory.GetFiles();
 
@@ -138,12 +139,14 @@ namespace MvcPlanningApplication.Controllers
                     name = objFile.Name, 
                     size = (int)objFile.Length,
                     type = strMimeType,
-                    url = objUrlHelper.Action("DownloadFile", "Haworth", null) +
-                        "?fileUrl=/Content/Uploads/Haworth/" + objFile.Name + "&mimetype=" + strMimeType,
-                    deleteUrl = objUrlHelper.Action("DeleteFile", "Haworth", null) +
-                        "?entityId=0&fileUrl=/Content/Uploads/Haworth/" + objFile.Name,
-                    thumbnailUrl = "/Content/Uploads/Haworth/" + 
-                        HttpUtility.UrlEncode(objFile.Name) + "?width=80&height=80",
+                    url = objUrlHelper.Action("DownloadFile", "Haworth", null) + "?" +
+                        HttpUtility.UrlPathEncode("fileUrl=" + VirtualFilePath + "/" + objFile.Name + 
+                        "&mimetype=" + strMimeType),
+                    deleteUrl = objUrlHelper.Action("DeleteFile", "Haworth", null) + "?" +
+                        "entityId=0" + 
+                        "&fileUrl=" + VirtualFilePath + "/" + objFile.Name,
+                    thumbnailUrl = HttpUtility.UrlPathEncode(VirtualFilePath + "/" + objFile.Name + "?" + 
+                        "width=80&height=80"),
                     deleteType = "POST",
                     FullPath = objFile.FullName,
                     SavedFileName = objFile.Name,

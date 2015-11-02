@@ -78,8 +78,21 @@ namespace MvcPlanningApplication.Models
                         .Replace("<HaworthOrders>", string.Empty)
                         .Replace("</HaworthOrders>", string.Empty)
                         .Replace("<FileName>", "<File Name=\"")
-                        .Replace("</FileName>", "\">") + 
-                        "</File>");
+                        .Replace("</FileName>", "\">")
+                        /*.Replace("</RevisionLevel>", "</RevisionLevel>" + //I insert the Characteristics XML into the spot after the Revision Tag...
+                        "<Characteristics>" +
+			                "<ArmStyle>NO_ARM</ArmStyle>" +
+			                "<SeatMaterial>PLST</SeatMaterial>" +
+			                "<BackJacket>NO_BKJCK</BackJacket>" +
+			                "<FireCode>NO_COD Surface Treatment</FireCode>" +
+			                "<FrontSide>NO_TREAT</FrontSide>" +
+			                "<Seat1Color>TR_FJ</Seat1Color>" +
+			                "<Seat2Color>NO_COL</Seat2Color>" +
+			                "<Back1ColorInside>TR_FJ</Back1ColorInside>" +
+			                "<FrameColor>KR_V</FrameColor>" +
+                            "<TrimColor>NO_COL</TrimColor>" +
+		                "</Characteristics>")*/
+                        + "</File>");
                     responseStream.Close();
                     response.Close();
 
@@ -534,6 +547,8 @@ namespace MvcPlanningApplication.Models
                     .Insert(0, "<HaworthOrders>" + Environment.NewLine)
                     //.Insert(0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + Environment.NewLine)
                     .AppendLine("</HaworthOrders>").ToString());
+
+                
                 objXDocument.Save(objXMLTextWriter);
             }
             else

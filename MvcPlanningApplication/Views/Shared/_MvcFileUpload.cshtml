@@ -286,43 +286,26 @@ else //inline
     
     
 
-    @*@Scripts.Render("~/bundles/blueimp")
-    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/blueimp") ">
-    </script>*@
-    <!-- The Templates plugin is included to render the upload/download listings -->
-    <script src="//blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script>
-    <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
-    <script src="//blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
-    <!-- The Canvas to Blob plugin is included for image resizing functionality -->
-    <script src="//blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
-    <!-- blueimp Gallery script -->
-    <script src="//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
+    @Scripts.Render("~/bundles/blueimpTemplates")
+    @Scripts.Render("~/bundles/blueimpLoadImage")
+    @Scripts.Render("~/bundles/blueimpImageResizing")
+    <!-- blueimp Gallery script NOTE: When this is enabled, clicking the link in the File Dialog gives a "blueimp Gallery: Widget container not found. #blueimp-gallery" error
+        because it is trying to load the picture viewer gallery as opposed to downloading the file (which is what I want) -->
+    @*@Scripts.Render("~/bundles/blueimpGallery")*@
 
-    @*@Scripts.Render("~/bundles/fileupload")
-    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/fileupload") ">
-    </script>*@
-    <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
-    <script type="text/javascript" src="/Scripts/jQuery.FileUpload/jquery.iframe-transport.js"></script>
-    <!-- The basic File Upload plugin -->
-    <script type="text/javascript" src="/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
-    <!-- The File Upload processing plugin -->
-    <script type="text/javascript" src="/Scripts/jQuery.FileUpload/jquery.fileupload-process.js"></script>
-    <!-- The File Upload image preview & resize plugin -->
-    <script type="text/javascript" src="/Scripts/jQuery.FileUpload/jquery.fileupload-image.js"></script>
-    <!-- The File Upload audio preview plugin -->
-    <script type="text/javascript" src="/Scripts/jQuery.FileUpload/jquery.fileupload-audio.js"></script>
-    <!-- The File Upload video preview plugin -->
-    <script type="text/javascript" src="/Scripts/jQuery.FileUpload/jquery.fileupload-video.js"></script>
-    <!-- The File Upload validation plugin -->
-    <script type="text/javascript" src="/Scripts/jQuery.FileUpload/jquery.fileupload-validate.js"></script>
-    <!-- The File Upload user interface plugin -->
-    <script type="text/javascript" src="/Scripts/jQuery.FileUpload/jquery.fileupload-ui.js"></script>
+    @Scripts.Render("~/bundles/fileuploadIFrameTransport")
+    @Scripts.Render("~/bundles/fileupload")
+    @Scripts.Render("~/bundles/fileuploadProcessing")
+    @Scripts.Render("~/bundles/fileuploadImage")
+    @Scripts.Render("~/bundles/fileuploadAudio")
+    @Scripts.Render("~/bundles/fileuploadVideo")
+    @Scripts.Render("~/bundles/fileuploadValidate")
+    @Scripts.Render("~/bundles/fileuploadUI")
 
     if (Model.UIStyle == UploadUI.JQueryUI)
     {
         <!-- The File Upload jQuery UI plugin -->
-        @*@Scripts.Render("~/bundles/fileuploadJQueryUI") //this also works...*@
-        <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/fileuploadJQueryUI")"></script>
+        @Scripts.Render("~/bundles/fileuploadJQueryUI")
     }
 }
 

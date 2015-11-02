@@ -59,14 +59,29 @@ namespace MvcPlanningApplication
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                         "~/Scripts/bootstrap.js"));
 
-            var BlueImpBundle = new ScriptBundle("~/bundles/blueimp", "http://blueimp.github.io/JavaScript-Templates/js/tmpl.min.js").Include(//The Templates plugin is included to render the upload/download listings
+            //The below just defines a fallback template in case the CDN isn't available; YOU CANNOT BUNDLE MULTIPLE FILES FROM A CDN...
+            /*var BlueImpBundle = new ScriptBundle("~/bundles/blueimp", "http://blueimp.github.io/JavaScript-Templates/js/tmpl.min.js").Include(//The Templates plugin is included to render the upload/download listings
                         "~/JavaScript-Load-Image/js/load-image.all.min.js",//The Load Image plugin is included for the preview images and image resizing functionality
                         "~/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js",//The Canvas to Blob plugin is included for image resizing functionality
                         "~/Gallery/js/jquery.blueimp-gallery.min.js");//blueimp Gallery script
             BlueImpBundle.Orderer = new NonOrderingBundleOrderer();
-            bundles.Add(BlueImpBundle);
+            bundles.Add(BlueImpBundle);*/
 
-            var FileUploadBundle = new ScriptBundle("~/bundles/fileupload").Include(
+            //The Templates plugin is included to render the upload/download listings
+            bundles.Add(new ScriptBundle("~/bundles/blueimpTemplates",
+                "http://blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"));
+            //The Load Image plugin is included for the preview images and image resizing functionality 
+            bundles.Add(new ScriptBundle("~/bundles/blueimpLoadImage",
+                "http://blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"));
+            //The Canvas to Blob plugin is included for image resizing functionality
+            bundles.Add(new ScriptBundle("~/bundles/blueimpImageResizing",
+                "http://blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"));
+            //blueimp Gallery script
+            bundles.Add(new ScriptBundle("~/bundles/blueimpGallery",
+                "http://blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"));
+
+            //The below just defines a fallback template in case the CDN isn't available; YOU CANNOT BUNDLE MULTIPLE FILES FROM A CDN...
+            /*var FileUploadBundle = new ScriptBundle("~/bundles/fileupload").Include(
                         "~/Scripts/jQuery.FileUpload/jquery.iframe-transport.js",//The Iframe Transport is required for browsers without support for XHR file uploads
                         "~/Scripts/jQuery.FileUpload/jquery.fileupload.js",//The basic File Upload plugin
                         "~/Scripts/jQuery.FileUpload/jquery.fileupload-process.js",//The File Upload processing plugin
@@ -76,10 +91,35 @@ namespace MvcPlanningApplication
                         "~/Scripts/jQuery.FileUpload/jquery.fileupload-validate.js",//The File Upload validation plugin
                         "~/Scripts/jQuery.FileUpload/jquery.fileupload-ui.js");//The File Upload user interface plugin
             FileUploadBundle.Orderer = new NonOrderingBundleOrderer();
-            bundles.Add(FileUploadBundle);
+            bundles.Add(FileUploadBundle);*/
 
+            //The basic File Upload plugin
+            bundles.Add(new ScriptBundle("~/bundles/fileupload").Include(
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload.js"));
+            //The Iframe Transport is required for browsers without support for XHR file uploads
+            bundles.Add(new ScriptBundle("~/bundles/fileuploadIFrameTransport").Include(
+                        "~/Scripts/jQuery.FileUpload/jquery.iframe-transport.js"));
+            //The File Upload processing plugin
+            bundles.Add(new ScriptBundle("~/bundles/fileuploadProcessing").Include(
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload-process.js"));
+            //The File Upload image preview & resize plugin
+            bundles.Add(new ScriptBundle("~/bundles/fileuploadImage").Include(
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload-image.js"));
+            //The File Upload audio preview plugin
+            bundles.Add(new ScriptBundle("~/bundles/fileuploadAudio").Include(
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload-audio.js"));
+            //The File Upload video preview plugin
+            bundles.Add(new ScriptBundle("~/bundles/fileuploadVideo").Include(
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload-video.js"));
+            //The File Upload validation plugin
+            bundles.Add(new ScriptBundle("~/bundles/fileuploadValidate").Include(
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload-validate.js"));
+            //The File Upload user interface plugin
+            bundles.Add(new ScriptBundle("~/bundles/fileuploadUI").Include(
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload-ui.js"));
+            //The File Upload jQuery UI plugin
             bundles.Add(new ScriptBundle("~/bundles/fileuploadJQueryUI").Include(
-                        "~/Scripts/jQuery.FileUpload/jquery.fileupload-jquery-ui.js"));//The File Upload jQuery UI plugin
+                        "~/Scripts/jQuery.FileUpload/jquery.fileupload-jquery-ui.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/multiselect").Include(
                         "~/Scripts/jquery.multiselect.js"));
