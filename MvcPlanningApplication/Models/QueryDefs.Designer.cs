@@ -61,6 +61,25 @@ namespace MvcPlanningApplication.Models {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DELETE
+        ///FROM HaworthOrders.
+        /// </summary>
+        internal static string DeleteAllHaworthOrders {
+            get {
+                return ResourceManager.GetString("DeleteAllHaworthOrders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DBCC CHECKIDENT (~p0, RESEED, 0).
+        /// </summary>
+        internal static string ReSeedTable {
+            get {
+                return ResourceManager.GetString("ReSeedTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT co.co_num, coitem.co_line, coitem.co_release, coitem.item, coitem.qty_ordered, coitem.promise_date, coitem.co_release, coitem.due_date, co.cust_po
         ///  FROM co
         ///	INNER JOIN coitem ON co.co_num = coitem.co_num

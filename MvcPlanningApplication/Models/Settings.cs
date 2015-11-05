@@ -40,4 +40,9 @@ namespace MvcPlanningApplication.Models
         public static DateTime MINDATE = new DateTime(1900, 1, 1);
         public static DateTime MAXDATE = new DateTime(2999, 1, 1);
     }
+
+    public static class Settings
+    {
+        public static string HaworthArchiveLocation { get { return System.Configuration.ConfigurationManager.AppSettings["HaworthArchiveLocation"]; } }
+    }
 }

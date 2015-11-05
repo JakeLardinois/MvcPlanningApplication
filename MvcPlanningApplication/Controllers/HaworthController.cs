@@ -8,29 +8,50 @@ using MvcPlanningApplication.Models;
 using System.IO;
 using MvcFileUploader.Models;
 using MvcFileUploader;
+using log4net;
 
 
 namespace MvcPlanningApplication.Controllers
 {
     public class HaworthController : Controller
     {
+        private static readonly ILog Logger = LogHelper.GetLogger();
         public static string VirtualFilePath { get { return @"/Content/Uploads/Haworth"; } }
+        private PlanningApplicationDb db = new PlanningApplicationDb();
+
 
         public ActionResult Index()
         {
+            var result = db.HaworthOrders
+                .ToList();
+
             return View();
         }
 
         [HttpPost]
         public ActionResult GenerateData(string FileName)
         {
-            //var strArchiveFile = System.Configuration.ConfigurationManager.AppSettings["HaworthArchiveLocation"] + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml";
+            Logger.Debug("Grabbed File: " + FileName);
             ////var objList = new HaworthDispatchList();
-            var Orders = new HaworthOrders(new Uri("ftp://FTP.HAWORTH.COM/Company113/Company113Ext/XML/Prod/Out"), true);
+            Logger.Debug("Get Haworth XML Orders from FTP Site");
+            //var Orders = new HaworthOrders(new Uri("ftp://FTP.HAWORTH.COM/Company113/Company113Ext/XML/Prod/Out"), true);
+            var Orders = new HaworthOrders(new Uri("ftp://FTP.HAWORTH.COM/Company113/Company113Ext/XML/Test/Out"), true);
             var RemainingOrders = Orders.RemainingOrders;
+            var objQueryDefs = new QueryDefinitions();
 
-            DirectoryInfo directory = new DirectoryInfo(Server.MapPath(VirtualFilePath));
-            Orders.Archive(directory.FullName + "//HaworthOrders.xml");
+            Logger.Debug("Delete All Existing Haworth Orders and reseed the Haworth Order Table");
+            db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthOrders"));
+            db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new [] {"HaworthOrders"}));
+            db.HaworthOrders.AddRange(Orders);
+            Logger.Debug("Upload and Save the new Haworth Orders to the Database");
+            db.SaveChanges();
+
+            Logger.Debug("Archive Haworth Orders");
+            Orders.Archive(Settings.HaworthArchiveLocation + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml");
+
+            ExcelInfo objExcelInfo = new ExcelInfo(FileName);
+            Logger.Debug("Get Supplier Demand from Selected excel sheet.");
+
 
             return RedirectToAction("Index");
         }
@@ -166,5 +187,11 @@ namespace MvcPlanningApplication.Controllers
 
             return viewresult;
         }
+
+        //[HttpPost]
+        //public JsonResult GetOrders(JQueryDataTablesModel jQueryDataTablesModel)
+        //{
+
+        //}
     }
 }

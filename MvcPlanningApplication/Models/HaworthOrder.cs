@@ -3,13 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
+using System.ComponentModel.DataAnnotations;
+
+
 namespace MvcPlanningApplication.Models
 {
     public class HaworthOrder
     {
+
+        public HaworthOrder()
+        {
+            WTFOrderRequestDate = SharedVariables.MINDATE;
+            WTFOrderDueDate = SharedVariables.MINDATE;
+            ChangeDate = SharedVariables.MINDATE;
+            DockDate = SharedVariables.MINDATE;
+            MaintenanceDateTime = SharedVariables.MINDATE;
+            ImportDateTime = SharedVariables.MINDATE;
+        }
+
+
+        [Key]
+        public virtual int ID { get; set; }
+
         private double mUnitPrice { get; set; }
 
         public string FileName { get; set; }
+        public string File { get; set; }
 
         public string Type { get; set; }
         public string OrderNumber { get; set; }
@@ -41,7 +60,8 @@ namespace MvcPlanningApplication.Models
             {
                 int intTemp;
 
-                return int.TryParse(UnitOfMeasure.Replace("PER ", string.Empty).Replace(" EA", string.Empty), out intTemp) ? intTemp : -1;
+                return string.IsNullOrEmpty(UnitOfMeasure) ? -1 : 
+                    int.TryParse(UnitOfMeasure.Replace("PER ", string.Empty).Replace(" EA", string.Empty), out intTemp) ? intTemp : -1;
             }
         }
         public double UnitPrice

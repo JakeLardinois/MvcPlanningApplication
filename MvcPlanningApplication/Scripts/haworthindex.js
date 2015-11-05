@@ -1,4 +1,47 @@
-﻿function FormatFileSelectColumnJSON(x) {
+﻿var anOpen = [];
+var oTable;
+
+
+$(document).ready(function () {
+    var objSelectFiles = FormatFileSelectColumnJSON(objFiles);
+
+    objSelectFiles.forEach(function (obj) {
+        $("#FileList").append("<option value=\"" + obj.value + "\">" + obj.label + "</option>");
+    });
+    $("#FileList").multiselect({
+        multiple: false,
+        //hide: "explode",
+        selectedList: 1, //this is what puts the selected value onto the select box...
+        click: function (e) {
+
+        }
+    });
+
+    $("#Generate")
+        .button()
+        .click(function (event) {
+            objTemp = $('#FileList');
+
+            var input = $("<input>")
+               .attr("type", "hidden")
+               .attr("name", "filename").val(String($('#FileList').val()));
+
+            $('#frmGenerateData').append(input);
+            $("#frmGenerateData").submit();
+        });
+
+    oTable = $('#objItems').DataTable({
+        "bJQueryUI": true,
+        //"bProcessing": true,
+        //"bServerSide": true,
+        "bFilter": true
+    });
+});
+
+
+
+
+function FormatFileSelectColumnJSON(x) {
     var finalEdit = new Array();
 
     //Loop through the list
@@ -23,31 +66,7 @@ function CurrentFiles() {
 }
 var objFiles = CurrentFiles();
 
-$(document).ready(function () {
-    var objSelectFiles = FormatFileSelectColumnJSON(objFiles);
 
-    objSelectFiles.forEach(function (obj) {
-        $("#FileList").append("<option value=\"" + obj.value + "\">" + obj.label + "</option>");
-    });
-    $("#FileList").multiselect({
-        multiple: false,
-        //hide: "explode",
-        selectedList: 1 //this is what puts the selected value onto the select box...
-    });
-
-    $("#Generate")
-        .button()
-        .click(function (event) {
-            objTemp = $('#FileList');
-
-            var input = $("<input>")
-               .attr("type", "hidden")
-               .attr("name", "filename").val(String($('#FileList').val()));
-
-            $('#frmGenerateData').append(input);
-            $("#frmGenerateData").submit();
-     });
-});
 
 
 

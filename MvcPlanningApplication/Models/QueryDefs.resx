@@ -117,6 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DeleteAllHaworthOrders" xml:space="preserve">
+    <value>DELETE
+FROM HaworthOrders</value>
+  </data>
+  <data name="ReSeedTable" xml:space="preserve">
+    <value>DBCC CHECKIDENT (~p0, RESEED, 0)</value>
+  </data>
   <data name="SelectCustomerOrdersByPO" xml:space="preserve">
     <value>SELECT co.co_num, coitem.co_line, coitem.co_release, coitem.item, coitem.qty_ordered, coitem.promise_date, coitem.co_release, coitem.due_date, co.cust_po
   FROM co
