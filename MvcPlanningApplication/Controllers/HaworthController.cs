@@ -29,9 +29,8 @@ namespace MvcPlanningApplication.Controllers
         }
 
         [HttpPost]
-        public ActionResult GenerateData(string FileName)
+        public ActionResult GenerateData(string SelectedFile, string SelectedRange)
         {
-            Logger.Debug("Grabbed File: " + FileName);
             ////var objList = new HaworthDispatchList();
             Logger.Debug("Get Haworth XML Orders from FTP Site");
             //var Orders = new HaworthOrders(new Uri("ftp://FTP.HAWORTH.COM/Company113/Company113Ext/XML/Prod/Out"), true);
@@ -49,9 +48,13 @@ namespace MvcPlanningApplication.Controllers
             Logger.Debug("Archive Haworth Orders");
             Orders.Archive(Settings.HaworthArchiveLocation + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml");
 
-            ExcelInfo objExcelInfo = new ExcelInfo(FileName);
-            Logger.Debug("Get Supplier Demand from Selected excel sheet.");
 
+            Logger.Debug("Using File: " + SelectedFile + Environment.NewLine + "\tUsing Range: " + SelectedRange);
+            HaworthSupplierDemands objSupplierDemands = new HaworthSupplierDemands(SelectedFile, SelectedRange);
+            Logger.Debug("Got Supplier Demand from Selected excel sheet.");
+            db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthSupplierDemands"));
+            db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthSupplierDemands" }));
+            db.HaworthSupplierDemands.AddRange(objSupplierDemands);
 
             return RedirectToAction("Index");
         }
@@ -145,6 +148,7 @@ namespace MvcPlanningApplication.Controllers
             }
         }
 
+        [HttpPost]
         public JsonResult GetCurrentFiles()
         {
             var CurrentFiles = new List<ViewDataUploadFileResult>();
@@ -175,19 +179,28 @@ namespace MvcPlanningApplication.Controllers
                 });
             }
 
-            ////adding thumbnail url for jquery file upload javascript plugin
-            //CurrentFiles.ForEach(x => x.thumbnailUrl = x.url + "?width=80&height=80"); // uses ImageResizer httpmodule to resize images from this url
-
-            ////setting custom download url instead of direct url to file which is default
-            //CurrentFiles.ForEach(x => x.url = Url.Action("DownloadFile", new { fileUrl = x.url, mimetype = x.type }));
-
-
             var viewresult = Json(new { files = CurrentFiles });
-            viewresult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
 
             return viewresult;
         }
 
+
+        [HttpPost]
+        public JsonResult GetExcelRanges(string File)
+        {
+            ExcelInfo objExcelInfo = new ExcelInfo(File);
+
+            objExcelInfo.GetInformation();
+
+            var Ranges = objExcelInfo.NameRanges
+                .Select(g => new[] { g });
+            Logger.Debug("My file Parameter is: " + File);
+
+
+            var viewresult = Json(Ranges);
+
+            return viewresult;
+        }
         //[HttpPost]
         //public JsonResult GetOrders(JQueryDataTablesModel jQueryDataTablesModel)
         //{

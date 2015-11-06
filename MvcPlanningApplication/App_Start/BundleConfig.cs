@@ -113,6 +113,12 @@ namespace MvcPlanningApplication
 
             bundles.Add(new ScriptBundle("~/bundles/impromptu").Include(
                         "~/Scripts/jquery-impromptu.js"));
+
+            //http://jqueryvalidation.org/
+            bundles.Add(new ScriptBundle("~/bundles/jqueryvalidate", 
+                "http://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/jqueryvalidateAdditionalMethods", 
+                "http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/additional-methods.min.js"));
         }
     }
 }

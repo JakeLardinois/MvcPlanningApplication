@@ -121,6 +121,10 @@
     <value>DELETE
 FROM HaworthOrders</value>
   </data>
+  <data name="DeleteAllHaworthSupplierDemands" xml:space="preserve">
+    <value>DELETE
+FROM HaworthSupplierDemands</value>
+  </data>
   <data name="ReSeedTable" xml:space="preserve">
     <value>DBCC CHECKIDENT (~p0, RESEED, 0)</value>
   </data>

@@ -71,6 +71,16 @@ namespace MvcPlanningApplication.Models {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DELETE
+        ///FROM HaworthSupplierDemands.
+        /// </summary>
+        internal static string DeleteAllHaworthSupplierDemands {
+            get {
+                return ResourceManager.GetString("DeleteAllHaworthSupplierDemands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DBCC CHECKIDENT (~p0, RESEED, 0).
         /// </summary>
         internal static string ReSeedTable {

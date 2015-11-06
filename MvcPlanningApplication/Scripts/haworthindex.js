@@ -5,6 +5,7 @@ var oTable;
 $(document).ready(function () {
     var objSelectFiles = FormatFileSelectColumnJSON(objFiles);
 
+
     objSelectFiles.forEach(function (obj) {
         $("#FileList").append("<option value=\"" + obj.value + "\">" + obj.label + "</option>");
     });
@@ -13,21 +14,76 @@ $(document).ready(function () {
         //hide: "explode",
         selectedList: 1, //this is what puts the selected value onto the select box...
         click: function (e) {
-
+            //alert("Dood");
         }
     });
 
     $("#Generate")
         .button()
         .click(function (event) {
-            objTemp = $('#FileList');
+            function ExcelRanges(strFile) {
+                $.ajaxSetup({ async: false, dataType: "json" });
 
-            var input = $("<input>")
-               .attr("type", "hidden")
-               .attr("name", "filename").val(String($('#FileList').val()));
+                $.post(sGetExcelRanges, { File: strFile })
+                    .done(function (data) {
+                        ExcelRanges = data;
+                    });
+                $.ajaxSetup({ async: true }); //Sets ajax back up to synchronous
 
-            $('#frmGenerateData').append(input);
-            $("#frmGenerateData").submit();
+                return ExcelRanges;
+            }
+            var objExcelRanges = ExcelRanges($('#FileList').val());
+
+
+            var statesdemo = {
+                state0: {
+                    title: 'Select A Range...',
+                    html: '<form class="HaworthDataGenerator" id="HaworthDataGeneratorStep1"><div class="error"></div>' +
+                        '<br><select title="Select Excel Range" id="ExcelRanges" required needsSelection></select>' +
+                        '</form>',
+                    buttons: { Cancel: 0, 'Generate': 1 },
+                    focus: 1, //sets the focus on to the Generate button...
+                    submit: function (e, v, m, f) {
+                        if (v == 0) { }
+                        else if (v == 1) {
+                            $('#HaworthDataGeneratorStep1').validate({
+                                ignore: ':hidden:not("#ExcelRanges")', //Tells it to ignore hidden fields except for the one with id ExcelRangeName
+                                errorLabelContainer: $("#WorkOrderWizardStep2 div.error")
+                            });
+
+                            if ($("#HaworthDataGeneratorStep1").children("select").valid()) {
+                                var objData = {
+                                    SelectedFile: $('#FileList').val(),
+                                    SelectedRange: $('#ExcelRanges').val()
+                                }
+
+                                $.post(sGenerateDataURL, objData, function (data) {
+                                    if (data.Success) {
+                                        $.prompt(data.Message);
+                                    }
+                                    else {
+                                        $.prompt(data.Message);
+                                    }
+                                });
+
+                            }
+                            else {
+                                e.preventDefault();
+                            }
+                        }
+                    }
+                }
+            };
+            $.prompt(statesdemo);
+
+            objExcelRanges.forEach(function (obj) {
+                $("#ExcelRanges").append("<option value=\"" + obj + "\">" + obj + "</option>");
+            });
+            $("#ExcelRanges").multiselect({
+                multiple: false,
+                selectedList: 1
+            });
+
         });
 
     oTable = $('#objItems').DataTable({
@@ -57,9 +113,11 @@ function FormatFileSelectColumnJSON(x) {
 function CurrentFiles() {
     $.ajaxSetup({ async: false, dataType: "json" });
 
-    $.getJSON(sCurrentFilesURL, {}, function (data) {
-        CurrentFiles = data;
-    });
+
+    $.post(sCurrentFilesURL, {})
+        .done(function (data) {
+            CurrentFiles = data;
+        });
     $.ajaxSetup({ async: true }); //Sets ajax back up to synchronous
 
     return CurrentFiles;
