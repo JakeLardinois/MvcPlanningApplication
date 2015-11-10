@@ -79,6 +79,7 @@ $(document).ready(function () {
             objExcelRanges.forEach(function (obj) {
                 $("#ExcelRanges").append("<option value=\"" + obj + "\">" + obj + "</option>");
             });
+
             $("#ExcelRanges").multiselect({
                 multiple: false,
                 selectedList: 1

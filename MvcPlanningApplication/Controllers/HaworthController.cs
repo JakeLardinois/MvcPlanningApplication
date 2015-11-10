@@ -11,12 +11,13 @@ using MvcFileUploader;
 using log4net;
 
 
+
 namespace MvcPlanningApplication.Controllers
 {
     public class HaworthController : Controller
     {
         private static readonly ILog Logger = LogHelper.GetLogger();
-        public static string VirtualFilePath { get { return @"/Content/Uploads/Haworth"; } }
+        public static string VirtualFilePath { get { return @"/Content/Uploads"; } }
         private PlanningApplicationDb db = new PlanningApplicationDb();
 
 
@@ -31,30 +32,38 @@ namespace MvcPlanningApplication.Controllers
         [HttpPost]
         public ActionResult GenerateData(string SelectedFile, string SelectedRange)
         {
+            var objQueryDefs = new QueryDefinitions();
+
+
             ////var objList = new HaworthDispatchList();
-            Logger.Debug("Get Haworth XML Orders from FTP Site");
+            Logger.Info("Get Haworth XML Orders from FTP Site");
             //var Orders = new HaworthOrders(new Uri("ftp://FTP.HAWORTH.COM/Company113/Company113Ext/XML/Prod/Out"), true);
             var Orders = new HaworthOrders(new Uri("ftp://FTP.HAWORTH.COM/Company113/Company113Ext/XML/Test/Out"), true);
             var RemainingOrders = Orders.RemainingOrders;
-            var objQueryDefs = new QueryDefinitions();
+            Logger.Info("Successfully retrieved and processed Haworth Orders from FTP Site");
 
-            Logger.Debug("Delete All Existing Haworth Orders and reseed the Haworth Order Table");
+            Logger.Info("Delete All Existing Haworth Orders and reseed the Haworth Order Table");
             db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthOrders"));
             db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new [] {"HaworthOrders"}));
             db.HaworthOrders.AddRange(Orders);
-            Logger.Debug("Upload and Save the new Haworth Orders to the Database");
+            Logger.Info("Upload and Save the new Haworth Orders to the Database");
             db.SaveChanges();
-
-            Logger.Debug("Archive Haworth Orders");
+            Logger.Info("Archive Haworth Orders");
             Orders.Archive(Settings.HaworthArchiveLocation + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml");
 
 
+            Logger.Info("Retreive Supplier Demand Data From Excel");
             Logger.Debug("Using File: " + SelectedFile + Environment.NewLine + "\tUsing Range: " + SelectedRange);
-            HaworthSupplierDemands objSupplierDemands = new HaworthSupplierDemands(SelectedFile, SelectedRange);
-            Logger.Debug("Got Supplier Demand from Selected excel sheet.");
+            HaworthSupplierDemands objSupplierDemands = new HaworthSupplierDemands(Server.MapPath(SelectedFile), SelectedRange);
+            Logger.Info("Successfully retrieved and processed Supplier Demand from Selected excel sheet.");
+
+            Logger.Info("Delete All Existing Haworth Supplier Demands and reseed the Haworth Supplier Demands Table");
             db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthSupplierDemands"));
             db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthSupplierDemands" }));
+            Logger.Info("Upload and Save the new Haworth Supplier Demand to the Database");
             db.HaworthSupplierDemands.AddRange(objSupplierDemands);
+            db.SaveChanges();
+
 
             return RedirectToAction("Index");
         }
@@ -76,8 +85,8 @@ namespace MvcPlanningApplication.Controllers
                     //note how we are adding an additional value to be posted with delete request
                     //and giving it the same value posted with upload
                     x.DeleteUrl = Url.Action("DeleteFile", new { entityId = entityId });
-                    x.StorageDirectory = Server.MapPath("~/Content/Uploads/Haworth");
-                    x.UrlPrefix = "/Content/Uploads/Haworth";// this is used to generate the relative url of the file
+                    x.StorageDirectory = Server.MapPath("~" + VirtualFilePath + "/");
+                    x.UrlPrefix = VirtualFilePath;// this is used to generate the relative url of the file
 
 
                     //overriding defaults
@@ -125,9 +134,10 @@ namespace MvcPlanningApplication.Controllers
         {
             var filePath = Server.MapPath("~" + fileUrl);
 
+            Logger.Debug("Deleting File: " + filePath);
             if (System.IO.File.Exists(filePath))
                 System.IO.File.Delete(filePath);
-
+            
             var viewresult = Json(new { error = String.Empty });
             //for IE8 which does not accept application/json
             if (Request.Headers["Accept"] != null && !Request.Headers["Accept"].Contains("application/json"))
@@ -151,11 +161,18 @@ namespace MvcPlanningApplication.Controllers
         [HttpPost]
         public JsonResult GetCurrentFiles()
         {
+            //var UploadFilePath = Server.MapPath("~/Content/Uploads/");
+            var UploadFilePath = Server.MapPath("~" + VirtualFilePath + "/"); // ("~/Content/Uploads/");
+            Logger.Debug("Upload Directory: " + UploadFilePath);
+            
             var CurrentFiles = new List<ViewDataUploadFileResult>();
-            DirectoryInfo directory = new DirectoryInfo(Server.MapPath(VirtualFilePath));
+            DirectoryInfo directory = new DirectoryInfo(UploadFilePath);
+            if (!directory.Exists)
+                Logger.Error("The following directory does not exist: " + directory.FullName);
             UrlHelper objUrlHelper = new UrlHelper(this.ControllerContext.RequestContext);
             var Files = directory.GetFiles();
 
+            
             foreach (var objFile in Files)
             {
                 var strMimeType = MimeMapping.GetMimeMapping(objFile.Name);
@@ -173,7 +190,7 @@ namespace MvcPlanningApplication.Controllers
                     thumbnailUrl = HttpUtility.UrlPathEncode(VirtualFilePath + "/" + objFile.Name + "?" + 
                         "width=80&height=80"),
                     deleteType = "POST",
-                    FullPath = objFile.FullName,
+                    FullPath = "~" + VirtualFilePath + "/" + objFile.Name, // objFile.FullName, //not required an so just reveals info about the filesystem...
                     SavedFileName = objFile.Name,
                     Title = Path.GetFileNameWithoutExtension(objFile.Name)
                 });
@@ -184,27 +201,28 @@ namespace MvcPlanningApplication.Controllers
             return viewresult;
         }
 
-
         [HttpPost]
         public JsonResult GetExcelRanges(string File)
         {
-            ExcelInfo objExcelInfo = new ExcelInfo(File);
-
-            objExcelInfo.GetInformation();
+            ExcelOpenXMLInfo objExcelInfo = new ExcelOpenXMLInfo();
+            var strFullFilePath = Server.MapPath(File);
+            Logger.Debug("Getting Excel Ranges from file: " + strFullFilePath);
+            try
+            {
+                objExcelInfo = new ExcelOpenXMLInfo(strFullFilePath);
+                objExcelInfo.GetInformation();
+            }
+            catch(Exception objEx)
+            {
+                Logger.Error("Excel Info Exception Thrown", objEx);
+            }
 
             var Ranges = objExcelInfo.NameRanges
                 .Select(g => new[] { g });
-            Logger.Debug("My file Parameter is: " + File);
-
-
             var viewresult = Json(Ranges);
 
             return viewresult;
         }
-        //[HttpPost]
-        //public JsonResult GetOrders(JQueryDataTablesModel jQueryDataTablesModel)
-        //{
 
-        //}
     }
 }

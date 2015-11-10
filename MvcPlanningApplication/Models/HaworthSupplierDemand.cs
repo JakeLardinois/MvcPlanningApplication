@@ -49,9 +49,9 @@ namespace MvcPlanningApplication.Models
         public string DelAppt { get; set; }
         public string DelSite { get; set; }
         public int Route { get; set; }
-        public int NetPrice { get; set; }
-        public int NetValue { get; set; }
-        public int POTotal { get; set; }
+        public double NetPrice { get; set; }
+        public double NetValue { get; set; }
+        public double POTotal { get; set; }
         public string SrcLoc { get; set; }
     }
 }

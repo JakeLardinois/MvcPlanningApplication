@@ -60,3 +60,15 @@ textarea {
 .validation-summary-valid {
     display: none;
 }
+
+form.HaworthDataGenerator label.error {
+	display: block;
+	margin-left: 1em;
+	width: auto;
+    color: red;
+    font-style: italic;
+}
+form.HaworthDataGenerator label {
+	line-height: 1.8;
+    vertical-align: top;
+}
