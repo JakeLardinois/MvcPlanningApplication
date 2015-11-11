@@ -35,21 +35,21 @@ namespace MvcPlanningApplication.Controllers
             var objQueryDefs = new QueryDefinitions();
 
 
-            ////var objList = new HaworthDispatchList();
-            Logger.Info("Get Haworth XML Orders from FTP Site");
-            //var Orders = new HaworthOrders(new Uri("ftp://FTP.HAWORTH.COM/Company113/Company113Ext/XML/Prod/Out"), true);
-            var Orders = new HaworthOrders(new Uri("ftp://FTP.HAWORTH.COM/Company113/Company113Ext/XML/Test/Out"), true);
-            var RemainingOrders = Orders.RemainingOrders;
-            Logger.Info("Successfully retrieved and processed Haworth Orders from FTP Site");
+            //////var objList = new HaworthDispatchList();
+            //Logger.Info("Get Haworth XML Orders from FTP Site");
+            ////var Orders = new HaworthOrders(new Uri("ftp://FTP.HAWORTH.COM/Company113/Company113Ext/XML/Prod/Out"), true);
+            //var Orders = new HaworthOrders(new Uri("ftp://FTP.HAWORTH.COM/Company113/Company113Ext/XML/Test/Out"), true);
+            //var RemainingOrders = Orders.RemainingOrders;
+            //Logger.Info("Successfully retrieved and processed Haworth Orders from FTP Site");
 
-            Logger.Info("Delete All Existing Haworth Orders and reseed the Haworth Order Table");
-            db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthOrders"));
-            db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new [] {"HaworthOrders"}));
-            db.HaworthOrders.AddRange(Orders);
-            Logger.Info("Upload and Save the new Haworth Orders to the Database");
-            db.SaveChanges();
-            Logger.Info("Archive Haworth Orders");
-            Orders.Archive(Settings.HaworthArchiveLocation + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml");
+            //Logger.Info("Delete All Existing Haworth Orders and reseed the Haworth Order Table");
+            //db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthOrders"));
+            //db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new [] {"HaworthOrders"}));
+            //db.HaworthOrders.AddRange(Orders);
+            //Logger.Info("Upload and Save the new Haworth Orders to the Database");
+            //db.SaveChanges();
+            //Logger.Info("Archive Haworth Orders");
+            //Orders.Archive(Settings.HaworthArchiveLocation + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml");
 
 
             Logger.Info("Retreive Supplier Demand Data From Excel");
@@ -217,7 +217,7 @@ namespace MvcPlanningApplication.Controllers
                 Logger.Error("Excel Info Exception Thrown", objEx);
             }
 
-            var Ranges = objExcelInfo.NameRanges
+            var Ranges = objExcelInfo.NamedRanges
                 .Select(g => new[] { g });
             var viewresult = Json(Ranges);
 

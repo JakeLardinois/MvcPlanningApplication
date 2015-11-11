@@ -19,64 +19,70 @@ namespace MvcPlanningApplication.Models
         {
             //ExcelOpenXMLInfo objExcelInfo = new ExcelOpenXMLInfo(SelectedFile);
             //objExcelInfo.GetInformation();
-            DataSet objDataSet = ExcelOpenXMLInfo.GetDataFromExcel(ExcelFileNameAndLocation, ExcelRangeName);
+            var objDataTable = ExcelOpenXMLInfo.GetDataFromExcelRange(ExcelFileNameAndLocation, ExcelRangeName);
 
-            Populate(objDataSet.Tables[0]);
+            Populate(objDataTable);
         }
 
         private void Populate(DataTable objCurrentDataTable)
         {
-            try
-            {
-                foreach (var objRow in objCurrentDataTable.AsEnumerable())
+            DateTime dtmTemp;
+            int intTemp;
+            double dblTemp;
+
+
+            foreach (var objRow in objCurrentDataTable.AsEnumerable())
+                try
+                {
                     this.Add(new HaworthSupplierDemand
                     {
                         CHGInd = objRow.Field<string>("CHG Ind"),
-                        MAD = objRow.Field<DateTime>("CHG Ind"),
-                        SOCrDte = objRow.Field<DateTime>("CHG Ind"),
-                        SONo = objRow.Field<string>("CHG Ind"),
-                        Item1 = objRow.Field<string>("CHG Ind"),
-                        SOQty = objRow.Field<int>("CHG Ind"),
-                        PONumber1 = objRow.Field<string>("CHG Ind"),
-                        Item2 = objRow.Field<string>("CHG Ind"),
-                        POQty = objRow.Field<int>("CHG Ind"),
-                        MatNo = objRow.Field<string>("CHG Ind"),
-                        Description = objRow.Field<string>("CHG Ind"),
-                        CatalogPartNumber = objRow.Field<string>("CHG Ind"),
-                        CatalogPartDescription = objRow.Field<string>("CHG Ind"),
-                        PlnText = objRow.Field<string>("CHG Ind"),
-                        Customer = objRow.Field<string>("CHG Ind"),
-                        Name = objRow.Field<string>("CHG Ind"),
-                        Street = objRow.Field<string>("CHG Ind"),
-                        ShipToCity = objRow.Field<string>("CHG Ind"),
-                        Region = objRow.Field<string>("CHG Ind"),
-                        ShToPos = objRow.Field<string>("CHG Ind"),
-                        Country = objRow.Field<string>("CHG Ind"),
-                        ShipPnt = objRow.Field<int>("CHG Ind"),
-                        SNNo = objRow.Field<string>("CHG Ind"),
-                        OrigSO = objRow.Field<string>("CHG Ind"),
-                        PONumber2 = objRow.Field<string>("CHG Ind"),
-                        Usage = objRow.Field<string>("CHG Ind"),
-                        ReasonRej = objRow.Field<string>("CHG Ind"),
-                        DelDate = objRow.Field<DateTime>("CHG Ind"),
-                        DelGroup = objRow.Field<int>("CHG Ind"),
-                        ShipIns = objRow.Field<string>("CHG Ind"),
-                        SOTag1 = objRow.Field<string>("CHG Ind"),
-                        SOTag2 = objRow.Field<string>("CHG Ind"),
-                        POItemConfigurationText = objRow.Field<string>("CHG Ind"),
-                        DelAppt = objRow.Field<string>("CHG Ind"),
-                        DelSite = objRow.Field<string>("CHG Ind"),
-                        Route = objRow.Field<int>("CHG Ind"),
-                        NetPrice = objRow.Field<double>("CHG Ind"),
-                        NetValue = objRow.Field<double>("CHG Ind"),
-                        POTotal = objRow.Field<double>("CHG Ind"),
-                        SrcLoc = objRow.Field<string>("CHG Ind")
+                        MAD = DateTime.TryParse(objRow["MAD"] + string.Empty, out dtmTemp) ? dtmTemp : SharedVariables.MINDATE,
+                        SOCrDte = DateTime.TryParse(objRow["SO Cr. Dte"] + string.Empty, out dtmTemp) ? dtmTemp : SharedVariables.MINDATE,
+                        SONo = objRow.Field<string>("SO No."),
+                        Item1 = objRow.Field<string>("Item1"),
+                        SOQty = int.TryParse(objRow["SO Qty"] + string.Empty, out intTemp) ? intTemp : 0,
+                        PONumber1 = objRow.Field<string>("PO Number"),
+                        Item2 = objRow.Field<string>("Item2"),
+                        POQty = int.TryParse(objRow["PO Qty"] + string.Empty, out intTemp) ? intTemp : 0,
+                        MatNo = objRow.Field<string>("Mat. No."),
+                        Description = objRow.Field<string>("Description"),
+                        CatalogPartNumber = objRow.Field<string>("Catalog Part Number"),
+                        CatalogPartDescription = objRow.Field<string>("Catalog Part Description"),
+                        PlnText = objRow.Field<string>("Pln. Text"),
+                        Customer = objRow.Field<string>("Customer"),
+                        Name = objRow.Field<string>("Name"),
+                        Street = objRow.Field<string>("Street"),
+                        ShipToCity = objRow.Field<string>("Ship To City"),
+                        Region = objRow.Field<string>("Region"),
+                        ShToPos = objRow.Field<string>("Sh. To Pos"),
+                        Country = objRow.Field<string>("Country"),
+                        ShipPnt = int.TryParse(objRow["Ship Pnt."] + string.Empty, out intTemp) ? intTemp : 0,
+                        SNNo = objRow.Field<string>("SN No."),
+                        OrigSO = objRow.Field<string>("Orig. SO"),
+                        PONumber2 = objRow.Field<string>("PO number"),
+                        Usage = objRow.Field<string>("Usage"),
+                        ReasonRej = objRow.Field<string>("Reason Rej"),
+                        DelDate = DateTime.TryParse(objRow["Del. Date"] + string.Empty, out dtmTemp) ? dtmTemp : SharedVariables.MINDATE,
+                        DelGroup = int.TryParse(objRow["Del. Group"] + string.Empty, out intTemp) ? intTemp : 0,
+                        ShipIns = objRow.Field<string>("Ship Ins."),
+                        SOTag1 = objRow.Field<string>("SO Tag1"),
+                        SOTag2 = objRow.Field<string>("SO Tag 2"),
+                        POItemConfigurationText = objRow.Field<string>("PO Item Configuration Text"),
+                        DelAppt = objRow.Field<string>("Del Appt"),
+                        DelSite = objRow.Field<string>("Del Site"),
+                        Route = int.TryParse(objRow["Route"] + string.Empty, out intTemp) ? intTemp : 0,
+                        NetPrice = double.TryParse(objRow["Net price"] + string.Empty, out dblTemp) ? dblTemp : 0,
+                        NetValue = double.TryParse(objRow["Net Value"] + string.Empty, out dblTemp) ? dblTemp : 0,
+                        POTotal = double.TryParse(objRow["PO Total"] + string.Empty, out dblTemp) ? dblTemp : 0,
+                        SrcLoc = objRow.Field<string>("Src. Loc.")
                     });
-            }
-            catch(Exception objEx)
-            {
-                Logger.Error("Exception Thrown", objEx);
-            }
+                }
+                catch (Exception objEx)
+                {
+                    Logger.Error("Haworth Supplier Demand Exception Thrown in Populate()", objEx);
+                }
+            
         }
     }
 }

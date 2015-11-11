@@ -8,6 +8,9 @@ using System.Data;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.IO;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using System.IO.Packaging;
 
 
 namespace MvcPlanningApplication.Models
@@ -27,11 +30,14 @@ namespace MvcPlanningApplication.Models
             }
         }
 
-        private List<string> mNameRanges = new List<string>();
-        public List<string> NameRanges { get { return mNameRanges; } }
+        private List<string> mNamedRanges = new List<string>();
+        public List<string> NamedRanges { get { return mNamedRanges; } }
 
-        private List<string> mSheets = new List<string>();
-        public List<string> Sheets { get { return mSheets; } }
+        private List<string> mSheetNames = new List<string>();
+        public List<string> SheetNames { get { return mSheetNames; } }
+
+        private Dictionary<String, String> mDefinedNames { get; set; }
+        private Sheets mSheets { get; set; }
 
         public ExcelOpenXMLInfo() { }
         public ExcelOpenXMLInfo(string strFileName)
@@ -43,14 +49,61 @@ namespace MvcPlanningApplication.Models
             if (!System.IO.File.Exists(FileName))
                 throw (new FileNotFoundException("Failed to locate '" + FileName + "'"));
 
-            mSheets.Clear();
-            mNameRanges.Clear();
+            mSheetNames.Clear();
+            mNamedRanges.Clear();
 
+
+            mDefinedNames = GetDefinedNames(FileName);
+            foreach (var objPair in mDefinedNames)
+                mNamedRanges.Add(objPair.Key);
+
+            mSheets = GetAllWorksheets(FileName);
+            foreach (Sheet objSheet in mSheets)
+                mSheetNames.Add(objSheet.Name);
 
             return true;
         }
 
-        public static DataSet GetDataFromExcel(string strFilePathAndName, string strRangeName = "")
+        public static Dictionary<String, String>GetDefinedNames(String fileName)
+        {
+            // Given a workbook name, return a dictionary of defined names.
+            // The pairs include the range name and a string representing the range.
+            var returnValue = new Dictionary<String, String>();
+
+            // Open the spreadsheet document for read-only access.
+            using (SpreadsheetDocument document = SpreadsheetDocument.Open(fileName, false))
+            {
+                // Retrieve a reference to the workbook part.
+                var wbPart = document.WorkbookPart;
+
+                // Retrieve a reference to the defined names collection.
+                DefinedNames definedNames = wbPart.Workbook.DefinedNames;
+
+                // If there are defined names, add them to the dictionary.
+                if (definedNames != null)
+                {
+                    foreach (DefinedName dn in definedNames)
+                        returnValue.Add(dn.Name.Value, dn.Text);
+                }
+            }
+            return returnValue;
+        }
+
+        /*Retrieve a List of all the sheets in a workbook.
+        The Sheets class contains a collection of OpenXmlElement objects, each representing one of the sheets.*/
+        public static Sheets GetAllWorksheets(string fileName)
+        {
+            Sheets theSheets = null;
+
+            using (SpreadsheetDocument document = SpreadsheetDocument.Open(fileName, false))
+            {
+                WorkbookPart wbPart = document.WorkbookPart;
+                theSheets = wbPart.Workbook.Sheets;
+            }
+            return theSheets;
+        }
+
+        public static DataTable GetDataFromExcelRange(string FilePathAndName, string RangeName)
         {
             /*When I used the below connection string then jet would automatically cast my data to the most common type and return nulls wherever data didn't match.
             String sConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;" +
@@ -87,14 +140,14 @@ namespace MvcPlanningApplication.Models
              * But alas, I could not get it to work, so I had to set HDR=NO and then remove the use the sub mentioned above.
              */
             String sConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
-                        "Data Source=" + strFilePathAndName + ";" +
+                        "Data Source=" + FilePathAndName + ";" +
                         "Extended Properties='Excel 12.0;IMEX=1;HDR=NO;ImportMixedTypes=Text;TypeGuessRows=0;'";
 
             OleDbConnection objConn = new OleDbConnection(sConnectionString);
             objConn.Open();
 
             // Create new OleDbCommand to return data from worksheet.
-            OleDbCommand objCmdSelect = new OleDbCommand("SELECT * FROM " + strRangeName, objConn);
+            OleDbCommand objCmdSelect = new OleDbCommand("SELECT * FROM " + RangeName, objConn);
 
             // Create new OleDbDataAdapter that is used to build a DataSet
             // based on the preceding SQL SELECT statement.
@@ -104,17 +157,18 @@ namespace MvcPlanningApplication.Models
             objAdapter1.SelectCommand = objCmdSelect;
 
             // Create new DataSet to hold information from the worksheet.
-            DataSet objDataset1 = new DataSet();
+            var objDataSet = new DataSet();
 
             // Fill the DataSet with the information from the worksheet.
-            objAdapter1.Fill(objDataset1, "XLData");
+            objAdapter1.Fill(objDataSet, "XLData");
 
             // Clean up objects.
             objConn.Close();
 
-            BuildHeadersFromFirstRowThenRemoveFirstRow(objDataset1.Tables[0]);
+            var objDataTable = objDataSet.Tables[0];
+            BuildHeadersFromFirstRowThenRemoveFirstRow(objDataTable);
 
-            return objDataset1;
+            return objDataTable;
         }
 
         private static System.Data.DataTable BuildHeadersFromFirstRowThenRemoveFirstRow(System.Data.DataTable dt)
