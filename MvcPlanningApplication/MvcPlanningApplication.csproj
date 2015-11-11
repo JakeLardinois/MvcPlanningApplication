@@ -185,9 +185,12 @@
     <Compile Include="Models\HaworthDispatchList.cs" />
     <Compile Include="Models\HaworthOrder.cs" />
     <Compile Include="Models\HaworthOrders.cs" />
+    <Compile Include="Models\HaworthOrderSearch.cs" />
+    <Compile Include="Models\HaworthOrdersRepository.cs" />
     <Compile Include="Models\HaworthPartInformation.cs" />
     <Compile Include="Models\HaworthSupplierDemand.cs" />
     <Compile Include="Models\HaworthSupplierDemands.cs" />
+    <Compile Include="Models\InMemoryRepositories.cs" />
     <Compile Include="Models\JQueryDataTablesModel.cs" />
     <Compile Include="Models\JQueryDataTablesModelBinder.cs" />
     <Compile Include="Models\LogHelper.cs" />
@@ -343,6 +346,7 @@
     <Content Include="Scripts\additional-methods.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\DateTimeFormatter.js" />
     <Content Include="Scripts\haworthindex.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -23,10 +23,33 @@ namespace MvcPlanningApplication.Controllers
 
         public ActionResult Index()
         {
-            var result = db.HaworthOrders
-                .ToList();
-
+            
             return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetData(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+            int TotalRecordCount, searchRecordCount;
+            var result = new JsonResult();
+
+            var objHaworthOrdersRepository = new HaworthOrdersRepository();
+            var objItems = objHaworthOrdersRepository.GetOrders(searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel);
+
+            using (var db = new PlanningApplicationDb())
+                TotalRecordCount = db.HaworthOrders.Count();
+
+            //result.MaxJsonLength = Int32.MaxValue;  //took care of the error "Error during serialization or deserialization using the JSON JavaScriptSerializer. The length of the string exceeds the value set on the maxJsonLength property"
+            result.Data = new                       //that occurred when pagination was disabled. I reenabled pagination 
+            {
+                iTotalRecords = TotalRecordCount, // iTotalRecords = InMemoryWorkOrdersRepository.AllWorkOrders.TotalRecordCount,
+                jQueryDataTablesModel.sEcho,
+                iTotalDisplayRecords = searchRecordCount,
+                aaData = objItems
+            };
+
+            return result;
+
         }
 
         [HttpPost]
@@ -35,21 +58,20 @@ namespace MvcPlanningApplication.Controllers
             var objQueryDefs = new QueryDefinitions();
 
 
-            //////var objList = new HaworthDispatchList();
-            //Logger.Info("Get Haworth XML Orders from FTP Site");
-            ////var Orders = new HaworthOrders(new Uri("ftp://FTP.HAWORTH.COM/Company113/Company113Ext/XML/Prod/Out"), true);
-            //var Orders = new HaworthOrders(new Uri("ftp://FTP.HAWORTH.COM/Company113/Company113Ext/XML/Test/Out"), true);
-            //var RemainingOrders = Orders.RemainingOrders;
-            //Logger.Info("Successfully retrieved and processed Haworth Orders from FTP Site");
+            ////var objList = new HaworthDispatchList();
+            Logger.Info("Get Haworth XML Orders from FTP Site");
+            var Orders = new HaworthOrders(new Uri(Settings.HaworthFTPURI), true);
+            var RemainingOrders = Orders.RemainingOrders;
+            Logger.Info("Successfully retrieved and processed Haworth Orders from FTP Site");
 
-            //Logger.Info("Delete All Existing Haworth Orders and reseed the Haworth Order Table");
-            //db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthOrders"));
-            //db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new [] {"HaworthOrders"}));
-            //db.HaworthOrders.AddRange(Orders);
-            //Logger.Info("Upload and Save the new Haworth Orders to the Database");
-            //db.SaveChanges();
-            //Logger.Info("Archive Haworth Orders");
-            //Orders.Archive(Settings.HaworthArchiveLocation + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml");
+            Logger.Info("Delete All Existing Haworth Orders and reseed the Haworth Order Table");
+            db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthOrders"));
+            db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthOrders" }));
+            db.HaworthOrders.AddRange(Orders);
+            Logger.Info("Upload and Save the new Haworth Orders to the Database");
+            db.SaveChanges();
+            Logger.Info("Archive Haworth Orders");
+            Orders.Archive(Settings.HaworthArchiveLocation + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml");
 
 
             Logger.Info("Retreive Supplier Demand Data From Excel");

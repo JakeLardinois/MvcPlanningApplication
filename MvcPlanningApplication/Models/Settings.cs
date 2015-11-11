@@ -44,5 +44,6 @@ namespace MvcPlanningApplication.Models
     public static class Settings
     {
         public static string HaworthArchiveLocation { get { return System.Configuration.ConfigurationManager.AppSettings["HaworthArchiveLocation"]; } }
+        public static string HaworthFTPURI { get { return System.Configuration.ConfigurationManager.AppSettings["HaworthFTPURI"]; } }
     }
 }
