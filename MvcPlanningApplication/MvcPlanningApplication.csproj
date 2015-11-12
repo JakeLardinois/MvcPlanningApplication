@@ -195,6 +195,7 @@
     <Compile Include="Models\JQueryDataTablesModelBinder.cs" />
     <Compile Include="Models\LogHelper.cs" />
     <Compile Include="Models\ExcelOpenXMLInfo.cs" />
+    <Compile Include="Models\MyExtensionMethods.cs" />
     <Compile Include="Models\PlanningApplicationDb.cs" />
     <Compile Include="Models\QueryDefs.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -33,19 +33,21 @@ namespace MvcPlanningApplication.Controllers
             int TotalRecordCount, searchRecordCount;
             var result = new JsonResult();
 
+            Logger.Info("Use HaworthOrdersRepository to search Haworth Orders in the Database");
             var objHaworthOrdersRepository = new HaworthOrdersRepository();
             var objItems = objHaworthOrdersRepository.GetOrders(searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel);
 
+            Logger.Info("Get total number of Haworth orders in the database");
             using (var db = new PlanningApplicationDb())
                 TotalRecordCount = db.HaworthOrders.Count();
 
-            //result.MaxJsonLength = Int32.MaxValue;  //took care of the error "Error during serialization or deserialization using the JSON JavaScriptSerializer. The length of the string exceeds the value set on the maxJsonLength property"
-            result.Data = new                       //that occurred when pagination was disabled. I reenabled pagination 
+            Logger.Info("Return a JSON object containing the required data for JQuery Datatables");
+            result.Data = new 
             {
-                iTotalRecords = TotalRecordCount, // iTotalRecords = InMemoryWorkOrdersRepository.AllWorkOrders.TotalRecordCount,
+                iTotalRecords = TotalRecordCount,
                 jQueryDataTablesModel.sEcho,
                 iTotalDisplayRecords = searchRecordCount,
-                aaData = objItems
+                aaData = objItems.RemainingOrders() //only display the remaining orders...
             };
 
             return result;
@@ -57,36 +59,34 @@ namespace MvcPlanningApplication.Controllers
         {
             var objQueryDefs = new QueryDefinitions();
 
-
-            ////var objList = new HaworthDispatchList();
             Logger.Info("Get Haworth XML Orders from FTP Site");
             var Orders = new HaworthOrders(new Uri(Settings.HaworthFTPURI), true);
-            var RemainingOrders = Orders.RemainingOrders;
-            Logger.Info("Successfully retrieved and processed Haworth Orders from FTP Site");
 
-            Logger.Info("Delete All Existing Haworth Orders and reseed the Haworth Order Table");
+            Logger.Info("Delete All Existing Haworth Orders");
             db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthOrders"));
+            Logger.Info("Re-Seed the Haworth Order Table");
             db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthOrders" }));
-            db.HaworthOrders.AddRange(Orders);
             Logger.Info("Upload and Save the new Haworth Orders to the Database");
+            db.HaworthOrders.AddRange(Orders);
             db.SaveChanges();
             Logger.Info("Archive Haworth Orders");
             Orders.Archive(Settings.HaworthArchiveLocation + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml");
 
 
-            Logger.Info("Retreive Supplier Demand Data From Excel");
-            Logger.Debug("Using File: " + SelectedFile + Environment.NewLine + "\tUsing Range: " + SelectedRange);
+            Logger.Info("Retreive Supplier Demand Data From Excel Using" + 
+                " \tFile: " + SelectedFile + Environment.NewLine + 
+                "\tRange: " + SelectedRange);
             HaworthSupplierDemands objSupplierDemands = new HaworthSupplierDemands(Server.MapPath(SelectedFile), SelectedRange);
-            Logger.Info("Successfully retrieved and processed Supplier Demand from Selected excel sheet.");
 
-            Logger.Info("Delete All Existing Haworth Supplier Demands and reseed the Haworth Supplier Demands Table");
+            Logger.Info("Delete All Existing Haworth Supplier Demands");
             db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthSupplierDemands"));
+            Logger.Info("Re-Seed the Haworth Supplier Demands Table");
             db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthSupplierDemands" }));
             Logger.Info("Upload and Save the new Haworth Supplier Demand to the Database");
             db.HaworthSupplierDemands.AddRange(objSupplierDemands);
             db.SaveChanges();
 
-
+            Logger.Info("Redirect to Haworth Index View");
             return RedirectToAction("Index");
         }
 
@@ -183,9 +183,8 @@ namespace MvcPlanningApplication.Controllers
         [HttpPost]
         public JsonResult GetCurrentFiles()
         {
-            //var UploadFilePath = Server.MapPath("~/Content/Uploads/");
             var UploadFilePath = Server.MapPath("~" + VirtualFilePath + "/"); // ("~/Content/Uploads/");
-            Logger.Debug("Upload Directory: " + UploadFilePath);
+            Logger.Debug("Upload Directory is: " + UploadFilePath);
             
             var CurrentFiles = new List<ViewDataUploadFileResult>();
             DirectoryInfo directory = new DirectoryInfo(UploadFilePath);
@@ -194,7 +193,7 @@ namespace MvcPlanningApplication.Controllers
             UrlHelper objUrlHelper = new UrlHelper(this.ControllerContext.RequestContext);
             var Files = directory.GetFiles();
 
-            
+            Logger.Info("Getting the list of files from the Upload Directory");
             foreach (var objFile in Files)
             {
                 var strMimeType = MimeMapping.GetMimeMapping(objFile.Name);
@@ -246,5 +245,22 @@ namespace MvcPlanningApplication.Controllers
             return viewresult;
         }
 
+        [HttpPost]
+        public JsonResult GetStatusCodes(string File)
+        {
+            Logger.Debug("Getting Status Codes");
+            var StatusCodes = db.HaworthOrders
+                .GroupBy(s => s.StatusCode)
+                .Select(s => new {StatusCode = s.Key})
+                .ToList();
+
+            var jsonStatusCodes = StatusCodes
+                .Select(c => new[] { c.StatusCode });
+
+            var viewresult = Json(jsonStatusCodes);
+
+            Logger.Debug("Returning Status Codes");
+            return viewresult;
+        }
     }
 }

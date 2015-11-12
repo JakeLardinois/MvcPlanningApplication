@@ -510,45 +510,6 @@ namespace MvcPlanningApplication.Models
             }
         }
 
-        /*Modified on 3/20/2013 so that the application now checks the Haworth Item number against the WireTech Item Number on the WTF Order, 
-         */
-        public List<HaworthOrder> RemainingOrders
-        {
-            get
-            {
-                var db = new SytelineDbEntities();
-                var objQueryDefinitions = new QueryDefinitions();
-                StringBuilder objStrBldr = new StringBuilder();
-
-
-                foreach (var objOrder in this)
-                    objStrBldr.Append("'" + objOrder.OrderNumber + "',");//get my list of PO's from the Haworth orders
-
-                //Here I get all the orders from Syteline that have the Haworth Order number in the PO field. Notice that I remove the last comma before passing the list of POs. 
-                var strSQL = objQueryDefinitions.GetQuery("SelectCustomerOrdersByPO", new string[] { objStrBldr.ToString(0, objStrBldr.Length - 1) });
-
-                var objCOItems = db.Database.SqlQuery<COItem>(strSQL);
-                foreach (var objCOItem in objCOItems)//loop through the Syteline Orders and add the data they contain to my Haworth list
-                {
-                    var objOrder = this  //get the haworth Order that has a matching WTF Order
-                        .Where(o => o.OrderNumber.Trim().ToUpper().Equals(objCOItem.cust_po.Trim().ToUpper()))
-                        .FirstOrDefault();
-
-                    //populate the haworth order with WTF Order Number, Item number on the WTF Order
-                    objOrder.WTFOrderNumber = objCOItem.co_num;
-                    objOrder.WTFItemNumber = objCOItem.item;
-                    objOrder.WTFOrderQuantity = (double)objCOItem.qty_ordered;
-                    objOrder.WTFOrderDueDate = objCOItem.due_date ?? DateTime.MinValue;
-                    objOrder.WTFOrderRequestDate = objCOItem.promise_date ?? DateTime.MinValue;
-                }
-
-                return this //filters out the orders that are correctly entered in our system
-                    .Where(o => string.IsNullOrEmpty(o.WTFOrderNumber) || !o.WTFItemNumber.Trim().Equals(o.ItemNumber.Trim()) ||
-                        o.WTFOrderQuantity != o.RequiredQty || o.WTFOrderDueDate.Date != o.DockDate)
-                    .ToList();
-            }
-        }
-
         public void Archive(string FileNameAndLocation)
         {
             XDocument objXDocument;

@@ -7,6 +7,25 @@ $(document).ready(function () {
     var oTimerId;
 
 
+    $("#ChangeDateFromFilter").datepicker();
+    $("#ChangeDateToFilter").datepicker();
+    $("#DockDateFromFilter").datepicker();
+    $("#DockDateToFilter").datepicker();
+    $("#ImportDateTimeFromFilter").datepicker();
+    $("#ImportDateTimeToFilter").datepicker();
+
+    objStatusCodes.forEach(function (obj) {
+        $("#StatusCodeFilter").append("<option value=\"" + obj + "\">" + obj + "</option>");
+    });
+    $("#StatusCodeFilter").multiselect({
+        multiple: true,
+        hide: "explode",
+        minWidth: 300,
+        //header: false, // "Select a Work Order Type",
+        noneSelectedText: "Select Type",
+        //selectedList: 1 //this is what puts the selected value onto the select box...
+    });
+
     objSelectFiles.forEach(function (obj) {
         $("#FileList").append("<option value=\"" + obj.value + "\">" + obj.label + "</option>");
     });
@@ -16,6 +35,28 @@ $(document).ready(function () {
         selectedList: 1, //this is what puts the selected value onto the select box...
         click: function (e) {
             //alert("Dood");
+        }
+    });
+
+    /*I wanted to avoid a query in the situation where a user just opens the select box to observe the checked values. So I created a global variable that gets set only when a user
+     * checks/unchecks an option or CheckAll or UnCheckAll.*/
+    $("select").multiselect({ //makes all the selects multiselect boxes AND applies the specified methods...
+        //hide: "explode",
+        checkAll: function () {
+            blnCheckChanged = true;
+        },
+        uncheckAll: function () {
+            blnCheckChanged = true;
+        },
+        click: function (event, ui) {
+            blnCheckChanged = true;
+        },
+        close: function () {
+            //I commented the below out in favor of utilizing a button to submit the search due to access being slow on queries...
+            /*if (blnCheckChanged) {
+                blnCheckChanged = false;
+                oTable.draw();
+            }*/
         }
     });
 
@@ -174,7 +215,7 @@ function CurrentFiles() {
     $.ajaxSetup({ async: false, dataType: "json" });
 
 
-    $.post(sCurrentFilesURL, {})
+    $.post(sGetCurrentFilesURL, {})
         .done(function (data) {
             CurrentFiles = data;
         });
@@ -183,6 +224,21 @@ function CurrentFiles() {
     return CurrentFiles;
 }
 var objFiles = CurrentFiles();
+
+function StatusCodes() {
+    $.ajaxSetup({ async: false, dataType: "json" });
+
+
+    $.post(sGetStatusCodesURL, {})
+        .done(function (data) {
+            StatusCodes = data;
+        });
+    $.ajaxSetup({ async: true }); //Sets ajax back up to synchronous
+
+    return StatusCodes;
+}
+var objStatusCodes = StatusCodes();
+
 
 function AppendAdditionalParameters(aoData) {
     var strTemp;
@@ -203,74 +259,75 @@ function AppendAdditionalParameters(aoData) {
     for (var i = 0; i < aoData.length; i++) {
         switch (aoData[i].name) {
             case "sSearch_0":
-                aoData[i].value = $('#WONUMFilter').val();
+                aoData[i].value = $('#ChangeDateFromFilter').val() + '~' +
+                        $('#ChangeDateToFilter').val();
                 break;
             case "bRegex_0":
                 aoData[i].value = true;
                 break;
             case "sSearch_1":
-                strTemp = String($('#WOEQLISTFilter').val());
-                if (strTemp !== 'null')
-                    aoData[i].value = strTemp.split(',').join('|');
-                else
-                    aoData[i].value = '';
+                aoData[i].value = $('#OrderNumberFilter').val();
                 break;
             case "bRegex_1":
                 aoData[i].value = true;
                 break;
+            case "sSearch_2":
+                aoData[i].value = $('#ItemNumberFilter').val();
+                break;
+            case "bRegex_2":
+                aoData[i].value = true;
+                break;
             case "sSearch_3":
-                strTemp = String($('#STATUSFilter').val());
-                if (strTemp !== 'null')
-                    aoData[i].value = strTemp.split(',').join('|');
-                else
-                    aoData[i].value = '';
+                aoData[i].value = $('#DescriptionFilter').val();
                 break;
             case "bRegex_3":
                 aoData[i].value = true;
                 break;
             case "sSearch_4":
-                strTemp = String($('#PRIORITYFilter').val());
-                if (strTemp !== 'null')
-                    aoData[i].value = strTemp.split(',').join('|');
-                else
-                    aoData[i].value = '';
+                aoData[i].value = $('#Description2Filter').val();
                 break;
             case "bRegex_4":
                 aoData[i].value = true;
                 break;
             case "sSearch_5":
-                strTemp = String($('#WOTYPEFilter').val());
-                if (strTemp !== 'null')
-                    aoData[i].value = strTemp.split(',').join('|');
-                else
-                    aoData[i].value = '';
+                aoData[i].value = $('#ColorCodeFilter').val();
                 break;
             case "bRegex_5":
                 aoData[i].value = true;
                 break;
             case "sSearch_6":
-                aoData[i].value = $('#ORIGINATORFilter').val();
+                aoData[i].value = $('#ColorPatternFilter').val();
                 break;
             case "bRegex_6":
                 aoData[i].value = true;
                 break;
             case "sSearch_7":
-                aoData[i].value = $('#REQUESTDATEFromFilter').val() + '~' +
-                        $('#REQUESTDATEToFilter').val();
+                aoData[i].value = $('#ColorDescriptionFilter').val();
                 break;
             case "bRegex_7":
                 aoData[i].value = true;
                 break;
-            case "sSearch_9":
-                aoData[i].value = $('#COMPLETIONDATEFromFilter').val() + '~' +
-                        $('#COMPLETIONDATEToFilter').val();
+            case "sSearch_8":
+                strTemp = String($('#StatusCodeFilter').val());
+                if (strTemp !== 'null')
+                    aoData[i].value = strTemp.split(',').join('|');
+                else
+                    aoData[i].value = '';
                 break;
-            case "bRegex_9":
+                break;
+            case "bRegex_8":
+                aoData[i].value = true;
+                break;
+            case "sSearch_10":
+                aoData[i].value = $('#DockDateFromFilter').val() + '~' +
+                        $('#DockDateToFilter').val();
+                break;
+            case "bRegex_10":
                 aoData[i].value = true;
                 break;
             case "sSearch_11":
-                aoData[i].value = $('#CLOSEDATEFromFilter').val() + '~' +
-                        $('#CLOSEDATEToFilter').val();
+                aoData[i].value = $('#ImportDateTimeFromFilter').val() + '~' +
+                        $('#ImportDateTimeToFilter').val();
                 break;
             case "bRegex_11":
                 aoData[i].value = true;

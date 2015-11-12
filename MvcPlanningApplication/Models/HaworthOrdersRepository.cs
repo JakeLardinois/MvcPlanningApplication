@@ -22,6 +22,7 @@ namespace MvcPlanningApplication.Models
             string strEmptyString = "EMPTY";
             StringBuilder objStrBldr = new StringBuilder();
 
+
             objHaworthOrderSearch = new HaworthOrderSearch();
             for (int intCounter = 0; intCounter < DataTablesModel.iColumns; intCounter++)
             {
