@@ -55,39 +55,52 @@ namespace MvcPlanningApplication.Controllers
         }
 
         [HttpPost]
-        public ActionResult GenerateData(string SelectedFile, string SelectedRange)
+        public JsonResult GenerateData(string SelectedFile, string SelectedRange)
         {
-            var objQueryDefs = new QueryDefinitions();
+            var result = new JsonResult();
 
-            Logger.Info("Get Haworth XML Orders from FTP Site");
-            var Orders = new HaworthOrders(new Uri(Settings.HaworthFTPURI), true);
+            try
+            {
+                //var objQueryDefs = new QueryDefinitions();
 
-            Logger.Info("Delete All Existing Haworth Orders");
-            db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthOrders"));
-            Logger.Info("Re-Seed the Haworth Order Table");
-            db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthOrders" }));
-            Logger.Info("Upload and Save the new Haworth Orders to the Database");
-            db.HaworthOrders.AddRange(Orders);
-            db.SaveChanges();
-            Logger.Info("Archive Haworth Orders");
-            Orders.Archive(Settings.HaworthArchiveLocation + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml");
+                //Logger.Info("Get Haworth XML Orders from FTP Site");
+                //var Orders = new HaworthOrders(new Uri(Settings.HaworthFTPURI), true);
+
+                //Logger.Info("Delete All Existing Haworth Orders");
+                //db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthOrders"));
+                //Logger.Info("Re-Seed the Haworth Order Table");
+                //db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthOrders" }));
+                //Logger.Info("Upload and Save the new Haworth Orders to the Database");
+                //db.HaworthOrders.AddRange(Orders);
+                //db.SaveChanges();
+                //Logger.Info("Archive Haworth Orders");
+                //Orders.Archive(Settings.HaworthArchiveLocation + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml");
 
 
-            Logger.Info("Retreive Supplier Demand Data From Excel Using" + 
-                " \tFile: " + SelectedFile + Environment.NewLine + 
-                "\tRange: " + SelectedRange);
-            HaworthSupplierDemands objSupplierDemands = new HaworthSupplierDemands(Server.MapPath(SelectedFile), SelectedRange);
+                //Logger.Info("Retreive Supplier Demand Data From Excel Using" +
+                //    " \tFile: " + SelectedFile + Environment.NewLine +
+                //    "\tRange: " + SelectedRange);
+                //HaworthSupplierDemands objSupplierDemands = new HaworthSupplierDemands(Server.MapPath(SelectedFile), SelectedRange);
 
-            Logger.Info("Delete All Existing Haworth Supplier Demands");
-            db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthSupplierDemands"));
-            Logger.Info("Re-Seed the Haworth Supplier Demands Table");
-            db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthSupplierDemands" }));
-            Logger.Info("Upload and Save the new Haworth Supplier Demand to the Database");
-            db.HaworthSupplierDemands.AddRange(objSupplierDemands);
-            db.SaveChanges();
+                //Logger.Info("Delete All Existing Haworth Supplier Demands");
+                //db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthSupplierDemands"));
+                //Logger.Info("Re-Seed the Haworth Supplier Demands Table");
+                //db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthSupplierDemands" }));
+                //Logger.Info("Upload and Save the new Haworth Supplier Demand to the Database");
+                //db.HaworthSupplierDemands.AddRange(objSupplierDemands);
+                //db.SaveChanges();
 
-            Logger.Info("Redirect to Haworth Index View");
-            return RedirectToAction("Index");
+                //Logger.Info("Redirect to Haworth Index View");
+
+                
+                result.Data = new { Success = true, Message = "You succeeded!" };
+                return result;
+            }
+            catch(Exception objEx)
+            {
+                result.Data = new { Success = false, Message = objEx.Message };
+                return result;
+            }
         }
 
         public ActionResult Dispatch()

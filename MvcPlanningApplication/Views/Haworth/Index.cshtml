@@ -13,17 +13,16 @@
     @(
  Html.MvcFileUpload()
         .UploadAt(Url.Action("UploadFile"))
-        .ReturnAt("/Haworth")
-        .WithFileTypes(@"/(\.|\/)(jpg|xls|xlsx)$/i")
+        .ReturnAt(Url.Action("Index"))
+        .WithFileTypes(@"/(\.|\/)(xlsx)$/i")
         .WithMaxFileSize(5000000)
         .AddFormField("entityId", "1234")
         .UIStyle(UploadUI.Bootstrap)
         .RenderPopup("Manage Files", "#dlgFileUpload", new { @class = "btn btn-large btn-primary" })
     )
-    <form id="frmGenerateData" method="post" action="@Url.Action("GenerateData", "Haworth")">
+    <div>
         <input id="Generate" type="submit" value="Generate Data">
-    </form>
-    
+    </div>
 </div>
 
 <!-- file upload modal dialog -->
@@ -35,20 +34,127 @@
     </div>
 </div> <!-- /.modal --> 
 
+<table id="objItems">
+    <thead>
+        <tr class="dtSearchFields">
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="From" id="ChangeDateFromFilter">
+                <input class="dtSearchField" style="width: 100px" placeholder="To" id="ChangeDateToFilter">
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="OrderNumber" id="OrderNumberFilter">
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="ItemNumber" id="ItemNumberFilter">
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="Description" id="DescriptionFilter">
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="Description2" id="Description2Filter">
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="ColorCode" id="ColorCodeFilter">
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="ColorPattern" id="ColorPatternFilter">
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="ColorDescription" id="ColorDescriptionFilter">
+            </th>
+            <th>
+                <select id="StatusCodeFilter" multiple="multiple"></select>
+            </th>
+            <th>
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="From" id="DockDateFromFilter">
+                <input class="dtSearchField" style="width: 100px" placeholder="To" id="DockDateToFilter">
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="From" id="ImportDateTimeFromFilter">
+                <input class="dtSearchField" style="width: 100px" placeholder="To" id="ImportDateTimeToFilter">
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <label for="ChangeDateFilter">Change Date</label>
+            </th>
+            <th>
+                <label for="OrderNumberFilter">Order Number</label>
+            </th>
+            <th>
+                <label for="ItemNumberFilter">Item Number</label>
+            </th>
+            <th>
+                <label for="DescriptionFilter">Item Description</label>
+            </th>
+            <th>
+                <label for="Description2Filter">Item Description 2</label>
+            </th>
+            <th>
+                <label for="ColorCodeFilter">Color</label>
+            </th>
+            <th>
+                <label for="ColorPatternFilter">Color Pattern</label>
+            </th>
+            <th>
+                <label for="ColorDescriptionFilter">Color Description</label>
+            </th>
+            <th>
+                <label for="StatusCodeFilter">Status</label>
+            </th>
+            <th>
+                <label for="RequiredQtyFilter">Req Qty</label>
+            </th>
+            <th>
+                <label for="DockDateFilter">Dock Date</label>
+            </th>
+            <th>
+                <label for="ImportDateTimeFilter">First Import Date</label>
+            </th>
+            <th>
+                <label for="PlantAddressFilter">Plant Address</label>
+            </th>
+            <th>
+                <label for="UnitPriceFilter">Unit Price</label>
+            </th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
 @section styles{
-    <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/blueimp")" />
+    <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/datatables")" />
     <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/fileupload")" />
     <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/multiselect")" />
+    <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/impromptu")" />
 }
 
 
 @section Scripts{
     <script type="text/javascript">
-        var sCurrentFilesURL = '@Url.Action("GetCurrentFiles", "Haworth")';
+        var sGetDataUrl = '@Url.Action("GetData", "Haworth")';
+        var sGetCurrentFilesURL = '@Url.Action("GetCurrentFiles", "Haworth")';
+        var sGenerateDataURL = '@Url.Action("GenerateData", "Haworth")';
+        var sGetExcelRanges = '@Url.Action("GetExcelRanges", "Haworth")';
+        var sGetStatusCodesURL = '@Url.Action("GetStatusCodes", "Haworth")';
 
+    </script>
+    
+    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/datatables")">
     </script>
     <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/multiselect")">
     </script>
+    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/impromptu")">
+    </script>
+    @Scripts.Render("~/bundles/jqueryvalidate")
+    @Scripts.Render("~/bundles/jqueryvalidateAdditionalMethods")
     <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/haworthindex")">
     </script>
 }
