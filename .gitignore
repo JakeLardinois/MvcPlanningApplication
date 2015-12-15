@@ -3,6 +3,7 @@
 
 /MvcPlanningApplication/bin
 /MvcPlanningApplication/obj
+/MvcPlanningApplication/Content/Uploads
 /MvcPlanningApplication/Logs
 /MvcFileUploader/bin
 /MvcFileUploader/obj

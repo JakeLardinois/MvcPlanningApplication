@@ -102,6 +102,7 @@ $(document).ready(function () {
                                 $.post(sGenerateDataURL, objData, function (data) {
                                     if (data.Success) {
                                         $.prompt(data.Message);
+                                        oTable.draw();
                                     }
                                     else {
                                         $.prompt(data.Message);

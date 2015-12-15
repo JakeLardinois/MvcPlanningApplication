@@ -90,7 +90,7 @@ namespace MvcPlanningApplication.Controllers
                 db.HaworthSupplierDemands.AddRange(objSupplierDemands);
                 db.SaveChanges();
 
-                Logger.Info("Redirect to Haworth Index View");
+                Logger.Info("The planning data was sucessfully generated!");
 
                 
                 result.Data = new { Success = true, Message = "The planning data was sucessfully generated!" };
@@ -98,6 +98,7 @@ namespace MvcPlanningApplication.Controllers
             }
             catch(Exception objEx)
             {
+                Logger.Info("The planning data generation had an error..." + Environment.NewLine);
                 result.Data = new { Success = false, Message = objEx.Message };
                 return result;
             }
