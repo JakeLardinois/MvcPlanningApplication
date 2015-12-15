@@ -48,8 +48,8 @@ namespace MvcPlanningApplication.Models
                 Stream responseStream;
                 StreamReader reader;
 
-
-                NetworkCredentials = new NetworkCredential("WTFabInc", "***REMOVED***");
+                var strFTPUsername = Settings.HaworthFTPUsername;
+                NetworkCredentials = new NetworkCredential(Settings.HaworthFTPUsername, Settings.HaworthFTPPassword);
 
                 request = (FtpWebRequest)WebRequest.Create(URI.AbsoluteUri);
                 request.Method = WebRequestMethods.Ftp.ListDirectory;
