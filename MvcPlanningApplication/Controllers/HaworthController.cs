@@ -9,6 +9,7 @@ using System.IO;
 using MvcFileUploader.Models;
 using MvcFileUploader;
 using log4net;
+using System.Text.RegularExpressions;
 
 
 
@@ -260,20 +261,80 @@ namespace MvcPlanningApplication.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetStatusCodes(string File)
+        public JsonResult GetStatusCodes()
         {
             Logger.Debug("Getting Status Codes");
-            var StatusCodes = db.HaworthOrders
+            JsonResult viewresult = Json(new[] { "Error" });
+
+            try
+            {
+                var StatusCodes = db.HaworthOrders
                 .GroupBy(s => s.StatusCode)
-                .Select(s => new {StatusCode = s.Key})
+                .Select(s => new { StatusCode = s.Key })
                 .ToList();
 
-            var jsonStatusCodes = StatusCodes
-                .Select(c => new[] { c.StatusCode });
+                var jsonStatusCodes = StatusCodes
+                    .Select(c => new[] { c.StatusCode });
 
-            var viewresult = Json(jsonStatusCodes);
+                viewresult = Json(jsonStatusCodes);
+            }
+            catch (Exception objEx)
+            {
+                Logger.Debug(objEx.Message);
+            }
 
             Logger.Debug("Returning Status Codes");
+            return viewresult;
+        }
+
+        [HttpPost]
+        public JsonResult GetCharacteristics(string OrderNo)
+        {
+            Logger.Debug("Getting Characteristics...");
+            JsonResult viewresult = Json(new[] { "Error" });
+
+            var ConfigurationText = db.HaworthSupplierDemands
+                    .Where(s => s.OrderNumber.Equals(OrderNo))
+                    //.DefaultIfEmpty(new HaworthSupplierDemand { POItemConfigurationText = "No Configuration Text:Found " })
+                    .SingleOrDefault()
+                    .POItemConfigurationText + " "; //I need to add a space so my regex will match the last characteristic...
+
+            var CharacteristicMatches = Regex.Matches(ConfigurationText, @".*?:\w+\s"); //must match multiple words(.*?)->colon(:)->single word(\w+)->space(\s)
+
+
+            var Characteristics = CharacteristicMatches
+                .Cast<Match>()
+                .Select(c => new { Characteristic = c.Value.Split(':')[0], Value = c.Value.Split(':')[1] });
+
+            viewresult.Data = new
+            {
+                aaData = Characteristics
+            };
+
+            //try
+            //{
+            //    var ConfigurationText = db.HaworthSupplierDemands
+            //        .Where(s => s.OrderNumber.Equals(OrderNo))
+            //        .DefaultIfEmpty(new HaworthSupplierDemand { POItemConfigurationText = "No Configuration Text:Found " })
+            //        .SingleOrDefault()
+            //        .POItemConfigurationText + " "; //I need to add a space so my regex will match the last characteristic...
+
+            //    var CharacteristicMatches = Regex.Matches(ConfigurationText, @".*?:\w+\s"); //must match multiple words(.*?)->colon(:)->single word(\w+)->space(\s)
+
+
+            //    var Characteristics = CharacteristicMatches
+            //        .Cast<Match>()
+            //        .Select(c => new { Characteristic = c.Value.Split(':')[0], Value = c.Value.Split(':')[1] });
+
+            //    viewresult = Json(Characteristics);
+
+            //}
+            //catch (Exception objEx)
+            //{
+            //    Logger.Debug(objEx.Message);
+            //}
+
+            Logger.Debug("Returning Characteristics...");
             return viewresult;
         }
     }

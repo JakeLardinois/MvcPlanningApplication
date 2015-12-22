@@ -38,6 +38,9 @@
     <thead>
         <tr class="dtSearchFields">
             <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="Characteristics" id="CharacteristicsFilter">
+            </th>
+            <th>
                 <input class="dtSearchField" style="width: 100px" placeholder="From" id="ChangeDateFromFilter">
                 <input class="dtSearchField" style="width: 100px" placeholder="To" id="ChangeDateToFilter">
             </th>
@@ -81,6 +84,9 @@
             </th>
         </tr>
         <tr>
+            <th>
+                <label for="CharacteristicsFilter">Characteristics</label>
+            </th>
             <th>
                 <label for="ChangeDateFilter">Change Date</label>
             </th>
@@ -128,6 +134,8 @@
     <tbody></tbody>
 </table>
 
+<div id='CharacteristicsDialogDiv' style="display: none;">
+</div>
 
 @section styles{
     <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/datatables")" />
@@ -139,12 +147,33 @@
 
 @section Scripts{
     <script type="text/javascript">
+        var sOpenImageUrl = '@Url.Content("~/Content/images/details_open.png")';
         var sGetDataUrl = '@Url.Action("GetData", "Haworth")';
         var sGetCurrentFilesURL = '@Url.Action("GetCurrentFiles", "Haworth")';
         var sGenerateDataURL = '@Url.Action("GenerateData", "Haworth")';
         var sGetExcelRanges = '@Url.Action("GetExcelRanges", "Haworth")';
         var sGetStatusCodesURL = '@Url.Action("GetStatusCodes", "Haworth")';
+        var sGetCharacteristicsURL = '@Url.Action("GetCharacteristics", "Haworth")';
+    
 
+        function GetCharacteristicsTableHTML() {
+            var sOut =
+                '<table id="objCharacteristics">' +
+                    '<thead>' +
+                        '<tr>' +
+                            '<th>' +
+                                'Characteristic' +
+                            '</th>' +
+                            '<th>' +
+                                'Value' +
+                            '</th>' +
+                        '</tr>' +
+                    '</thead>' +
+                    '<tbody></tbody>' +
+                '</table>';
+
+            return sOut;
+        }
     </script>
     
     <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/datatables")">

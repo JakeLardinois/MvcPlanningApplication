@@ -26,9 +26,6 @@ namespace MvcPlanningApplication.Models
 
         private void Populate(DataTable objCurrentDataTable)
         {
-            DateTime dtmTemp;
-            int intTemp;
-            double dblTemp;
             var ErrorList = new List<Exception>();
 
 

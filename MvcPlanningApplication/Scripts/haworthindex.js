@@ -157,6 +157,14 @@ $(document).ready(function () {
         },
         "aoColumns": [
             {
+                "render": makeGetCharacteristicsBtn,
+                "mDataProp": null, //Note that I had a problem with this column being first because when the datatable loads, it automatically sorts based on the first column; since this column had a null value
+                "sWidth": 60,
+                "sClass": "characteristics center", //applies the control class to the cell and the center class(which center aligns the image)
+                "bSortable": false,
+                "sDefaultContent": '<img src="' + sOpenImageUrl + '">'
+            },
+            {
                 "mDataProp": "ChangeDate",
                 "render": function (data, type, full, meta) {
                     return FormatDate(data);
@@ -197,7 +205,13 @@ $(document).ready(function () {
 });
 
 
+function makeGetCharacteristicsBtn(oObj) {
+    var sOrderNo = oObj.OrderNumber;
+    var sHref;
 
+    sHref = sGetCharacteristicsURL + '?&OrderNo=' + sOrderNo; //generate the query string
+    return "<a href=\"javascript:loadCharacteristicsDialog('" + sHref + "')\" class='Process' title='View Characteristics'><img src='" + sOpenImageUrl + "' height='20' width='20'></a>";
+};
 
 function FormatFileSelectColumnJSON(x) {
     var finalEdit = new Array();
@@ -240,6 +254,50 @@ function StatusCodes() {
 }
 var objStatusCodes = StatusCodes();
 
+function loadCharacteristicsDialog(sUrl) {
+    var oCharacteristicsTable;
+    var dataValues;
+
+
+    function GET() {
+        var data = [];
+        for (x = 0; x < arguments.length; ++x)
+            data.push(sUrl.match(new RegExp("/\?".concat(arguments[x], "=", "([^\n&]*)")))[1]);
+        return data;
+    }
+    dataValues = GET("OrderNo");
+
+    $("#CharacteristicsDialogDiv").html(GetCharacteristicsTableHTML());
+
+    oCharacteristicsTable = $('#objCharacteristics').DataTable({
+        "bJQueryUI": true,
+        "sDom": "Rlfrtip", //Enables column reorder with resize
+        "sDom": '<"top">rt<"bottom"flp><"clear">', //hides footer that displays 'showing record 1 of 1'...
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": sUrl, //document.URL,
+        "bFilter": false,   //hides the search box
+        "bPaginate": false, //disables paging functionality
+        "sServerMethod": "POST",
+        "aoColumns": [
+            { "mDataProp": "Characteristic" },
+            { "mDataProp": "Value" }]
+    });
+
+    // Open this Datatable as a modal dialog box.
+    $('#CharacteristicsDialogDiv').dialog({
+        modal: false,
+        resizable: true,
+        //position: 'top',
+        width: 'auto',
+        autoResize: true,
+        title: ' Order ' + dataValues[0]
+    }).position({
+        my: 'left',
+        at: 'right',
+        of: target
+    });
+}
 
 function AppendAdditionalParameters(aoData) {
     var strTemp;
@@ -251,7 +309,7 @@ function AppendAdditionalParameters(aoData) {
     * I had previously implemented this in the server side code, but then any time my UI changed I would need to recompile the web service... So I fixed the implementation...*/
     aoData.push({
         "name": "FixedColumnHeaders",
-        "value": ["ChangeDate", "OrderNumber", "ItemNumber", "Description", "Description2", "ColorCode", "ColorPattern", "ColorDescription", "StatusCode", "RequiredQty", "DockDate", "ImportDate",
+        "value": ["Characteristics", "ChangeDate", "OrderNumber", "ItemNumber", "Description", "Description2", "ColorCode", "ColorPattern", "ColorDescription", "StatusCode", "RequiredQty", "DockDate", "ImportDate",
             "PlantAddress", "UnitPrice"]
     });
 
@@ -259,56 +317,60 @@ function AppendAdditionalParameters(aoData) {
     * I solved the issue by manually setting sSearch in my aoData array below. Note that I populate the corresponding bRegex variable; this value isn't used anywhere but could be for future implementations...*/
     for (var i = 0; i < aoData.length; i++) {
         switch (aoData[i].name) {
-            case "sSearch_0":
-                aoData[i].value = $('#ChangeDateFromFilter').val() + '~' +
-                        $('#ChangeDateToFilter').val();
+            case "sSearch_0":0
                 break;
-            case "bRegex_0":
-                aoData[i].value = true;
+            case "bRegex_0":0
                 break;
             case "sSearch_1":
-                aoData[i].value = $('#OrderNumberFilter').val();
+                aoData[i].value = $('#ChangeDateFromFilter').val() + '~' +
+                        $('#ChangeDateToFilter').val();
                 break;
             case "bRegex_1":
                 aoData[i].value = true;
                 break;
             case "sSearch_2":
-                aoData[i].value = $('#ItemNumberFilter').val();
+                aoData[i].value = $('#OrderNumberFilter').val();
                 break;
             case "bRegex_2":
                 aoData[i].value = true;
                 break;
             case "sSearch_3":
-                aoData[i].value = $('#DescriptionFilter').val();
+                aoData[i].value = $('#ItemNumberFilter').val();
                 break;
             case "bRegex_3":
                 aoData[i].value = true;
                 break;
             case "sSearch_4":
-                aoData[i].value = $('#Description2Filter').val();
+                aoData[i].value = $('#DescriptionFilter').val();
                 break;
             case "bRegex_4":
                 aoData[i].value = true;
                 break;
             case "sSearch_5":
-                aoData[i].value = $('#ColorCodeFilter').val();
+                aoData[i].value = $('#Description2Filter').val();
                 break;
             case "bRegex_5":
                 aoData[i].value = true;
                 break;
             case "sSearch_6":
-                aoData[i].value = $('#ColorPatternFilter').val();
+                aoData[i].value = $('#ColorCodeFilter').val();
                 break;
             case "bRegex_6":
                 aoData[i].value = true;
                 break;
             case "sSearch_7":
-                aoData[i].value = $('#ColorDescriptionFilter').val();
+                aoData[i].value = $('#ColorPatternFilter').val();
                 break;
             case "bRegex_7":
                 aoData[i].value = true;
                 break;
             case "sSearch_8":
+                aoData[i].value = $('#ColorDescriptionFilter').val();
+                break;
+            case "bRegex_8":
+                aoData[i].value = true;
+                break;
+            case "sSearch_9":
                 strTemp = String($('#StatusCodeFilter').val());
                 if (strTemp !== 'null')
                     aoData[i].value = strTemp.split(',').join('|');
@@ -316,29 +378,22 @@ function AppendAdditionalParameters(aoData) {
                     aoData[i].value = '';
                 break;
                 break;
-            case "bRegex_8":
-                aoData[i].value = true;
-                break;
-            case "sSearch_10":
-                aoData[i].value = $('#DockDateFromFilter').val() + '~' +
-                        $('#DockDateToFilter').val();
-                break;
-            case "bRegex_10":
+            case "bRegex_9":
                 aoData[i].value = true;
                 break;
             case "sSearch_11":
-                aoData[i].value = $('#ImportDateTimeFromFilter').val() + '~' +
-                        $('#ImportDateTimeToFilter').val();
+                aoData[i].value = $('#DockDateFromFilter').val() + '~' +
+                        $('#DockDateToFilter').val();
                 break;
             case "bRegex_11":
                 aoData[i].value = true;
                 break;
-            case "sSearch": //I set the sSearch variable so that I can easily grab the value from the controller to filter my initial WO list. UPDATE- No longer implemented...
-                strTemp = String($('#STATUSFilter').val());
-                if (strTemp !== 'null')
-                    aoData[i].value = strTemp;
-                else
-                    aoData[i].value = 'O'; //by default send the status of O if no status is specified
+            case "sSearch_12":
+                aoData[i].value = $('#ImportDateTimeFromFilter').val() + '~' +
+                        $('#ImportDateTimeToFilter').val();
+                break;
+            case "bRegex_12":
+                aoData[i].value = true;
                 break;
         }
     }
