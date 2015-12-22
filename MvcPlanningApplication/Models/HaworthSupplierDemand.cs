@@ -12,46 +12,19 @@ namespace MvcPlanningApplication.Models
     {
         [Key]
         public virtual int ID { get; set; }
+        public string OrderNumber {
+            get {
 
-        public string CHGInd { get; set; }
-        public DateTime MAD { get; set; }
-        public DateTime SOCrDte{ get; set; }
-        public string SONo { get; set; }
-        public string Item1 { get; set; }
-        public int SOQty { get; set; }
-        public string PONumber1 { get; set; }
-        public string Item2 { get; set; }
-        public int POQty { get; set; }
-        public string MatNo { get; set; }
-        public string Description { get; set; }
-        public string CatalogPartNumber { get; set; }
-        public string CatalogPartDescription { get; set; }
-        public string PlnText { get; set; }
-        public string Customer { get; set; }
-        public string Name { get; set; }
-        public string Street { get; set; }
-        public string ShipToCity { get; set; }
-        public string Region { get; set; }
-        public string ShToPos { get; set; }
-        public string Country { get; set; }
-        public int ShipPnt { get; set; }
-        public string SNNo { get; set; }
-        public string OrigSO { get; set; }
-        public string PONumber2 { get; set; }
-        public string Usage { get; set; }
-        public string ReasonRej { get; set; }
-        public DateTime DelDate { get; set; }
-        public int DelGroup { get; set; }
-        public string ShipIns { get; set; }
-        public string SOTag1 { get; set; }
-        public string SOTag2 { get; set; }
+                if (!string.IsNullOrEmpty(PONumber) && !string.IsNullOrEmpty(POLine))
+                    return PONumber + "." + POLine.PadLeft(5, '0') + ".0001";
+                return string.Empty;
+            }
+            protected set { } //EF requires a property to have both a getter and setter to store value in the database...
+        }
+
+
+        public string PONumber { get; set; }
+        public string POLine { get; set; }
         public string POItemConfigurationText { get; set; }
-        public string DelAppt { get; set; }
-        public string DelSite { get; set; }
-        public int Route { get; set; }
-        public double NetPrice { get; set; }
-        public double NetValue { get; set; }
-        public double POTotal { get; set; }
-        public string SrcLoc { get; set; }
     }
 }
