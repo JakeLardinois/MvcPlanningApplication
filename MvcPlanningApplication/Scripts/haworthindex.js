@@ -185,7 +185,7 @@ $(document).ready(function () {
                 }
             },
             {
-                "mDataProp": "ImportDate",
+                "mDataProp": "ImportDateTime",
                 "render": function (data, type, full, meta) {
                     return FormatDate(data);
                 }
@@ -304,7 +304,7 @@ function AppendAdditionalParameters(aoData) {
     * I had previously implemented this in the server side code, but then any time my UI changed I would need to recompile the web service... So I fixed the implementation...*/
     aoData.push({
         "name": "FixedColumnHeaders",
-        "value": ["Characteristics", "ChangeDate", "OrderNumber", "ItemNumber", "Description", "Description2", "ColorCode", "ColorPattern", "ColorDescription", "StatusCode", "RequiredQty", "DockDate", "ImportDate",
+        "value": ["Characteristics", "ChangeDate", "OrderNumber", "ItemNumber", "Description", "Description2", "ColorCode", "ColorPattern", "ColorDescription", "StatusCode", "RequiredQty", "DockDate", "ImportDateTime",
             "PlantAddress", "UnitPrice"]
     });
 

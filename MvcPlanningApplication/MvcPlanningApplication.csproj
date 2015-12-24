@@ -184,7 +184,8 @@
     <Compile Include="Models\Haworth\HaworthDispatchJobMaterial.cs" />
     <Compile Include="Models\Haworth\HaworthCharacteristic.cs" />
     <Compile Include="Models\Haworth\HaworthDeliveryInformation.cs" />
-    <Compile Include="Models\Haworth\HaworthDispatchList.cs" />
+    <Compile Include="Models\Haworth\HaworthDispatchJobRepository.cs" />
+    <Compile Include="Models\Haworth\HaworthDispatchJobSearch.cs" />
     <Compile Include="Models\Haworth\HaworthOrder.cs" />
     <Compile Include="Models\Haworth\HaworthOrders.cs" />
     <Compile Include="Models\Haworth\HaworthOrderSearch.cs" />

@@ -22,7 +22,6 @@ namespace MvcPlanningApplication.Controllers
     {
         private static readonly ILog Logger = LogHelper.GetLogger();
         public static string VirtualFilePath { get { return @"/Content/Uploads"; } }
-        private PlanningApplicationDb db = new PlanningApplicationDb();
 
 
         public ActionResult Index()
@@ -50,7 +49,7 @@ namespace MvcPlanningApplication.Controllers
                 iTotalRecords = TotalRecordCount,
                 jQueryDataTablesModel.sEcho,
                 iTotalDisplayRecords = searchRecordCount,
-                aaData = objItems.RemainingOrders() //only display the remaining orders...
+                aaData = objItems
             };
 
             return result;
@@ -69,30 +68,32 @@ namespace MvcPlanningApplication.Controllers
                 Logger.Info("Get Haworth XML Orders from FTP Site");
                 var Orders = new HaworthOrders(new Uri(Settings.HaworthFTPURI), true);
 
-                Logger.Info("Delete All Existing Haworth Orders");
-                db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthOrders"));
-                Logger.Info("Re-Seed the Haworth Order Table");
-                db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthOrders" }));
-                Logger.Info("Upload and Save the new Haworth Orders to the Database");
-                db.HaworthOrders.AddRange(Orders);
-                db.SaveChanges();
-                Logger.Info("Archive Haworth Orders");
-                Orders.Archive(Settings.HaworthArchiveLocation + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml");
+                using(var db = new PlanningApplicationDb())
+                {
+                    Logger.Info("Delete All Existing Haworth Orders");
+                    db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthOrders"));
+                    Logger.Info("Re-Seed the Haworth Order Table");
+                    db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthOrders" }));
+                    Logger.Info("Upload and Save the new Haworth Orders to the Database");
+                    db.HaworthOrders.AddRange(Orders);
+                    db.SaveChanges();
+                    Logger.Info("Archive Haworth Orders");
+                    Orders.Archive(Settings.HaworthArchiveLocation + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml");
 
 
-                Logger.Info("Retreive Supplier Demand Data From Excel Using" +
-                    " \tFile: " + SelectedFile + Environment.NewLine +
-                    "\tRange: " + SelectedRange);
-                HaworthSupplierDemands objSupplierDemands = new HaworthSupplierDemands(Server.MapPath(SelectedFile), SelectedRange);
+                    Logger.Info("Retreive Supplier Demand Data From Excel Using" +
+                        " \tFile: " + SelectedFile + Environment.NewLine +
+                        "\tRange: " + SelectedRange);
+                    HaworthSupplierDemands objSupplierDemands = new HaworthSupplierDemands(Server.MapPath(SelectedFile), SelectedRange);
 
-                Logger.Info("Delete All Existing Haworth Supplier Demands");
-                db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthSupplierDemands"));
-                Logger.Info("Re-Seed the Haworth Supplier Demands Table");
-                db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthSupplierDemands" }));
-                Logger.Info("Upload and Save the new Haworth Supplier Demand to the Database");
-                db.HaworthSupplierDemands.AddRange(objSupplierDemands);
-                db.SaveChanges();
-
+                    Logger.Info("Delete All Existing Haworth Supplier Demands");
+                    db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthSupplierDemands"));
+                    Logger.Info("Re-Seed the Haworth Supplier Demands Table");
+                    db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthSupplierDemands" }));
+                    Logger.Info("Upload and Save the new Haworth Supplier Demand to the Database");
+                    db.HaworthSupplierDemands.AddRange(objSupplierDemands);
+                    db.SaveChanges();
+                }
                 Logger.Info("The planning data was sucessfully generated!");
 
                 
@@ -117,22 +118,26 @@ namespace MvcPlanningApplication.Controllers
         {
             int TotalRecordCount, searchRecordCount;
             var result = new JsonResult();
+            var objQueryDefinitions = new QueryDefinitions();
 
-            //Logger.Info("Use HaworthOrdersRepository to search Haworth Orders in the Database");
-            //var objHaworthOrdersRepository = new HaworthOrdersRepository();
-            //var objItems = objHaworthOrdersRepository.GetOrders(searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel);
 
-            //Logger.Info("Get total number of Haworth orders in the database");
-            //using (var db = new PlanningApplicationDb())
-            //    TotalRecordCount = db.HaworthOrders.Count();
+            Logger.Info("Use HaworthDispatchJobRepository to search Haworth Jobs in the Database");
+            var objHaworthDispatchJobRepository = new HaworthDispatchJobRepository();
+            var objItems = objHaworthDispatchJobRepository.GetOrders(searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel);
 
-            //Logger.Info("Return a JSON object containing the required data for JQuery Datatables");
+            Logger.Info("Get total number of Haworth orders in the database");
+            using (var db = new SytelineDbEntities())
+                TotalRecordCount = db.Database
+                    .SqlQuery<coitem>(objQueryDefinitions.GetQuery("SelectCOItemByCustNumListAndStatus", new string[] { "3417".AddSingleQuotesAndPadLeft(7), "O" }))
+                    .Count();
+
+            Logger.Info("Return a JSON object containing the required data for JQuery Datatables");
             result.Data = new
             {
-                //iTotalRecords = TotalRecordCount,
-                //jQueryDataTablesModel.sEcho,
-                //iTotalDisplayRecords = searchRecordCount,
-                aaData = new HaworthDispatchList()
+                iTotalRecords = TotalRecordCount,
+                jQueryDataTablesModel.sEcho,
+                iTotalDisplayRecords = searchRecordCount,
+                aaData = objItems
             };
 
             return result;
@@ -294,16 +299,20 @@ namespace MvcPlanningApplication.Controllers
         {
             Logger.Debug("Getting Status Codes");
             JsonResult viewresult = Json(new[] { "Error" });
+            IEnumerable<string[]> jsonStatusCodes;
+
 
             try
             {
-                var StatusCodes = db.HaworthOrders
-                .GroupBy(s => s.StatusCode)
-                .Select(s => new { StatusCode = s.Key })
-                .ToList();
-
-                var jsonStatusCodes = StatusCodes
-                    .Select(c => new[] { c.StatusCode });
+                using (var db = new PlanningApplicationDb())
+                {
+                    var StatusCodes = db.HaworthOrders
+                        .GroupBy(s => s.StatusCode)
+                        .Select(s => new { StatusCode = s.Key })
+                        .ToList();
+                    jsonStatusCodes = StatusCodes
+                        .Select(c => new[] { c.StatusCode });
+                }
 
                 viewresult = Json(jsonStatusCodes);
             }
@@ -323,14 +332,15 @@ namespace MvcPlanningApplication.Controllers
             var strSQL = objQueryDefs.GetQuery("SelectHaworthSupplierDemandsByOrderNo", new string[] { OrderNo });
             Logger.Debug("Getting Characteristics...");
             JsonResult viewresult = new JsonResult();
-
+            string ConfigurationText;
 
             try
             {
-                var ConfigurationText = db.Database.SqlQuery<HaworthSupplierDemand>(strSQL)
-                    .DefaultIfEmpty(new HaworthSupplierDemand { POItemConfigurationText = "No Configuration Text:Found" })
-                    .SingleOrDefault()
-                    .POItemConfigurationText + " "; //I need to add a space so my regex will match the last characteristic...
+                using (var db = new PlanningApplicationDb())
+                    ConfigurationText = db.Database.SqlQuery<HaworthSupplierDemand>(strSQL)
+                        .DefaultIfEmpty(new HaworthSupplierDemand { POItemConfigurationText = "No Configuration Text:Found" })
+                        .SingleOrDefault()
+                        .POItemConfigurationText + " "; //I need to add a space so my regex will match the last characteristic...
 
                 var CharacteristicMatches = Regex
                     .Matches(ConfigurationText, @".*?:\w+\s") //must match multiple words(.*?)->colon(:)->single word(\w+)->space(\s)
