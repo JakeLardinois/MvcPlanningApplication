@@ -1,5 +1,4 @@
-﻿var anOpen = [];
-var oTable;
+﻿var oTable;
 
 
 $(document).ready(function () {
@@ -288,14 +287,10 @@ function loadCharacteristicsDialog(sUrl) {
     $('#CharacteristicsDialogDiv').dialog({
         modal: false,
         resizable: true,
-        //position: 'top',
+        position: { my: 'center', at: 'top+150', of: this },
         width: 'auto',
         autoResize: true,
         title: ' Order ' + dataValues[0]
-    }).position({
-        my: 'left',
-        at: 'right',
-        of: target
     });
 }
 

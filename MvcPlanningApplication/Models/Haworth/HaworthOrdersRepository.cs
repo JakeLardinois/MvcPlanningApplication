@@ -5,9 +5,10 @@ using System.Web;
 
 using System.Collections.ObjectModel;
 using System.Text;
+using MvcPlanningApplication.Models.DataTablesMVC;
 
 
-namespace MvcPlanningApplication.Models
+namespace MvcPlanningApplication.Models.Haworth
 {
     public class HaworthOrdersRepository
     {

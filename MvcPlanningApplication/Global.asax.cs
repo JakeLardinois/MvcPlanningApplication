@@ -13,6 +13,9 @@ using System.Data.Entity;
 using MvcPlanningApplication.Models;
 
 using System.IO;
+using MvcPlanningApplication.Models.Haworth;
+using MvcPlanningApplication.Models.DataTablesMVC;
+using MvcPlanningApplication.Models.Briggs;
 
 
 namespace MvcPlanningApplication

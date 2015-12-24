@@ -6,7 +6,7 @@ using System.Web;
 using System.ComponentModel.DataAnnotations;
 
 
-namespace MvcPlanningApplication.Models
+namespace MvcPlanningApplication.Models.Briggs
 {
     public class BriggsDemandItem
     {

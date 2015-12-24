@@ -11,7 +11,7 @@ using System.Xml.Linq;
 using log4net;
 
 
-namespace MvcPlanningApplication.Models
+namespace MvcPlanningApplication.Models.Haworth
 {
     public class HaworthOrders : List<HaworthOrder>
     {

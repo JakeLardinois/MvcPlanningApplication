@@ -2,11 +2,12 @@
 @using MvcFileUploader.Models
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Haworth Planning";
 
 }
 
-<h2>Haworth Index</h2>
+<h2>Haworth Planning</h2>
+@Html.ActionLink("Dispatch List", "Dispatch")
 
 <div class="well">
     <select id="FileList"></select>
@@ -148,9 +149,9 @@
 @section Scripts{
     <script type="text/javascript">
         var sOpenImageUrl = '@Url.Content("~/Content/images/details_open.png")';
-        var sGetDataUrl = '@Url.Action("GetData", "Haworth")';
+        var sGetDataUrl = '@Url.Action("GetPlanningData", "Haworth")';
         var sGetCurrentFilesURL = '@Url.Action("GetCurrentFiles", "Haworth")';
-        var sGenerateDataURL = '@Url.Action("GenerateData", "Haworth")';
+        var sGenerateDataURL = '@Url.Action("GeneratePlanningData", "Haworth")';
         var sGetExcelRanges = '@Url.Action("GetExcelRanges", "Haworth")';
         var sGetStatusCodesURL = '@Url.Action("GetStatusCodes", "Haworth")';
         var sGetCharacteristicsURL = '@Url.Action("GetCharacteristics", "Haworth")';

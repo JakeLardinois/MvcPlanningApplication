@@ -169,30 +169,28 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\BriggsDemandItem.cs" />
+    <Compile Include="Models\Briggs\BriggsDemandItem.cs" />
     <Compile Include="Models\COItem.cs" />
     <Compile Include="Models\DataTablesMVC\ControllerExtensions.cs" />
     <Compile Include="Models\DataTablesMVC\JQueryDataTablesCreateModel.cs" />
     <Compile Include="Models\DataTablesMVC\JQueryDataTablesEditorFieldError.cs" />
-    <Compile Include="Models\DataTablesMVC\JQueryDataTablesModel.cs" />
-    <Compile Include="Models\DataTablesMVC\JQueryDataTablesModelBinder.cs" />
     <Compile Include="Models\DataTablesMVC\JQueryDataTablesResponse.cs" />
     <Compile Include="Models\DataTablesMVC\JQueryDataTablesVendorRequestDeleteModel.cs" />
     <Compile Include="Models\DataTablesMVC\JQueryDataTablesVendorRequestEditModel.cs" />
-    <Compile Include="Models\DispatchJob.cs" />
-    <Compile Include="Models\DispatchJobMaterial.cs" />
-    <Compile Include="Models\HaworthDeliveryInformation.cs" />
-    <Compile Include="Models\HaworthDispatchList.cs" />
-    <Compile Include="Models\HaworthOrder.cs" />
-    <Compile Include="Models\HaworthOrders.cs" />
-    <Compile Include="Models\HaworthOrderSearch.cs" />
-    <Compile Include="Models\HaworthOrdersRepository.cs" />
-    <Compile Include="Models\HaworthPartInformation.cs" />
-    <Compile Include="Models\HaworthSupplierDemand.cs" />
-    <Compile Include="Models\HaworthSupplierDemands.cs" />
-    <Compile Include="Models\InMemoryRepositories.cs" />
-    <Compile Include="Models\JQueryDataTablesModel.cs" />
-    <Compile Include="Models\JQueryDataTablesModelBinder.cs" />
+    <Compile Include="Models\Haworth\HaworthDispatchJob.cs" />
+    <Compile Include="Models\Haworth\HaworthDispatchJobMaterial.cs" />
+    <Compile Include="Models\Haworth\HaworthCharacteristic.cs" />
+    <Compile Include="Models\Haworth\HaworthDeliveryInformation.cs" />
+    <Compile Include="Models\Haworth\HaworthDispatchList.cs" />
+    <Compile Include="Models\Haworth\HaworthOrder.cs" />
+    <Compile Include="Models\Haworth\HaworthOrders.cs" />
+    <Compile Include="Models\Haworth\HaworthOrderSearch.cs" />
+    <Compile Include="Models\Haworth\HaworthOrdersRepository.cs" />
+    <Compile Include="Models\Haworth\HaworthPartInformation.cs" />
+    <Compile Include="Models\Haworth\HaworthSupplierDemand.cs" />
+    <Compile Include="Models\Haworth\HaworthSupplierDemands.cs" />
+    <Compile Include="Models\DataTablesMVC\JQueryDataTablesModel.cs" />
+    <Compile Include="Models\DataTablesMVC\JQueryDataTablesModelBinder.cs" />
     <Compile Include="Models\LogHelper.cs" />
     <Compile Include="Models\ExcelOpenXMLInfo.cs" />
     <Compile Include="Models\MyExtensionMethods.cs" />
@@ -348,6 +346,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\DateTimeFormatter.js" />
+    <Content Include="Scripts\haworthdispatch.js" />
     <Content Include="Scripts\haworthindex.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

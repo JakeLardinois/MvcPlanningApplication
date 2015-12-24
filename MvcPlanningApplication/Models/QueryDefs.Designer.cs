@@ -90,6 +90,17 @@ namespace MvcPlanningApplication.Models {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT *, [brk_qty##1] AS brk_qty__1, [brk_qty##2] AS brk_qty__2, [brk_qty##3] AS brk_qty__3, [brk_qty##4] AS brk_qty__4, [brk_qty##5] AS brk_qty__5
+        ///FROM coitem
+        ///WHERE co_cust_num IN (~p0) AND stat = &apos;~p1&apos;.
+        /// </summary>
+        internal static string SelectCOItemByCustNumListAndStatus {
+            get {
+                return ResourceManager.GetString("SelectCOItemByCustNumListAndStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT co.co_num, coitem.co_line, coitem.co_release, coitem.item, coitem.qty_ordered, coitem.promise_date, coitem.co_release, coitem.due_date, co.cust_po
         ///  FROM co
         ///	INNER JOIN coitem ON co.co_num = coitem.co_num
@@ -103,20 +114,20 @@ namespace MvcPlanningApplication.Models {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT ref_num AS Job, ref_line_suf AS JobSuffix, co_num AS OrderNumber, co_line AS OrderLine, qty_ordered AS QuantityOrdered, item AS ItemNumber, due_date AS DockDate, promise_date AS ShipByDate
-        ///FROM coitem
-        ///WHERE co_cust_num = &apos;   3417&apos; AND stat = &apos;O&apos;.
+        ///   Looks up a localized string similar to SELECT *
+        ///  FROM HaworthSupplierDemands
+        ///  WHERE OrderNumber = &apos;~p0&apos;.
         /// </summary>
-        internal static string SelectHaworthAssemblyDispatch {
+        internal static string SelectHaworthSupplierDemandsByOrderNo {
             get {
-                return ResourceManager.GetString("SelectHaworthAssemblyDispatch", resourceCulture);
+                return ResourceManager.GetString("SelectHaworthSupplierDemandsByOrderNo", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to EXEC WTF_App.[dbo].[Rpt_JobPickListSp] @Job = &apos;~p0&apos;,
         ///		@Suffix = &apos;~p1&apos;,
-        ///		@Item = &apos;~p2&apos;,
+        ///		@Item = NULL,
         ///		@Whse = &apos;MAIN&apos;,
         ///		@StartingOperNum = NULL,
         ///		@EndingOperNum = NULL,
@@ -131,9 +142,9 @@ namespace MvcPlanningApplication.Models {
         ///		@DisplayHeader = 1,
         ///		@PMessageLanguage = 1033.
         /// </summary>
-        internal static string SpHaworthAssemblyDispatchMaterials {
+        internal static string SpJobPickListByJobAndSuffix {
             get {
-                return ResourceManager.GetString("SpHaworthAssemblyDispatchMaterials", resourceCulture);
+                return ResourceManager.GetString("SpJobPickListByJobAndSuffix", resourceCulture);
             }
         }
     }

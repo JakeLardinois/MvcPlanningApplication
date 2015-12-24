@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
 using System.Web.Mvc;
 
 
@@ -25,6 +24,7 @@ namespace MvcPlanningApplication.Models.DataTablesMVC
         private const string sSortDir_Key = "sSortDir_";
         private const string sEchoKey = "sEcho";
         private const string mDataProp_Key = "mDataProp_";
+        private const string mDataProp2 = "FixedColumnHeaders"; //added this, which is the key used to hold the Fixed Column Headers array
 
         private ModelBindingContext _bindingContext;
 
@@ -80,12 +80,29 @@ namespace MvcPlanningApplication.Models.DataTablesMVC
             dataTablesRequest.sSearch_ = GetStringList(sSearch_Key);
             dataTablesRequest.mDataProp_ = GetStringList(mDataProp_Key);
 
+            dataTablesRequest.mDataProp2_ = GetStringListFromArray(mDataProp2); //added this to populate the mDataProp2_ collection
+
             return dataTablesRequest;
         }
 
         #endregion
 
         #region Methods
+
+
+        /// <summary>
+        /// Added by Jake Lardinois 4-4-2015
+        /// Retrieves an IList of strings from the ModelBindingContext based on the key provided. This differs from the other methods because instead of gathering properties
+        /// such as sSearch_0, sSearch_1, sSearch_2, etc. it actually grabs a JSON array from the posted data
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        private ReadOnlyCollection<string> GetStringListFromArray(string key)
+        {
+            var valueResult = _bindingContext.ValueProvider.GetValue(key);
+
+            return new List<string>(((string)valueResult.ConvertTo(typeof(string))).Split(',')).AsReadOnly();
+        }
 
         /// <summary>
         /// Retrieves an IList of strings from the ModelBindingContext based on the key provided.

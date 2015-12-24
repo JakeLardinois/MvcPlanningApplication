@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 
 using System.Data.Entity;
+using MvcPlanningApplication.Models.Haworth;
+using MvcPlanningApplication.Models.Briggs;
 
 
 namespace MvcPlanningApplication.Models

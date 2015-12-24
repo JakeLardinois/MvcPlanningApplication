@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace MvcPlanningApplication.Models
+namespace MvcPlanningApplication.Models.Haworth
 {
-    public class DispatchJobMaterial
+    public class HaworthDispatchJobMaterial
     {
         public string JobMaterial { get; set; }
         public string JobMaterialDescription { get; set; }

@@ -1,6 +1,92 @@
 ﻿@{
-    ViewBag.Title = "Dispatch";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Haworth Dispatch";
 }
 
 <h2>Haworth Dispatch</h2>
+
+@Html.ActionLink("Planning", "Index")
+
+<table id="objItems">
+    <thead>
+        <tr class="dtSearchFields">
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="Job" id="JobFilter">
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="OrderNumber" id="OrderNumberFilter">
+            </th>
+            <th>
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="ItemNumber" id="ItemNumberFilter">
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="Shell" id="ShellFilter">
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="Frame" id="FrameFilter">
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="Fabric" id="FabricFilter">
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="From" id="ShipByDateFromFilter">
+                <br />
+                <input class="dtSearchField" style="width: 100px" placeholder="To" id="ShipByDateToFilter">
+            </th>
+            <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="From" id="DockDateFromFilter">
+                <br />
+                <input class="dtSearchField" style="width: 100px" placeholder="To" id="DockDateToFilter">
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <label for="JobFilter">Job</label>
+            </th>
+            <th>
+                <label for="OrderNumberFilter">Order</label>
+            </th>
+            <th>
+                <label>Qty Ordered</label>
+            </th>
+            <th>
+                <label for="ItemNumberFilter">Item</label>
+            </th>
+            <th>
+                <label for="ShellFilter">Shell</label>
+            </th>
+            <th>
+                <label for="FrameFilter">Frame</label>
+            </th>
+            <th>
+                <label for="FabricFilter">Fabric</label>
+            </th>
+            <th>
+                <label for="ShipByDateFilter">Ship By</label>
+            </th>
+            <th>
+                <label for="DockDateFilter">Dock Date</label>
+            </th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
+@section styles{
+    <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/datatables")" />
+}
+
+
+@section Scripts{
+    <script type="text/javascript">
+        var sGetDataUrl = '@Url.Action("GetDispatchData", "Haworth")';
+
+    </script>
+
+    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/datatables")">
+    </script>
+    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/haworthdispatch")">
+    </script>
+}

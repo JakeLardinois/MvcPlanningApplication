@@ -7,7 +7,7 @@ using System.Data;
 using log4net;
 
 
-namespace MvcPlanningApplication.Models
+namespace MvcPlanningApplication.Models.Haworth
 {
     public class HaworthSupplierDemands : List<HaworthSupplierDemand>
     {

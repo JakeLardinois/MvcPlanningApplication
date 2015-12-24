@@ -10,6 +10,9 @@ using MvcFileUploader.Models;
 using MvcFileUploader;
 using log4net;
 using System.Text.RegularExpressions;
+using System.Text;
+using MvcPlanningApplication.Models.Haworth;
+using MvcPlanningApplication.Models.DataTablesMVC;
 
 
 
@@ -24,12 +27,11 @@ namespace MvcPlanningApplication.Controllers
 
         public ActionResult Index()
         {
-            
             return View();
         }
 
         [HttpPost]
-        public JsonResult GetData(JQueryDataTablesModel jQueryDataTablesModel)
+        public JsonResult GetPlanningData(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int TotalRecordCount, searchRecordCount;
             var result = new JsonResult();
@@ -56,7 +58,7 @@ namespace MvcPlanningApplication.Controllers
         }
 
         [HttpPost]
-        public JsonResult GenerateData(string SelectedFile, string SelectedRange)
+        public JsonResult GeneratePlanningData(string SelectedFile, string SelectedRange)
         {
             var result = new JsonResult();
 
@@ -108,6 +110,33 @@ namespace MvcPlanningApplication.Controllers
         public ActionResult Dispatch()
         {
             return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetDispatchData(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+            int TotalRecordCount, searchRecordCount;
+            var result = new JsonResult();
+
+            //Logger.Info("Use HaworthOrdersRepository to search Haworth Orders in the Database");
+            //var objHaworthOrdersRepository = new HaworthOrdersRepository();
+            //var objItems = objHaworthOrdersRepository.GetOrders(searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel);
+
+            //Logger.Info("Get total number of Haworth orders in the database");
+            //using (var db = new PlanningApplicationDb())
+            //    TotalRecordCount = db.HaworthOrders.Count();
+
+            //Logger.Info("Return a JSON object containing the required data for JQuery Datatables");
+            result.Data = new
+            {
+                //iTotalRecords = TotalRecordCount,
+                //jQueryDataTablesModel.sEcho,
+                //iTotalDisplayRecords = searchRecordCount,
+                aaData = new HaworthDispatchList()
+            };
+
+            return result;
+
         }
 
         public ActionResult UploadFile(int? entityId) // optionally receive values specified with Html helper
@@ -290,49 +319,46 @@ namespace MvcPlanningApplication.Controllers
         [HttpPost]
         public JsonResult GetCharacteristics(string OrderNo)
         {
+            var objQueryDefs = new QueryDefinitions();
+            var strSQL = objQueryDefs.GetQuery("SelectHaworthSupplierDemandsByOrderNo", new string[] { OrderNo });
             Logger.Debug("Getting Characteristics...");
-            JsonResult viewresult = Json(new[] { "Error" });
+            JsonResult viewresult = new JsonResult();
 
-            var ConfigurationText = db.HaworthSupplierDemands
-                    .Where(s => s.OrderNumber.Equals(OrderNo))
-                    //.DefaultIfEmpty(new HaworthSupplierDemand { POItemConfigurationText = "No Configuration Text:Found " })
+
+            try
+            {
+                var ConfigurationText = db.Database.SqlQuery<HaworthSupplierDemand>(strSQL)
+                    .DefaultIfEmpty(new HaworthSupplierDemand { POItemConfigurationText = "No Configuration Text:Found" })
                     .SingleOrDefault()
                     .POItemConfigurationText + " "; //I need to add a space so my regex will match the last characteristic...
 
-            var CharacteristicMatches = Regex.Matches(ConfigurationText, @".*?:\w+\s"); //must match multiple words(.*?)->colon(:)->single word(\w+)->space(\s)
+                var CharacteristicMatches = Regex
+                    .Matches(ConfigurationText, @".*?:\w+\s") //must match multiple words(.*?)->colon(:)->single word(\w+)->space(\s)
+                    .Cast<Match>();
 
+                var strBldr = new StringBuilder();
+                var Characteristics = new List<HaworthCharacteristic>();
+                foreach (var objStr in CharacteristicMatches)
+                {
+                    var strArray = objStr.Value.Split(':');
 
-            var Characteristics = CharacteristicMatches
-                .Cast<Match>()
-                .Select(c => new { Characteristic = c.Value.Split(':')[0], Value = c.Value.Split(':')[1] });
+                    if (strArray.Count() > 1)
+                        Characteristics.Add(new HaworthCharacteristic { Characteristic = strArray[0], Value = strArray[1] });
+                    else
+                        Characteristics.Add(new HaworthCharacteristic { Characteristic = strArray[0], Value = string.Empty });
+                }
 
-            viewresult.Data = new
+                viewresult.Data = new
+                {
+                    aaData = Characteristics
+                };
+
+            }
+            catch (Exception objEx)
             {
-                aaData = Characteristics
-            };
-
-            //try
-            //{
-            //    var ConfigurationText = db.HaworthSupplierDemands
-            //        .Where(s => s.OrderNumber.Equals(OrderNo))
-            //        .DefaultIfEmpty(new HaworthSupplierDemand { POItemConfigurationText = "No Configuration Text:Found " })
-            //        .SingleOrDefault()
-            //        .POItemConfigurationText + " "; //I need to add a space so my regex will match the last characteristic...
-
-            //    var CharacteristicMatches = Regex.Matches(ConfigurationText, @".*?:\w+\s"); //must match multiple words(.*?)->colon(:)->single word(\w+)->space(\s)
-
-
-            //    var Characteristics = CharacteristicMatches
-            //        .Cast<Match>()
-            //        .Select(c => new { Characteristic = c.Value.Split(':')[0], Value = c.Value.Split(':')[1] });
-
-            //    viewresult = Json(Characteristics);
-
-            //}
-            //catch (Exception objEx)
-            //{
-            //    Logger.Debug(objEx.Message);
-            //}
+                viewresult.Data = new List<HaworthCharacteristic> { new HaworthCharacteristic { Characteristic = "Error", Value = objEx.Message } };
+                Logger.Debug(objEx.Message);
+            }
 
             Logger.Debug("Returning Characteristics...");
             return viewresult;

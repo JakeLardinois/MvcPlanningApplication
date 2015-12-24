@@ -105,9 +105,6 @@ namespace MvcPlanningApplication
             bundles.Add(new ScriptBundle("~/bundles/multiselect").Include(
                         "~/Scripts/jquery.multiselect.js"));
 
-            bundles.Add(new Bundle("~/bundles/haworthindex").Include(
-                        "~/Scripts/haworthindex.js"));
-
             bundles.Add(new ScriptBundle("~/bundles/datatables",
                 "https://cdn.datatables.net/r/ju-1.11.4/jq-2.1.4,dt-1.10.9,b-1.0.3,b-print-1.0.3/datatables.js"));
 
@@ -122,6 +119,11 @@ namespace MvcPlanningApplication
 
             bundles.Add(new ScriptBundle("~/bundles/datetimeformatter").Include(
                         "~/Scripts/DateTimeFormatter.js"));
+
+            bundles.Add(new Bundle("~/bundles/haworthindex").Include(
+                        "~/Scripts/haworthindex.js"));
+            bundles.Add(new Bundle("~/bundles/haworthdispatch").Include(
+                        "~/Scripts/haworthdispatch.js"));
         }
     }
 }
