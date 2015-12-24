@@ -125,6 +125,17 @@ namespace MvcPlanningApplication.Models {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT *
+        ///  FROM jobmatl
+        ///  WHERE job IN (~p0).
+        /// </summary>
+        internal static string SelectJobMatlByJobList {
+            get {
+                return ResourceManager.GetString("SelectJobMatlByJobList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to EXEC WTF_App.[dbo].[Rpt_JobPickListSp] @Job = &apos;~p0&apos;,
         ///		@Suffix = &apos;~p1&apos;,
         ///		@Item = NULL,

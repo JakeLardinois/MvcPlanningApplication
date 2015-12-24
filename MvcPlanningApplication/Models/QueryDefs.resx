@@ -145,6 +145,11 @@ WHERE co_cust_num IN (~p0) AND stat = '~p1'</value>
   FROM HaworthSupplierDemands
   WHERE OrderNumber = '~p0'</value>
   </data>
+  <data name="SelectJobMatlByJobList" xml:space="preserve">
+    <value>SELECT *
+  FROM jobmatl
+  WHERE job IN (~p0)</value>
+  </data>
   <data name="SpJobPickListByJobAndSuffix" xml:space="preserve">
     <value>EXEC WTF_App.[dbo].[Rpt_JobPickListSp] @Job = '~p0',
 		@Suffix = '~p1',

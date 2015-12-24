@@ -17,7 +17,6 @@ namespace MvcPlanningApplication.Models.Haworth
     {
         private static readonly ILog Logger = LogHelper.GetLogger();
         public StringBuilder mStrBldrXML { get; set; }
-        //public XmlDocument XMLDoc { get; set; }
         public NetworkCredential NetworkCredentials { get; set; }
         private Uri URI { get; set; }
         private bool mIsFTP { get; set; }

@@ -169,6 +169,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="jobmatl.cs">
+      <DependentUpon>Syteline.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Briggs\BriggsDemandItem.cs" />
     <Compile Include="Models\COItem.cs" />
     <Compile Include="Models\DataTablesMVC\ControllerExtensions.cs" />

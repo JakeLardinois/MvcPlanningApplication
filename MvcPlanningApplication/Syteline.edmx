@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="WTF_AppModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="WTF_AppModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="coitem">
           <Key>
             <PropertyRef Name="co_num" />
@@ -127,11 +127,85 @@
           <Property Name="uf_pref_type" Type="nvarchar" MaxLength="8" />
           <Property Name="qty_picked" Type="decimal" Precision="19" Scale="8" Nullable="false" />
         </EntityType>
+        <EntityType Name="jobmatl">
+          <Key>
+            <PropertyRef Name="job" />
+            <PropertyRef Name="suffix" />
+            <PropertyRef Name="oper_num" />
+            <PropertyRef Name="sequence" />
+          </Key>
+          <Property Name="job" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="suffix" Type="smallint" Nullable="false" />
+          <Property Name="oper_num" Type="int" Nullable="false" />
+          <Property Name="sequence" Type="smallint" Nullable="false" />
+          <Property Name="matl_type" Type="nchar" MaxLength="1" />
+          <Property Name="item" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="matl_qty" Type="decimal" Precision="18" Scale="8" />
+          <Property Name="units" Type="nchar" MaxLength="1" />
+          <Property Name="cost" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="qty_issued" Type="decimal" Precision="18" Scale="8" />
+          <Property Name="a_cost" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="ref_type" Type="nchar" MaxLength="1" />
+          <Property Name="ref_num" Type="nvarchar" MaxLength="10" />
+          <Property Name="ref_line_suf" Type="smallint" />
+          <Property Name="ref_release" Type="smallint" />
+          <Property Name="po_unit_cost" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="effect_date" Type="datetime" />
+          <Property Name="obs_date" Type="datetime" />
+          <Property Name="scrap_fact" Type="decimal" Precision="5" Scale="4" />
+          <Property Name="qty_var" Type="decimal" Precision="18" Scale="8" />
+          <Property Name="fixovhd_t" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="varovhd_t" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="feature" Type="nvarchar" MaxLength="8" />
+          <Property Name="probable" Type="decimal" Precision="4" Scale="3" />
+          <Property Name="opt_code" Type="nvarchar" MaxLength="8" />
+          <Property Name="inc_price" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="description" Type="nvarchar" MaxLength="40" />
+          <Property Name="pick_date" Type="datetime" />
+          <Property Name="bom_seq" Type="smallint" />
+          <Property Name="matl_qty_conv" Type="decimal" Precision="18" Scale="8" />
+          <Property Name="u_m" Type="nvarchar" MaxLength="3" />
+          <Property Name="inc_price_conv" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="cost_conv" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="backflush" Type="tinyint" />
+          <Property Name="bflush_loc" Type="nvarchar" MaxLength="15" />
+          <Property Name="fmatlovhd" Type="decimal" Precision="9" Scale="3" />
+          <Property Name="vmatlovhd" Type="decimal" Precision="9" Scale="3" />
+          <Property Name="matl_cost" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="lbr_cost" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="fovhd_cost" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="vovhd_cost" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="out_cost" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="a_matl_cost" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="a_lbr_cost" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="a_fovhd_cost" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="a_vovhd_cost" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="a_out_cost" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="matl_cost_conv" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="lbr_cost_conv" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="fovhd_cost_conv" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="vovhd_cost_conv" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="out_cost_conv" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="NoteExistsFlag" Type="tinyint" Nullable="false" />
+          <Property Name="RecordDate" Type="datetime" Nullable="false" />
+          <Property Name="RowPointer" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="CreateDate" Type="datetime" Nullable="false" />
+          <Property Name="InWorkflow" Type="tinyint" Nullable="false" />
+          <Property Name="alt_group" Type="smallint" Nullable="false" />
+          <Property Name="alt_group_rank" Type="smallint" Nullable="false" />
+          <Property Name="planned_alternate" Type="tinyint" />
+          <Property Name="new_sequence" Type="smallint" />
+          <Property Name="manufacturer_id" Type="nvarchar" MaxLength="7" />
+          <Property Name="manufacturer_item" Type="nvarchar" MaxLength="30" />
+          <Property Name="uf_pref_type" Type="nvarchar" MaxLength="8" />
+        </EntityType>
         <EntityContainer Name="WTF_AppModelStoreContainer">
           <EntitySet Name="coitem" EntityType="Self.coitem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="jobmatl" EntityType="Self.jobmatl" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="WTF_AppModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -259,7 +333,82 @@
         </EntityType>
         <EntityContainer Name="SytelineDbEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="coitems" EntityType="Self.coitem" />
+          <EntitySet Name="jobmatls" EntityType="WTF_AppModel.jobmatl" />
         </EntityContainer>
+        <EntityType Name="jobmatl">
+          <Key>
+            <PropertyRef Name="job" />
+            <PropertyRef Name="suffix" />
+            <PropertyRef Name="oper_num" />
+            <PropertyRef Name="sequence" />
+          </Key>
+          <Property Name="job" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="suffix" Type="Int16" Nullable="false" />
+          <Property Name="oper_num" Type="Int32" Nullable="false" />
+          <Property Name="sequence" Type="Int16" Nullable="false" />
+          <Property Name="matl_type" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="item" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="matl_qty" Type="Decimal" Precision="18" Scale="8" />
+          <Property Name="units" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="cost" Type="Decimal" Nullable="false" Precision="20" Scale="8" />
+          <Property Name="qty_issued" Type="Decimal" Precision="18" Scale="8" />
+          <Property Name="a_cost" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="ref_type" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="ref_num" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ref_line_suf" Type="Int16" />
+          <Property Name="ref_release" Type="Int16" />
+          <Property Name="po_unit_cost" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="effect_date" Type="DateTime" Precision="3" />
+          <Property Name="obs_date" Type="DateTime" Precision="3" />
+          <Property Name="scrap_fact" Type="Decimal" Precision="5" Scale="4" />
+          <Property Name="qty_var" Type="Decimal" Precision="18" Scale="8" />
+          <Property Name="fixovhd_t" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="varovhd_t" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="feature" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Name="probable" Type="Decimal" Precision="4" Scale="3" />
+          <Property Name="opt_code" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Name="inc_price" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="description" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="pick_date" Type="DateTime" Precision="3" />
+          <Property Name="bom_seq" Type="Int16" />
+          <Property Name="matl_qty_conv" Type="Decimal" Precision="18" Scale="8" />
+          <Property Name="u_m" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="inc_price_conv" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="cost_conv" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="backflush" Type="Byte" />
+          <Property Name="bflush_loc" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="fmatlovhd" Type="Decimal" Precision="9" Scale="3" />
+          <Property Name="vmatlovhd" Type="Decimal" Precision="9" Scale="3" />
+          <Property Name="matl_cost" Type="Decimal" Nullable="false" Precision="20" Scale="8" />
+          <Property Name="lbr_cost" Type="Decimal" Nullable="false" Precision="20" Scale="8" />
+          <Property Name="fovhd_cost" Type="Decimal" Nullable="false" Precision="20" Scale="8" />
+          <Property Name="vovhd_cost" Type="Decimal" Nullable="false" Precision="20" Scale="8" />
+          <Property Name="out_cost" Type="Decimal" Nullable="false" Precision="20" Scale="8" />
+          <Property Name="a_matl_cost" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="a_lbr_cost" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="a_fovhd_cost" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="a_vovhd_cost" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="a_out_cost" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="matl_cost_conv" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="lbr_cost_conv" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="fovhd_cost_conv" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="vovhd_cost_conv" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="out_cost_conv" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="NoteExistsFlag" Type="Byte" Nullable="false" />
+          <Property Name="RecordDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="RowPointer" Type="Guid" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="InWorkflow" Type="Byte" Nullable="false" />
+          <Property Name="alt_group" Type="Int16" Nullable="false" />
+          <Property Name="alt_group_rank" Type="Int16" Nullable="false" />
+          <Property Name="planned_alternate" Type="Byte" />
+          <Property Name="new_sequence" Type="Int16" />
+          <Property Name="manufacturer_id" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
+          <Property Name="manufacturer_item" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="uf_pref_type" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -384,6 +533,78 @@
                 <ScalarProperty Name="manufacturer_item" ColumnName="manufacturer_item" />
                 <ScalarProperty Name="uf_pref_type" ColumnName="uf_pref_type" />
                 <ScalarProperty Name="qty_picked" ColumnName="qty_picked" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="jobmatls">
+            <EntityTypeMapping TypeName="WTF_AppModel.jobmatl">
+              <MappingFragment StoreEntitySet="jobmatl">
+                <ScalarProperty Name="uf_pref_type" ColumnName="uf_pref_type" />
+                <ScalarProperty Name="manufacturer_item" ColumnName="manufacturer_item" />
+                <ScalarProperty Name="manufacturer_id" ColumnName="manufacturer_id" />
+                <ScalarProperty Name="new_sequence" ColumnName="new_sequence" />
+                <ScalarProperty Name="planned_alternate" ColumnName="planned_alternate" />
+                <ScalarProperty Name="alt_group_rank" ColumnName="alt_group_rank" />
+                <ScalarProperty Name="alt_group" ColumnName="alt_group" />
+                <ScalarProperty Name="InWorkflow" ColumnName="InWorkflow" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="RowPointer" ColumnName="RowPointer" />
+                <ScalarProperty Name="RecordDate" ColumnName="RecordDate" />
+                <ScalarProperty Name="NoteExistsFlag" ColumnName="NoteExistsFlag" />
+                <ScalarProperty Name="out_cost_conv" ColumnName="out_cost_conv" />
+                <ScalarProperty Name="vovhd_cost_conv" ColumnName="vovhd_cost_conv" />
+                <ScalarProperty Name="fovhd_cost_conv" ColumnName="fovhd_cost_conv" />
+                <ScalarProperty Name="lbr_cost_conv" ColumnName="lbr_cost_conv" />
+                <ScalarProperty Name="matl_cost_conv" ColumnName="matl_cost_conv" />
+                <ScalarProperty Name="a_out_cost" ColumnName="a_out_cost" />
+                <ScalarProperty Name="a_vovhd_cost" ColumnName="a_vovhd_cost" />
+                <ScalarProperty Name="a_fovhd_cost" ColumnName="a_fovhd_cost" />
+                <ScalarProperty Name="a_lbr_cost" ColumnName="a_lbr_cost" />
+                <ScalarProperty Name="a_matl_cost" ColumnName="a_matl_cost" />
+                <ScalarProperty Name="out_cost" ColumnName="out_cost" />
+                <ScalarProperty Name="vovhd_cost" ColumnName="vovhd_cost" />
+                <ScalarProperty Name="fovhd_cost" ColumnName="fovhd_cost" />
+                <ScalarProperty Name="lbr_cost" ColumnName="lbr_cost" />
+                <ScalarProperty Name="matl_cost" ColumnName="matl_cost" />
+                <ScalarProperty Name="vmatlovhd" ColumnName="vmatlovhd" />
+                <ScalarProperty Name="fmatlovhd" ColumnName="fmatlovhd" />
+                <ScalarProperty Name="bflush_loc" ColumnName="bflush_loc" />
+                <ScalarProperty Name="backflush" ColumnName="backflush" />
+                <ScalarProperty Name="cost_conv" ColumnName="cost_conv" />
+                <ScalarProperty Name="inc_price_conv" ColumnName="inc_price_conv" />
+                <ScalarProperty Name="u_m" ColumnName="u_m" />
+                <ScalarProperty Name="matl_qty_conv" ColumnName="matl_qty_conv" />
+                <ScalarProperty Name="bom_seq" ColumnName="bom_seq" />
+                <ScalarProperty Name="pick_date" ColumnName="pick_date" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="inc_price" ColumnName="inc_price" />
+                <ScalarProperty Name="opt_code" ColumnName="opt_code" />
+                <ScalarProperty Name="probable" ColumnName="probable" />
+                <ScalarProperty Name="feature" ColumnName="feature" />
+                <ScalarProperty Name="varovhd_t" ColumnName="varovhd_t" />
+                <ScalarProperty Name="fixovhd_t" ColumnName="fixovhd_t" />
+                <ScalarProperty Name="qty_var" ColumnName="qty_var" />
+                <ScalarProperty Name="scrap_fact" ColumnName="scrap_fact" />
+                <ScalarProperty Name="obs_date" ColumnName="obs_date" />
+                <ScalarProperty Name="effect_date" ColumnName="effect_date" />
+                <ScalarProperty Name="po_unit_cost" ColumnName="po_unit_cost" />
+                <ScalarProperty Name="ref_release" ColumnName="ref_release" />
+                <ScalarProperty Name="ref_line_suf" ColumnName="ref_line_suf" />
+                <ScalarProperty Name="ref_num" ColumnName="ref_num" />
+                <ScalarProperty Name="ref_type" ColumnName="ref_type" />
+                <ScalarProperty Name="a_cost" ColumnName="a_cost" />
+                <ScalarProperty Name="qty_issued" ColumnName="qty_issued" />
+                <ScalarProperty Name="cost" ColumnName="cost" />
+                <ScalarProperty Name="units" ColumnName="units" />
+                <ScalarProperty Name="matl_qty" ColumnName="matl_qty" />
+                <ScalarProperty Name="item" ColumnName="item" />
+                <ScalarProperty Name="matl_type" ColumnName="matl_type" />
+                <ScalarProperty Name="sequence" ColumnName="sequence" />
+                <ScalarProperty Name="oper_num" ColumnName="oper_num" />
+                <ScalarProperty Name="suffix" ColumnName="suffix" />
+                <ScalarProperty Name="job" ColumnName="job" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
