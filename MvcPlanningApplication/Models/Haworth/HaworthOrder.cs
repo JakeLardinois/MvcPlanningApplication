@@ -82,6 +82,7 @@ namespace MvcPlanningApplication.Models.Haworth
         public string TransType { get; set; }
         public DateTime MaintenanceDateTime { get; set; }
         public DateTime ImportDateTime { get; set; }
+        public List<HaworthOrderCharacteristic> Characteristics { get; set; }
     }
 
 

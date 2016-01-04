@@ -347,15 +347,15 @@ namespace MvcPlanningApplication.Controllers
                     .Cast<Match>();
 
                 var strBldr = new StringBuilder();
-                var Characteristics = new List<HaworthCharacteristic>();
+                var Characteristics = new List<HaworthOrderCharacteristic>();
                 foreach (var objStr in CharacteristicMatches)
                 {
                     var strArray = objStr.Value.Split(':');
 
                     if (strArray.Count() > 1)
-                        Characteristics.Add(new HaworthCharacteristic { Characteristic = strArray[0], Value = strArray[1] });
+                        Characteristics.Add(new HaworthOrderCharacteristic { Characteristic = strArray[0], Value = strArray[1] });
                     else
-                        Characteristics.Add(new HaworthCharacteristic { Characteristic = strArray[0], Value = string.Empty });
+                        Characteristics.Add(new HaworthOrderCharacteristic { Characteristic = strArray[0], Value = string.Empty });
                 }
 
                 viewresult.Data = new
@@ -366,7 +366,7 @@ namespace MvcPlanningApplication.Controllers
             }
             catch (Exception objEx)
             {
-                viewresult.Data = new List<HaworthCharacteristic> { new HaworthCharacteristic { Characteristic = "Error", Value = objEx.Message } };
+                viewresult.Data = new List<HaworthOrderCharacteristic> { new HaworthOrderCharacteristic { Characteristic = "Error", Value = objEx.Message } };
                 Logger.Debug(objEx.Message);
             }
 

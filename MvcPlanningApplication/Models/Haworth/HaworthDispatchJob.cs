@@ -69,7 +69,10 @@ namespace MvcPlanningApplication.Models.Haworth
 
         public string ArmCaps
         {
-
+            get
+            {
+                return string.Empty;
+            }
         }
     }
 }

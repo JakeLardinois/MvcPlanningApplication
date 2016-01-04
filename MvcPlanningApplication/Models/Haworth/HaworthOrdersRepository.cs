@@ -39,6 +39,62 @@ namespace MvcPlanningApplication.Models.Haworth
                     /*Notice that i had to use mDataProp2_ due to datatables multi-column filtering not placing sSearch into proper array position when columns are reordered; See VendorRequestsController.cs Search method for details...*/
                     switch (DataTablesModel.mDataProp2_[intCounter])
                     {
+                        case "Characteristics":
+                            objHaworthOrderSearch.Characteristics = DataTablesModel.sSearch_[intCounter].Split('|');//results returned from a checklist are delimited by the pipe char
+                            break;
+                        case "ChangeDate":
+                            objResults = DataTablesModel.sSearch_[intCounter].Split('~');//results returned from a daterange are delimited by the tilde char
+                            objHaworthOrderSearch.ChangeDateGT = DateTime.TryParse(objResults[0], out dtmTemp) ? dtmTemp : DateTime.MinValue;
+                            objHaworthOrderSearch.ChangeDateLT = DateTime.TryParse(objResults[1], out dtmTemp) ? dtmTemp : DateTime.MinValue;
+                            break;
+                        case "OrderNumber":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthOrderSearch.OrderNumber = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
+                            break;
+                        case "ItemNumber":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthOrderSearch.ItemNumber = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
+                            break;
+                        case "Description":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthOrderSearch.Description = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
+                            break;
+                        case "Description2":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthOrderSearch.Description2 = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
+                            break;
+                        case "ColorCode":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthOrderSearch.ColorCode = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
+                            break;
+                        case "ColorPattern":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthOrderSearch.ColorPattern = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
+                            break;
+                        case "ColorDescription":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthOrderSearch.ColorDescription = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
+                            break;
+                        case "StatusCode":
+                            objHaworthOrderSearch.StatusCode = DataTablesModel.sSearch_[intCounter].Split('|');//results returned from a checklist are delimited by the pipe char
+                            break;
+                        case "DockDate":
+                            objResults = DataTablesModel.sSearch_[intCounter].Split('~');//results returned from a daterange are delimited by the tilde char
+                            objHaworthOrderSearch.DockDateGT = DateTime.TryParse(objResults[0], out dtmTemp) ? dtmTemp : DateTime.MinValue;
+                            objHaworthOrderSearch.DockDateLT = DateTime.TryParse(objResults[1], out dtmTemp) ? dtmTemp : DateTime.MinValue;
+                            break;
+                        case "ImportDateTime":
+                            objResults = DataTablesModel.sSearch_[intCounter].Split('~');//results returned from a daterange are delimited by the tilde char
+                            objHaworthOrderSearch.ImportDateTimeGT = DateTime.TryParse(objResults[0], out dtmTemp) ? dtmTemp : DateTime.MinValue;
+                            objHaworthOrderSearch.ImportDateTimeLT = DateTime.TryParse(objResults[1], out dtmTemp) ? dtmTemp : DateTime.MinValue;
+                            break;
                         default:
                             break;
                     }
@@ -48,36 +104,60 @@ namespace MvcPlanningApplication.Models.Haworth
 
             using (var db = new PlanningApplicationDb())
             {
-                //Do your searching here based on the objHaworthOrderSearch object...
-                orders = db.HaworthOrders;
+                /*The Below was created because the Entity Framework had a problem doing a filter of a list with a list because of the difficulty it had using deferred execution and the corresponding sql creation*/
+                var StatusCodeList = objHaworthOrderSearch.StatusCode == null ? new[] { strEmptyString } : objHaworthOrderSearch.StatusCode.ToArray<string>();
+                var CharacteristicsList = objHaworthOrderSearch.Characteristics == null ? new[] { strEmptyString } : objHaworthOrderSearch.Characteristics.ToArray<string>();
+
+                orders = db.HaworthOrders
+                    .Where(c => CharacteristicsList.Contains(strEmptyString) || CharacteristicsList.Intersect(c.Characteristics.Select(n => n.Value)).Any())
+                    .Where(c => c.ChangeDate >= objHaworthOrderSearch.ChangeDateGT || objHaworthOrderSearch.ChangeDateGT == DateTime.MinValue)
+                    .Where(c => c.ChangeDate <= objHaworthOrderSearch.ChangeDateLT || objHaworthOrderSearch.ChangeDateLT == DateTime.MinValue)
+                    .Where(c => string.IsNullOrEmpty(objHaworthOrderSearch.OrderNumber) || c.OrderNumber.ToUpper().Contains(objHaworthOrderSearch.OrderNumber.ToUpper()))
+                    .Where(c => string.IsNullOrEmpty(objHaworthOrderSearch.ItemNumber) || c.ItemNumber.ToUpper().Contains(objHaworthOrderSearch.ItemNumber.ToUpper()))
+                    .Where(c => string.IsNullOrEmpty(objHaworthOrderSearch.Description) || c.PartInformation.Description.ToUpper().Contains(objHaworthOrderSearch.Description.ToUpper()))
+                    .Where(c => string.IsNullOrEmpty(objHaworthOrderSearch.Description2) || c.PartInformation.Description2.ToUpper().Contains(objHaworthOrderSearch.Description2.ToUpper()))
+                    .Where(c => string.IsNullOrEmpty(objHaworthOrderSearch.ColorCode) || c.PartInformation.ColorCode.ToUpper().Contains(objHaworthOrderSearch.ColorCode.ToUpper()))
+                    .Where(c => string.IsNullOrEmpty(objHaworthOrderSearch.ColorPattern) || c.PartInformation.ColorPattern.ToUpper().Contains(objHaworthOrderSearch.ColorPattern.ToUpper()))
+                    .Where(c => string.IsNullOrEmpty(objHaworthOrderSearch.ColorDescription) || c.PartInformation.ColorDescription.ToUpper().Contains(objHaworthOrderSearch.ColorDescription.ToUpper()))
+                    .Where(c => StatusCodeList.Contains(strEmptyString) || StatusCodeList.Contains(c.StatusCode))
+                    .Where(c => c.DockDate >= objHaworthOrderSearch.DockDateGT || objHaworthOrderSearch.DockDateGT == DateTime.MinValue)
+                    .Where(c => c.DockDate <= objHaworthOrderSearch.DockDateLT || objHaworthOrderSearch.DockDateLT == DateTime.MinValue)
+                    .Where(c => c.ImportDateTime >= objHaworthOrderSearch.ImportDateTimeGT || objHaworthOrderSearch.ImportDateTimeGT == DateTime.MinValue)
+                    .Where(c => c.ImportDateTime <= objHaworthOrderSearch.ImportDateTimeLT || objHaworthOrderSearch.ImportDateTimeLT == DateTime.MinValue)
+                    .ToList();
 
 
 
 
                 //then filter out for remaining orders search (below) as well...
+                objStrBldr.Clear();
                 foreach (var objOrder in orders)
                     objStrBldr.Append("'" + objOrder.OrderNumber + "',");//get my list of PO's from the Haworth orders
 
-                //Here I get all the orders from Syteline that have the Haworth Order number in the PO field. Notice that I remove the last comma before passing the list of POs. 
-                var strSQL = objQueryDefinitions.GetQuery("SelectCustomerOrdersByPO", new string[] { objStrBldr.ToString(0, objStrBldr.Length - 1) });
-
-                using (var SytelineDb = new SytelineDbEntities())
+                
+                if (objStrBldr.Length > 0) //if there are haworth orders left to search in Syteline...
                 {
-                    var objCOItems = SytelineDb.Database.SqlQuery<COItem>(strSQL);
-                    foreach (var objCOItem in objCOItems)//loop through the Syteline Orders and add the data they contain to my Haworth list
+                    using (var SytelineDb = new SytelineDbEntities())
                     {
-                        var objOrder = orders  //get the haworth Order that has a matching WTF Order
-                            .Where(o => o.OrderNumber.Trim().ToUpper().Equals(objCOItem.cust_po.Trim().ToUpper()))
-                            .FirstOrDefault();
+                        //Here I get all the orders from Syteline that have the Haworth Order number in the PO field. Notice that I remove the last comma before passing the list of POs. 
+                        var strSQL = objQueryDefinitions.GetQuery("SelectCustomerOrdersByPO", new string[] { objStrBldr.ToString(0, objStrBldr.Length - 1) });
+                        var objCOItems = SytelineDb.Database.SqlQuery<COItem>(strSQL);
+                        foreach (var objCOItem in objCOItems)//loop through the Syteline Orders and add the data they contain to my Haworth list
+                        {
+                            var objOrder = orders  //get the haworth Order that has a matching WTF Order
+                                .Where(o => o.OrderNumber.Trim().ToUpper().Equals(objCOItem.cust_po.Trim().ToUpper()))
+                                .FirstOrDefault();
 
-                        //populate the haworth order with WTF Order Number, Item number on the WTF Order
-                        objOrder.WTFOrderNumber = objCOItem.co_num;
-                        objOrder.WTFItemNumber = objCOItem.item;
-                        objOrder.WTFOrderQuantity = (double)objCOItem.qty_ordered;
-                        objOrder.WTFOrderDueDate = objCOItem.due_date ?? DateTime.MinValue;
-                        objOrder.WTFOrderRequestDate = objCOItem.promise_date ?? DateTime.MinValue;
+                            //populate the haworth order with WTF Order Number, Item number on the WTF Order
+                            objOrder.WTFOrderNumber = objCOItem.co_num;
+                            objOrder.WTFItemNumber = objCOItem.item;
+                            objOrder.WTFOrderQuantity = (double)objCOItem.qty_ordered;
+                            objOrder.WTFOrderDueDate = objCOItem.due_date ?? DateTime.MinValue;
+                            objOrder.WTFOrderRequestDate = objCOItem.promise_date ?? DateTime.MinValue;
+                        }
                     }
                 }
+                    
                 
 
                 orders = orders //filters out the orders that are correctly entered in our system

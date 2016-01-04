@@ -5,7 +5,7 @@ using System.Web;
 
 namespace MvcPlanningApplication.Models.Haworth
 {
-    public class HaworthCharacteristic
+    public class HaworthOrderCharacteristic
     {
         public string Characteristic { get; set; }
         public string Value { get; set; }

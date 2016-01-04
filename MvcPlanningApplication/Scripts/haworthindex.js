@@ -51,11 +51,11 @@ $(document).ready(function () {
             blnCheckChanged = true;
         },
         close: function () {
-            //I commented the below out in favor of utilizing a button to submit the search due to access being slow on queries...
-            /*if (blnCheckChanged) {
+            //causes a search if any values have been checked...
+            if (blnCheckChanged) {
                 blnCheckChanged = false;
                 oTable.draw();
-            }*/
+            }
         }
     });
 
@@ -200,6 +200,11 @@ $(document).ready(function () {
             },
             { "mDataProp": "UnitPrice" }
         ]
+    });
+
+    //This is so that you can cause a search to occur on keyup for input field by adding class="dtSearchField" to it's html...
+    $('input.dtSearchField').on('keyup change', function () {
+        oTable.draw(); //forces the table to redraw and the search criteria is set above
     });
 });
 

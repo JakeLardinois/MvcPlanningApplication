@@ -182,7 +182,7 @@
     <Compile Include="Models\DataTablesMVC\JQueryDataTablesVendorRequestEditModel.cs" />
     <Compile Include="Models\Haworth\HaworthDispatchJob.cs" />
     <Compile Include="Models\Haworth\HaworthDispatchJobMaterial.cs" />
-    <Compile Include="Models\Haworth\HaworthCharacteristic.cs" />
+    <Compile Include="Models\Haworth\HaworthOrderCharacteristic.cs" />
     <Compile Include="Models\Haworth\HaworthDeliveryInformation.cs" />
     <Compile Include="Models\Haworth\HaworthDispatchJobRepository.cs" />
     <Compile Include="Models\Haworth\HaworthDispatchJobSearch.cs" />
