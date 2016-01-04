@@ -21,11 +21,18 @@ namespace MvcPlanningApplication.Models.Haworth
         public DateTime DockDate { get; set; }
         public List<HaworthDispatchJobMaterial> DispatchJobMaterials { get; set; }
 
+        //'^' denotes the begining of string and '$' denotes the end of string; I am stating I want to match 
+        private static string mstrFrame5CharactersRegEx { get { return "^[0-9][0-9][0-9][0-9][0-9]$"; } }
+        private static string mstrFrame8CharactersRegEx { get { return "^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$"; } }
+        private static string mstrShellRegEx { get { return "/^TR-/"; } }
+        private static string mstrSeatFabricRegEx { get { return "/^MIS SEAT COVER /"; } }
+        private static string mstrBackFabricRegEx { get { return "/^MIS BACK COVER /"; } }
+
         public string Shell {
             get {
                 if (DispatchJobMaterials != null)
                     return DispatchJobMaterials
-                        .Where(m => m.JobMaterial.ToUpper().Contains("MIS 544-"))
+                        .Where(m => Regex.Match(m.JobMaterial, mstrShellRegEx, RegexOptions.IgnoreCase).Success)
                         .DefaultIfEmpty(new HaworthDispatchJobMaterial { JobMaterial = "None" })
                         .FirstOrDefault().JobMaterial;
                 else
@@ -36,8 +43,9 @@ namespace MvcPlanningApplication.Models.Haworth
         public string Frame {
             get {
                 if (DispatchJobMaterials != null)
-                    return DispatchJobMaterials //'^' denotes the begining of string and '$' denotes the end of string; I am stating I want to match
-                        .Where(m => Regex.Match(m.JobMaterial, "^[0-9][0-9][0-9][0-9][0-9]$").Success) // a 5 character number
+                    return DispatchJobMaterials
+                        .Where(m => Regex.Match(m.JobMaterial, mstrFrame5CharactersRegEx).Success)
+                        .Where(m => Regex.Match(m.JobMaterial, mstrFrame8CharactersRegEx).Success)
                         .DefaultIfEmpty(new HaworthDispatchJobMaterial { JobMaterial = "None" })
                         .FirstOrDefault().JobMaterial;
                 else
@@ -50,12 +58,18 @@ namespace MvcPlanningApplication.Models.Haworth
             {
                 if (DispatchJobMaterials != null)
                     return DispatchJobMaterials
-                        .Where(m => m.JobMaterial.ToUpper().Contains("MIS S") || m.JobMaterial.ToUpper().Contains("MIS B"))
+                        .Where(m => Regex.Match(m.JobMaterial, mstrSeatFabricRegEx, RegexOptions.IgnoreCase).Success)
+                        .Where(m => Regex.Match(m.JobMaterial, mstrBackFabricRegEx, RegexOptions.IgnoreCase).Success)
                         .DefaultIfEmpty(new HaworthDispatchJobMaterial { JobMaterial = "None" })
                         .Aggregate(new StringBuilder(), (a, b) => a.Append(b.JobMaterial).Append("  ")).ToString();
                 else
                     return "None";
             }
+        }
+
+        public string ArmCaps
+        {
+
         }
     }
 }

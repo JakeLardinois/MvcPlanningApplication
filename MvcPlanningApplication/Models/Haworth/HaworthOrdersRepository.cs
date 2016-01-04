@@ -52,6 +52,8 @@ namespace MvcPlanningApplication.Models.Haworth
                 orders = db.HaworthOrders;
 
 
+
+
                 //then filter out for remaining orders search (below) as well...
                 foreach (var objOrder in orders)
                     objStrBldr.Append("'" + objOrder.OrderNumber + "',");//get my list of PO's from the Haworth orders

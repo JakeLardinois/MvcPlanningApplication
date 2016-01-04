@@ -343,7 +343,7 @@ namespace MvcPlanningApplication.Controllers
                         .POItemConfigurationText + " "; //I need to add a space so my regex will match the last characteristic...
 
                 var CharacteristicMatches = Regex
-                    .Matches(ConfigurationText, @".*?:\w+\s") //must match multiple words(.*?)->colon(:)->single word(\w+)->space(\s)
+                    .Matches(ConfigurationText, @".*?:\w+\s") //must match: multiple words(.*?)->colon(:)->single word(\w+)->space(\s)
                     .Cast<Match>();
 
                 var strBldr = new StringBuilder();
