@@ -11,12 +11,14 @@ using System.IO;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.IO.Packaging;
+using log4net;
 
 
 namespace MvcPlanningApplication.Models
 {
     public class ExcelOpenXMLInfo
     {
+        private static readonly ILog Logger = LogHelper.GetLogger();
         private string[] Extensions = new string[] { ".xls", ".xlsx" };
         private string mstrFileName;
         public string FileName
@@ -142,13 +144,14 @@ namespace MvcPlanningApplication.Models
             String sConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
                         "Data Source=" + FilePathAndName + ";" +
                         "Extended Properties='Excel 12.0;IMEX=1;HDR=NO;ImportMixedTypes=Text;TypeGuessRows=0;'";
+            Logger.Debug("Connection String : \r\n\t" + sConnectionString);
 
             OleDbConnection objConn = new OleDbConnection(sConnectionString);
             objConn.Open();
-
+            Logger.Debug("Opened the connection...");
             // Create new OleDbCommand to return data from worksheet.
             OleDbCommand objCmdSelect = new OleDbCommand("SELECT * FROM " + RangeName, objConn);
-
+            Logger.Debug("Executed the SQL...");
             // Create new OleDbDataAdapter that is used to build a DataSet
             // based on the preceding SQL SELECT statement.
             OleDbDataAdapter objAdapter1 = new OleDbDataAdapter();

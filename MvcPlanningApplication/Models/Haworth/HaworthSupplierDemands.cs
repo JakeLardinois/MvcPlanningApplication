@@ -19,8 +19,10 @@ namespace MvcPlanningApplication.Models.Haworth
         {
             //ExcelOpenXMLInfo objExcelInfo = new ExcelOpenXMLInfo(SelectedFile);
             //objExcelInfo.GetInformation();
+            Logger.Debug("Getting Data from Excel...");
             var objDataTable = ExcelOpenXMLInfo.GetDataFromExcelRange(ExcelFileNameAndLocation, ExcelRangeName);
 
+            Logger.Debug("Populating the collection with the excel data...");
             Populate(objDataTable);
         }
 

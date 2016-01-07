@@ -75,37 +75,42 @@ namespace MvcPlanningApplication.Models.Haworth
                     if (!string.IsNullOrEmpty(objJob.Job))
                         objStrBldr.Append(objJob.Job + ",");
                 }
-                var StrJobList = objStrBldr
+
+                if (objStrBldr.Length > 0)
+                {
+                    var StrJobList = objStrBldr
                     .Remove(objStrBldr.Length - 1, 1) //removes the last comma
                     .ToString()
                     .AddSingleQuotes();
 
-                //Use the above job list to create your SQL
-                objStrBldr.Clear();
-                objStrBldr.Append(objQueryDefinitions //because I am only lookup up jobmatl by job, I will grab other materials from the Indented BOM...
-                    .GetQuery("SelectJobMatlByJobList", new string[] { StrJobList }));
+                    //Use the above job list to create your SQL
+                    objStrBldr.Clear();
+                    objStrBldr.Append(objQueryDefinitions //because I am only lookup up jobmatl by job, I will grab other materials from the Indented BOM...
+                        .GetQuery("SelectJobMatlByJobList", new string[] { StrJobList }));
 
-                //Get the complete list of job materials for the above created job list
-                var JobMaterials = db.Database
-                    .SqlQuery<jobmatl>(objStrBldr.ToString())
-                    .ToList();
+                    //Get the complete list of job materials for the above created job list
+                    var JobMaterials = db.Database
+                        .SqlQuery<jobmatl>(objStrBldr.ToString())
+                        .ToList();
 
-                //iterate through the job collection and add the matching job materials for the respective job
-                foreach (var objDispatchJob in orders)
-                {
-                    objDispatchJob.DispatchJobMaterials = JobMaterials
-                        .Where(j => j.job.Equals(objDispatchJob.Job) && j.matl_type.Equals("M"))
-                        .Select(g => new HaworthDispatchJobMaterial
-                        {
-                            JobMaterial = g.item,
-                            JobMaterialDescription = g.description,
-                            UnitOfMeasure = g.u_m
-                            //QtyRequired = g.matl_qty * objDispatchJob.QuantityOrdered,
-                            //QtyIssued = g.qty_issued * objDispatchJob.QuantityOrdered,
-                            //QtyAvailable = g.det_QtyAvailable ?? 0
-                        })
-                        .ToList();// since .Select is lazy, call the ToList()
+                    //iterate through the job collection and add the matching job materials for the respective job
+                    foreach (var objDispatchJob in orders)
+                    {
+                        objDispatchJob.DispatchJobMaterials = JobMaterials
+                            .Where(j => j.job.Equals(objDispatchJob.Job) && j.matl_type.Equals("M"))
+                            .Select(g => new HaworthDispatchJobMaterial
+                            {
+                                JobMaterial = g.item,
+                                JobMaterialDescription = g.description,
+                                UnitOfMeasure = g.u_m
+                                //QtyRequired = g.matl_qty * objDispatchJob.QuantityOrdered,
+                                //QtyIssued = g.qty_issued * objDispatchJob.QuantityOrdered,
+                                //QtyAvailable = g.det_QtyAvailable ?? 0
+                            })
+                            .ToList();// since .Select is lazy, call the ToList()
+                    }
                 }
+                
 
 
 

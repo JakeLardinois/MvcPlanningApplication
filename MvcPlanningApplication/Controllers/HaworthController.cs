@@ -93,9 +93,10 @@ namespace MvcPlanningApplication.Controllers
                     Logger.Info("Upload and Save the new Haworth Supplier Demand to the Database");
                     db.HaworthSupplierDemands.AddRange(objSupplierDemands);
                     db.SaveChanges();
+
+
                 }
                 Logger.Info("The planning data was sucessfully generated!");
-
                 
                 result.Data = new { Success = true, Message = "The planning data was sucessfully generated!" };
                 return result;
