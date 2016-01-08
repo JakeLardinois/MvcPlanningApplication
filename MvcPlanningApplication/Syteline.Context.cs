@@ -27,5 +27,6 @@ namespace MvcPlanningApplication
     
         public virtual DbSet<coitem> coitems { get; set; }
         public virtual DbSet<jobmatl> jobmatls { get; set; }
+        public virtual DbSet<co> coes { get; set; }
     }
 }

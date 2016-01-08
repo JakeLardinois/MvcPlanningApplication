@@ -13,9 +13,19 @@ namespace MvcPlanningApplication.Models.Haworth
     {
         public string Job { get; set; }
         public Int16 JobSuffix { get; set; }
-        public string CustomerOrder { get; set; }
+        public string CustomerOrder {
+            get { return co_num + "." + co_line; }
+        }
+        public string co_num { get; set; }
+        public short co_line { get; set; }
         public string SalesOrder { get; set; }
-        public string PurchaseOrder { get; set; }
+        public string PurchaseOrder {
+            get
+            {
+                return cust_po + "." + co_line.ToString().PadLeft(5, '0') + ".0001";
+            } 
+        }
+        public string cust_po { get; set; }
         public decimal QuantityOrdered { get; set; }
         public string ItemNumber { get; set; }
         public DateTime ShipByDate { get; set; }

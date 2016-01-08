@@ -30,14 +30,17 @@ namespace MvcPlanningApplication.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetPlanningData(JQueryDataTablesModel jQueryDataTablesModel)
+        public JsonResult GetPlanningData(JQueryDataTablesModel jQueryDataTablesModel, bool RemainingOrdersOnly = false)
         {
             int TotalRecordCount, searchRecordCount;
             var result = new JsonResult();
 
             Logger.Info("Use HaworthOrdersRepository to search Haworth Orders in the Database");
             var objHaworthOrdersRepository = new HaworthOrdersRepository();
+
             var objItems = objHaworthOrdersRepository.GetOrders(searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel);
+            if (RemainingOrdersOnly)
+                objItems = objItems.RemainingOrders();
 
             Logger.Info("Get total number of Haworth orders in the database");
             using (var db = new PlanningApplicationDb())

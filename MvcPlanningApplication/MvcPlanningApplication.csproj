@@ -157,6 +157,9 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="co.cs">
+      <DependentUpon>Syteline.tt</DependentUpon>
+    </Compile>
     <Compile Include="coitem.cs">
       <DependentUpon>Syteline.tt</DependentUpon>
     </Compile>
