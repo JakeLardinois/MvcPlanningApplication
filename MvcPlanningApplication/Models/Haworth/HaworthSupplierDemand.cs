@@ -15,16 +15,18 @@ namespace MvcPlanningApplication.Models.Haworth
         public string OrderNumber {
             get {
 
-                if (!string.IsNullOrEmpty(PONumber) && !string.IsNullOrEmpty(POLine))
-                    return PONumber + "." + POLine.PadLeft(5, '0') + ".0001";
+                if (!string.IsNullOrEmpty(PO) && !string.IsNullOrEmpty(POLine))
+                    return PO + "." + POLine.PadLeft(5, '0') + ".0001";
                 return string.Empty;
             }
             protected set { } //EF requires a property to have both a getter and setter to store value in the database...
         }
 
 
-        public string PONumber { get; set; }
+        public string PO { get; set; }
         public string POLine { get; set; }
         public string POItemConfigurationText { get; set; }
+        public string SO { get; set; }
+        public string SOLine { get; set; }
     }
 }

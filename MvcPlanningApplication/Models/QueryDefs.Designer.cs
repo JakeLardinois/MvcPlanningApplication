@@ -90,17 +90,6 @@ namespace MvcPlanningApplication.Models {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT *, [brk_qty##1] AS brk_qty__1, [brk_qty##2] AS brk_qty__2, [brk_qty##3] AS brk_qty__3, [brk_qty##4] AS brk_qty__4, [brk_qty##5] AS brk_qty__5
-        ///FROM coitem
-        ///WHERE co_cust_num IN (~p0) AND stat = &apos;~p1&apos;.
-        /// </summary>
-        internal static string SelectCOItemByCustNumListAndStatus {
-            get {
-                return ResourceManager.GetString("SelectCOItemByCustNumListAndStatus", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to SELECT co.co_num, coitem.co_line, coitem.co_release, coitem.item, coitem.qty_ordered, coitem.promise_date, coitem.co_release, coitem.due_date, co.cust_po
         ///  FROM co
         ///	INNER JOIN coitem ON co.co_num = coitem.co_num
@@ -121,17 +110,6 @@ namespace MvcPlanningApplication.Models {
         internal static string SelectHaworthSupplierDemandsByOrderNo {
             get {
                 return ResourceManager.GetString("SelectHaworthSupplierDemandsByOrderNo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to SELECT *
-        ///  FROM jobmatl
-        ///  WHERE job IN (~p0).
-        /// </summary>
-        internal static string SelectJobMatlByJobList {
-            get {
-                return ResourceManager.GetString("SelectJobMatlByJobList", resourceCulture);
             }
         }
         

@@ -36,9 +36,11 @@ namespace MvcPlanningApplication.Models.Haworth
                 {
                     this.Add(new HaworthSupplierDemand
                     {
-                        PONumber = objRow.Field<string>("PO Number"),
+                        PO = objRow.Field<string>("PO Number"),
                         POLine = objRow.Field<string>("PO Item"),
-                        POItemConfigurationText = objRow.Field<string>("PO Item Configuration Text")
+                        POItemConfigurationText = objRow.Field<string>("PO Item Configuration Text"),
+                        SO = objRow.Field<string>("SO No."),
+                        SOLine = objRow.Field<string>("SO Item"),
                     });
                 }
                 catch (Exception objEx)

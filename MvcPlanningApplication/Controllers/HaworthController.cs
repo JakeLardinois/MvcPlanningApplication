@@ -94,6 +94,11 @@ namespace MvcPlanningApplication.Controllers
                     db.HaworthSupplierDemands.AddRange(objSupplierDemands);
                     db.SaveChanges();
 
+                    //foreach (var objHaworthOrder in db.HaworthOrders)
+                    //{
+                    //    var objHaworthSupplierDemand = db.HaworthSupplierDemands
+                    //        .Where(s => s.OrderNumber.Equals(objHaworthOrder.OrderNumber))
+                    //}
 
                 }
                 Logger.Info("The planning data was sucessfully generated!");
@@ -128,8 +133,9 @@ namespace MvcPlanningApplication.Controllers
 
             Logger.Info("Get total number of Haworth orders in the database");
             using (var db = new SytelineDbEntities())
-                TotalRecordCount = db.Database
-                    .SqlQuery<coitem>(objQueryDefinitions.GetQuery("SelectCOItemByCustNumListAndStatus", new string[] { "3417".AddSingleQuotesAndPadLeft(7), "O" }))
+                TotalRecordCount = db.coitems
+                    .Where(c => c.stat.Equals("O"))
+                    .Where(c => c.co_cust_num.Equals("   3417"))
                     .Count();
 
             Logger.Info("Return a JSON object containing the required data for JQuery Datatables");

@@ -128,11 +128,6 @@ FROM HaworthSupplierDemands</value>
   <data name="ReSeedTable" xml:space="preserve">
     <value>DBCC CHECKIDENT (~p0, RESEED, 0)</value>
   </data>
-  <data name="SelectCOItemByCustNumListAndStatus" xml:space="preserve">
-    <value>SELECT *, [brk_qty##1] AS brk_qty__1, [brk_qty##2] AS brk_qty__2, [brk_qty##3] AS brk_qty__3, [brk_qty##4] AS brk_qty__4, [brk_qty##5] AS brk_qty__5
-FROM coitem
-WHERE co_cust_num IN (~p0) AND stat = '~p1'</value>
-  </data>
   <data name="SelectCustomerOrdersByPO" xml:space="preserve">
     <value>SELECT co.co_num, coitem.co_line, coitem.co_release, coitem.item, coitem.qty_ordered, coitem.promise_date, coitem.co_release, coitem.due_date, co.cust_po
   FROM co
@@ -144,11 +139,6 @@ WHERE co_cust_num IN (~p0) AND stat = '~p1'</value>
     <value>SELECT *
   FROM HaworthSupplierDemands
   WHERE OrderNumber = '~p0'</value>
-  </data>
-  <data name="SelectJobMatlByJobList" xml:space="preserve">
-    <value>SELECT *
-  FROM jobmatl
-  WHERE job IN (~p0)</value>
   </data>
   <data name="SpJobPickListByJobAndSuffix" xml:space="preserve">
     <value>EXEC WTF_App.[dbo].[Rpt_JobPickListSp] @Job = '~p0',

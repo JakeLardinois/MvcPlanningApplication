@@ -37,7 +37,9 @@ $(document).ready(function () {
         },
         "aoColumns": [
             { "mDataProp": "Job" },
-            { "mDataProp": "OrderNumber" },
+            { "mDataProp": "CustomerOrder" },
+            { "mDataProp": "PurchaseOrder" },
+            { "mDataProp": "SalesOrder" },
             { "mDataProp": "QuantityOrdered" },
             { "mDataProp": "ItemNumber" },
             { "mDataProp": "Shell" },
@@ -70,7 +72,7 @@ function AppendAdditionalParameters(aoData) {
     * I had previously implemented this in the server side code, but then any time my UI changed I would need to recompile the web service... So I fixed the implementation...*/
     aoData.push({
         "name": "FixedColumnHeaders",
-        "value": ["Job", "OrderNumber", "QuantityOrdered", "ItemNumber", "Shell", "Frame", "Fabric", "ShipByDate", "DockDate", "StatusCode", "RequiredQty", "DockDate"]
+        "value": ["Job", "CustomerOrder", "PurchaseOrder", "SalesOrder", "QuantityOrdered", "ItemNumber", "Shell", "Frame", "Fabric", "ShipByDate", "DockDate", "StatusCode", "RequiredQty", "DockDate"]
     });
 
     /*iterates through the array and updates the appropriate object using the below 'case' statements. I was having an issue where sSearch was getting populated twice (ie sSearch_4 & sSearch_7 would contain the same search string) 

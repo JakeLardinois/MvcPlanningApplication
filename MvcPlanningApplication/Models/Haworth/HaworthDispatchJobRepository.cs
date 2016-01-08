@@ -48,72 +48,32 @@ namespace MvcPlanningApplication.Models.Haworth
 
             using (var db = new SytelineDbEntities())
             {
-                objStrBldr.Clear();
-                objStrBldr.Append(objQueryDefinitions.GetQuery("SelectCOItemByCustNumListAndStatus",
-                new string[] { "3417".AddSingleQuotesAndPadLeft(7), "O" }));
-
                 //Do your filtering here using the above objHaworthDispatchJobSearch object...
-                orders = db.Database
-                    .SqlQuery<coitem>(objStrBldr.ToString())
+                orders = db.coitems
+                    .Where(c => c.stat.Equals("O"))
+                    .Where(c => c.co_cust_num.Equals("   3417"))
                     .Select(g => new HaworthDispatchJob
                     {
                         Job = g.ref_num,
                         JobSuffix = g.ref_line_suf.HasValue ? (short)g.ref_line_suf : (short)0,
-                        OrderNumber = g.co_num,
-                        OrderLine = g.co_line,
+                        CustomerOrder = g.co_num + "-" + g.co_line,
                         QuantityOrdered = g.qty_ordered,
                         ItemNumber = g.item,
                         DockDate = g.due_date.HasValue ? (DateTime)g.due_date : SharedVariables.MINDATE,
-                        ShipByDate = g.promise_date.HasValue ? (DateTime)g.promise_date : SharedVariables.MINDATE
-                    })
-                    .ToList(); //must call toList() or else your .Select doesn't make your objects
-
-                //Create a comma separated list of jobs
-                objStrBldr.Clear();
-                foreach (var objJob in orders)
-                {
-                    if (!string.IsNullOrEmpty(objJob.Job))
-                        objStrBldr.Append(objJob.Job + ",");
-                }
-
-                if (objStrBldr.Length > 0)
-                {
-                    var StrJobList = objStrBldr
-                    .Remove(objStrBldr.Length - 1, 1) //removes the last comma
-                    .ToString()
-                    .AddSingleQuotes();
-
-                    //Use the above job list to create your SQL
-                    objStrBldr.Clear();
-                    objStrBldr.Append(objQueryDefinitions //because I am only lookup up jobmatl by job, I will grab other materials from the Indented BOM...
-                        .GetQuery("SelectJobMatlByJobList", new string[] { StrJobList }));
-
-                    //Get the complete list of job materials for the above created job list
-                    var JobMaterials = db.Database
-                        .SqlQuery<jobmatl>(objStrBldr.ToString())
-                        .ToList();
-
-                    //iterate through the job collection and add the matching job materials for the respective job
-                    foreach (var objDispatchJob in orders)
-                    {
-                        objDispatchJob.DispatchJobMaterials = JobMaterials
-                            .Where(j => j.job.Equals(objDispatchJob.Job) && j.matl_type.Equals("M"))
-                            .Select(g => new HaworthDispatchJobMaterial
+                        ShipByDate = g.promise_date.HasValue ? (DateTime)g.promise_date : SharedVariables.MINDATE,
+                        DispatchJobMaterials = db.jobmatls.Where(m => m.job.Equals(g.ref_num))
+                            .Select(jm => new HaworthDispatchJobMaterial
                             {
-                                JobMaterial = g.item,
-                                JobMaterialDescription = g.description,
-                                UnitOfMeasure = g.u_m
+                                JobMaterial = jm.item,
+                                JobMaterialDescription = jm.description,
+                                UnitOfMeasure = jm.u_m
                                 //QtyRequired = g.matl_qty * objDispatchJob.QuantityOrdered,
                                 //QtyIssued = g.qty_issued * objDispatchJob.QuantityOrdered,
                                 //QtyAvailable = g.det_QtyAvailable ?? 0
                             })
-                            .ToList();// since .Select is lazy, call the ToList()
-                    }
-                }
-                
-
-
-
+                            .ToList()
+                    })
+                    .ToList(); //must call toList() or else your .Select doesn't make your objects
 
                 //needed this to get the proper pagination values. by adding it here, i was hoping to optomize performance and still leverage deferred execution with the above queries
                 // and the take values below...
