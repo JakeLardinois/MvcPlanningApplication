@@ -22,7 +22,7 @@ namespace MvcPlanningApplication.Models.Haworth
         }
 
 
-        [Key]
+        //[Key]
         public virtual int ID { get; set; }
 
         private double mUnitPrice { get; set; }
@@ -82,7 +82,8 @@ namespace MvcPlanningApplication.Models.Haworth
         public string TransType { get; set; }
         public DateTime MaintenanceDateTime { get; set; }
         public DateTime ImportDateTime { get; set; }
-        public List<HaworthOrderCharacteristic> Characteristics { get; set; }
+
+        public virtual List<HaworthOrderCharacteristic> Characteristics { get; set; }
     }
 
 

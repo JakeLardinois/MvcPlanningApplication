@@ -4,12 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace MvcPlanningApplication.Models.Haworth
 {
     public class HaworthOrderCharacteristic
     {
-        [Key]
         public virtual int ID { get; set; }
+
+        public virtual HaworthOrder HaworthOrder { get; set; }
 
         public string OrderNumber { get; set; }
         public string Characteristic { get; set; }

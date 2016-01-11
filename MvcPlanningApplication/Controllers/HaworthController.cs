@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Text;
 using MvcPlanningApplication.Models.Haworth;
 using MvcPlanningApplication.Models.DataTablesMVC;
+using Newtonsoft.Json;
 
 
 
@@ -22,7 +23,7 @@ namespace MvcPlanningApplication.Controllers
     {
         private static readonly ILog Logger = LogHelper.GetLogger();
         public static string VirtualFilePath { get { return @"/Content/Uploads"; } }
-
+        private static JsonSerializerSettings serializerSettings = new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Arrays, ReferenceLoopHandling = ReferenceLoopHandling.Serialize };
 
         public ActionResult Index()
         {
@@ -30,7 +31,7 @@ namespace MvcPlanningApplication.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetPlanningData(JQueryDataTablesModel jQueryDataTablesModel, bool RemainingOrdersOnly = false)
+        public string GetPlanningData(JQueryDataTablesModel jQueryDataTablesModel, bool RemainingOrdersOnly = false)
         {
             int TotalRecordCount, searchRecordCount;
             var result = new JsonResult();
@@ -47,16 +48,15 @@ namespace MvcPlanningApplication.Controllers
                 TotalRecordCount = db.HaworthOrders.Count();
 
             Logger.Info("Return a JSON object containing the required data for JQuery Datatables");
-            result.Data = new 
+
+            
+            return JsonConvert.SerializeObject(new
             {
                 iTotalRecords = TotalRecordCount,
                 jQueryDataTablesModel.sEcho,
                 iTotalDisplayRecords = searchRecordCount,
                 aaData = objItems
-            };
-
-            return result;
-
+            }, serializerSettings);
         }
 
         [HttpPost]
@@ -68,44 +68,59 @@ namespace MvcPlanningApplication.Controllers
             //{
                 var objQueryDefs = new QueryDefinitions();
 
-                Logger.Info("Get Haworth XML Orders from FTP Site");
+                Logger.Info("Retreive Haworth XML Orders from FTP Site");
                 var Orders = new HaworthOrders(new Uri(Settings.HaworthFTPURI), true);
+
+                Logger.Info("Retreive Supplier Demand Data From Excel Using" +
+                        " \tFile: " + SelectedFile + Environment.NewLine +
+                        "\tRange: " + SelectedRange);
+                HaworthSupplierDemands objSupplierDemands = new HaworthSupplierDemands(Server.MapPath(SelectedFile), SelectedRange);
+
+                Logger.Info("Add the Characteristics list for each Haworth Order");
+                foreach (var objHaworthOrder in Orders)
+                {
+                    var strPOItemConfig = objSupplierDemands
+                        .Where(s => !string.IsNullOrEmpty(s.OrderNumber) && s.OrderNumber.Equals(objHaworthOrder.OrderNumber))
+                        .DefaultIfEmpty(new HaworthSupplierDemand { POItemConfigurationText = string.Empty })
+                        .FirstOrDefault()
+                        .POItemConfigurationText;
+
+                    Logger.Debug(string.Format("Haworth Order: {0} has characteristics string: {1}", objHaworthOrder, strPOItemConfig));
+                    if (!string.IsNullOrEmpty(strPOItemConfig))
+                        objHaworthOrder.Characteristics = BuildCharacteristics(objHaworthOrder.OrderNumber, strPOItemConfig);
+                        
+                    Logger.Debug(strPOItemConfig);
+                }
 
                 using(var db = new PlanningApplicationDb())
                 {
+                    //Characteristics must be deleted before Orders because of the Foreign Key Constraint.
+                    Logger.Info("Delete All Existing Characteristics");
+                    db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthOrderCharacteristics"));
+                    Logger.Info("Re-Seed the Haworth Order Characteristics Table");
+                    db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthOrderCharacteristics" }));
+
                     Logger.Info("Delete All Existing Haworth Orders");
                     db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthOrders"));
                     Logger.Info("Re-Seed the Haworth Order Table");
                     db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthOrders" }));
-                    Logger.Info("Upload and Save the new Haworth Orders to the Database");
-                    var objHaworthOrders = db.HaworthOrders.AddRange(Orders);
+
+                    Logger.Info("Upload and Save the Haworth Orders and thier Characteristics to the Database");
+                    db.HaworthOrders.AddRange(Orders);
                     db.SaveChanges();
+
                     Logger.Info("Archive Haworth Orders");
                     Orders.Archive(Settings.HaworthArchiveLocation + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml");
 
-
-                    Logger.Info("Retreive Supplier Demand Data From Excel Using" +
-                        " \tFile: " + SelectedFile + Environment.NewLine +
-                        "\tRange: " + SelectedRange);
-                    HaworthSupplierDemands objSupplierDemands = new HaworthSupplierDemands(Server.MapPath(SelectedFile), SelectedRange);
 
                     Logger.Info("Delete All Existing Haworth Supplier Demands");
                     db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthSupplierDemands"));
                     Logger.Info("Re-Seed the Haworth Supplier Demands Table");
                     db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthSupplierDemands" }));
+
                     Logger.Info("Upload and Save the new Haworth Supplier Demand to the Database");
-                    var objHaworthSupplierDemands = db.HaworthSupplierDemands.AddRange(objSupplierDemands);
+                    db.HaworthSupplierDemands.AddRange(objSupplierDemands);
                     db.SaveChanges();
-
-                    foreach (var objHaworthOrder in objHaworthOrders)
-                    {
-                        var strPOItemConfig = objHaworthSupplierDemands
-                            .Where(s => !string.IsNullOrEmpty(s.OrderNumber) && s.OrderNumber.Equals(objHaworthOrder.OrderNumber))
-                            .FirstOrDefault()
-                            .POItemConfigurationText;
-                        Logger.Debug(strPOItemConfig);
-                    }
-
                 }
                 Logger.Info("The planning data was sucessfully generated!");
                 
@@ -120,6 +135,33 @@ namespace MvcPlanningApplication.Controllers
             //    result.Data = new { Success = false, Message = objEx.Message };
             //    return result;
             //}
+        }
+
+        private List<HaworthOrderCharacteristic> BuildCharacteristics(string Order, string ConfigurationText)
+        {
+            var Characteristics = new List<HaworthOrderCharacteristic>();
+            var CharacteristicMatches = Regex
+                    .Matches(ConfigurationText, @".*?:\w+\s") //must match: multiple words(.*?)->colon(:)->single word(\w+)->space(\s)
+                    .Cast<Match>();
+
+
+            if (CharacteristicMatches == null)
+            {
+                Logger.Info(string.Format("Order {0} has invalid ConfigurationText: {1}", ConfigurationText));
+                return Characteristics;
+            }
+
+            foreach (var objStr in CharacteristicMatches)
+            {
+                var strArray = objStr.Value.Split(':');
+
+                if (strArray.Count() > 1)
+                    Characteristics.Add(new HaworthOrderCharacteristic { OrderNumber = Order, Characteristic = strArray[0], Value = strArray[1] });
+                else
+                    Characteristics.Add(new HaworthOrderCharacteristic { OrderNumber = Order, Characteristic = strArray[0], Value = string.Empty });
+            }
+
+            return Characteristics;
         }
 
         public ActionResult Dispatch()
@@ -341,42 +383,14 @@ namespace MvcPlanningApplication.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetCharacteristics(string OrderNo)
+        public string GetCharacteristics(string OrderNo)
         {
-            var objQueryDefs = new QueryDefinitions();
-            var strSQL = objQueryDefs.GetQuery("SelectHaworthSupplierDemandsByOrderNo", new string[] { OrderNo });
-            Logger.Debug("Getting Characteristics...");
+            List<HaworthOrderCharacteristic> Characteristics;
             JsonResult viewresult = new JsonResult();
-            string ConfigurationText;
 
             try
             {
-                using (var db = new PlanningApplicationDb())
-                    ConfigurationText = db.Database.SqlQuery<HaworthSupplierDemand>(strSQL)
-                        .DefaultIfEmpty(new HaworthSupplierDemand { POItemConfigurationText = "No Configuration Text:Found" })
-                        .SingleOrDefault()
-                        .POItemConfigurationText + " "; //I need to add a space so my regex will match the last characteristic...
-
-                var CharacteristicMatches = Regex
-                    .Matches(ConfigurationText, @".*?:\w+\s") //must match: multiple words(.*?)->colon(:)->single word(\w+)->space(\s)
-                    .Cast<Match>();
-
-                var strBldr = new StringBuilder();
-                var Characteristics = new List<HaworthOrderCharacteristic>();
-                foreach (var objStr in CharacteristicMatches)
-                {
-                    var strArray = objStr.Value.Split(':');
-
-                    if (strArray.Count() > 1)
-                        Characteristics.Add(new HaworthOrderCharacteristic { Characteristic = strArray[0], Value = strArray[1] });
-                    else
-                        Characteristics.Add(new HaworthOrderCharacteristic { Characteristic = strArray[0], Value = string.Empty });
-                }
-
-                viewresult.Data = new
-                {
-                    aaData = Characteristics
-                };
+                
 
             }
             catch (Exception objEx)
@@ -385,8 +399,21 @@ namespace MvcPlanningApplication.Controllers
                 Logger.Debug(objEx.Message);
             }
 
+            using (var db = new PlanningApplicationDb())
+            {
+                Characteristics = db.HaworthOrders
+                    .Where(o => o.OrderNumber.Equals(OrderNo))
+                    .SingleOrDefault()
+                    .Characteristics
+                    .ToList();
+            }
+
             Logger.Debug("Returning Characteristics...");
-            return viewresult;
+            return JsonConvert.SerializeObject(new
+            {
+                aaData = Characteristics
+            }, serializerSettings);
+
         }
 
         [HttpPost]

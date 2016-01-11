@@ -62,6 +62,16 @@ namespace MvcPlanningApplication.Models {
         
         /// <summary>
         ///   Looks up a localized string similar to DELETE
+        ///  FROM HaworthOrderCharacteristics.
+        /// </summary>
+        internal static string DeleteAllHaworthOrderCharacteristics {
+            get {
+                return ResourceManager.GetString("DeleteAllHaworthOrderCharacteristics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DELETE
         ///FROM HaworthOrders.
         /// </summary>
         internal static string DeleteAllHaworthOrders {
@@ -120,17 +130,6 @@ namespace MvcPlanningApplication.Models {
         internal static string SelectCustomerOrdersByPO {
             get {
                 return ResourceManager.GetString("SelectCustomerOrdersByPO", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to SELECT *
-        ///  FROM HaworthSupplierDemands
-        ///  WHERE OrderNumber = &apos;~p0&apos;.
-        /// </summary>
-        internal static string SelectHaworthSupplierDemandsByOrderNo {
-            get {
-                return ResourceManager.GetString("SelectHaworthSupplierDemandsByOrderNo", resourceCulture);
             }
         }
         

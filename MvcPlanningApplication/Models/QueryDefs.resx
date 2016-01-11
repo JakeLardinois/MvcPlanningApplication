@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DeleteAllHaworthOrderCharacteristics" xml:space="preserve">
+    <value>DELETE
+  FROM HaworthOrderCharacteristics</value>
+  </data>
   <data name="DeleteAllHaworthOrders" xml:space="preserve">
     <value>DELETE
 FROM HaworthOrders</value>
@@ -149,11 +153,6 @@ WHERE coitem.co_cust_num IN (~p0) AND coitem.stat = '~p1'</value>
 	INNER JOIN coitem ON co.co_num = coitem.co_num
   WHERE co.cust_po IN (~p0) AND coitem.stat IN ('O', 'F', 'C')
   ORDER BY co_num ASC</value>
-  </data>
-  <data name="SelectHaworthSupplierDemandsByOrderNo" xml:space="preserve">
-    <value>SELECT *
-  FROM HaworthSupplierDemands
-  WHERE OrderNumber = '~p0'</value>
   </data>
   <data name="SpJobPickListByJobAndSuffix" xml:space="preserve">
     <value>EXEC WTF_App.[dbo].[Rpt_JobPickListSp] @Job = '~p0',
