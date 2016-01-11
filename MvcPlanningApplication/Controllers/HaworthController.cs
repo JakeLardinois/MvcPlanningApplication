@@ -64,8 +64,8 @@ namespace MvcPlanningApplication.Controllers
         {
             var result = new JsonResult();
 
-            try
-            {
+            //try
+            //{
                 var objQueryDefs = new QueryDefinitions();
 
                 Logger.Info("Get Haworth XML Orders from FTP Site");
@@ -78,7 +78,7 @@ namespace MvcPlanningApplication.Controllers
                     Logger.Info("Re-Seed the Haworth Order Table");
                     db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthOrders" }));
                     Logger.Info("Upload and Save the new Haworth Orders to the Database");
-                    db.HaworthOrders.AddRange(Orders);
+                    var objHaworthOrders = db.HaworthOrders.AddRange(Orders);
                     db.SaveChanges();
                     Logger.Info("Archive Haworth Orders");
                     Orders.Archive(Settings.HaworthArchiveLocation + string.Format("{0:yyyyMMdd}", DateTime.Now) + ".xml");
@@ -94,27 +94,32 @@ namespace MvcPlanningApplication.Controllers
                     Logger.Info("Re-Seed the Haworth Supplier Demands Table");
                     db.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthSupplierDemands" }));
                     Logger.Info("Upload and Save the new Haworth Supplier Demand to the Database");
-                    db.HaworthSupplierDemands.AddRange(objSupplierDemands);
+                    var objHaworthSupplierDemands = db.HaworthSupplierDemands.AddRange(objSupplierDemands);
                     db.SaveChanges();
 
-                    //foreach (var objHaworthOrder in db.HaworthOrders)
-                    //{
-                    //    var objHaworthSupplierDemand = db.HaworthSupplierDemands
-                    //        .Where(s => s.OrderNumber.Equals(objHaworthOrder.OrderNumber))
-                    //}
+                    foreach (var objHaworthOrder in objHaworthOrders)
+                    {
+                        var strPOItemConfig = objHaworthSupplierDemands
+                            .Where(s => !string.IsNullOrEmpty(s.OrderNumber) && s.OrderNumber.Equals(objHaworthOrder.OrderNumber))
+                            .FirstOrDefault()
+                            .POItemConfigurationText;
+                        Logger.Debug(strPOItemConfig);
+                    }
 
                 }
                 Logger.Info("The planning data was sucessfully generated!");
                 
                 result.Data = new { Success = true, Message = "The planning data was sucessfully generated!" };
                 return result;
-            }
-            catch(Exception objEx)
-            {
-                Logger.Info("The planning data generation had an error..." + Environment.NewLine);
-                result.Data = new { Success = false, Message = objEx.Message };
-                return result;
-            }
+            //}
+            //catch(Exception objEx)
+            //{
+            //    Logger.Info("The planning data generation had an error..." + 
+            //        Environment.NewLine +
+            //        "/t" + objEx.Message);
+            //    result.Data = new { Success = false, Message = objEx.Message };
+            //    return result;
+            //}
         }
 
         public ActionResult Dispatch()
@@ -382,6 +387,12 @@ namespace MvcPlanningApplication.Controllers
 
             Logger.Debug("Returning Characteristics...");
             return viewresult;
+        }
+
+        [HttpPost]
+        public void PrintIDLabel(string CustomerOrder, string PurchaseOrder, string SalesOrder)
+        {
+            var temp = "dood";
         }
     }
 }

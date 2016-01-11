@@ -90,6 +90,27 @@ namespace MvcPlanningApplication.Models {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT coitem.co_num, 
+        ///	coitem.co_line, 
+        ///	coitem.co_release, 
+        ///	coitem.item, 
+        ///	coitem.qty_ordered, 
+        ///	coitem.due_date, 
+        ///	coitem.promise_date, 
+        ///	coitem.ref_num, 
+        ///	coitem.ref_line_suf, 
+        ///	co.cust_po
+        ///FROM coitem
+        ///	INNER JOIN co ON coitem.co_num = co.co_num
+        ///WHERE coitem.co_cust_num IN (~p0) AND coitem.stat = &apos;~p1&apos;.
+        /// </summary>
+        internal static string SelectCOItemByCustNumListAndStatus {
+            get {
+                return ResourceManager.GetString("SelectCOItemByCustNumListAndStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT co.co_num, coitem.co_line, coitem.co_release, coitem.item, coitem.qty_ordered, coitem.promise_date, coitem.co_release, coitem.due_date, co.cust_po
         ///  FROM co
         ///	INNER JOIN coitem ON co.co_num = coitem.co_num

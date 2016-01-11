@@ -9,8 +9,9 @@
 <table id="objItems">
     <thead>
         <tr class="dtSearchFields">
+            <th></th>
             <th>
-                <input class="dtSearchField" style="width: 100px" placeholder="Job" id="JobFilter">
+                <input class="dtSearchField" style="width: 100px" placeholder="JobNumber" id="JobNumberFilter">
             </th>
             <th>
                 <input class="dtSearchField" style="width: 100px" placeholder="CONumber" id="CONumberFilter">
@@ -36,6 +37,9 @@
                 <input class="dtSearchField" style="width: 100px" placeholder="Fabric" id="FabricFilter">
             </th>
             <th>
+                <input class="dtSearchField" style="width: 100px" placeholder="ArmCaps" id="ArmCapsFilter">
+            </th>
+            <th>
                 <input class="dtSearchField" style="width: 100px" placeholder="From" id="ShipByDateFromFilter">
                 <br />
                 <input class="dtSearchField" style="width: 100px" placeholder="To" id="ShipByDateToFilter">
@@ -47,8 +51,9 @@
             </th>
         </tr>
         <tr>
+            <th></th>
             <th>
-                <label for="JobFilter">Job</label>
+                <label for="JobNumberFilter">Job</label>
             </th>
             <th>
                 <label for="CONumberFilter">CO</label>
@@ -75,6 +80,9 @@
                 <label for="FabricFilter">Fabric</label>
             </th>
             <th>
+                <label for="ArmCapsFilter">Arm Caps</label>
+            </th>
+            <th>
                 <label for="ShipByDateFilter">Ship By</label>
             </th>
             <th>
@@ -94,7 +102,8 @@
 @section Scripts{
     <script type="text/javascript">
         var sGetDataUrl = '@Url.Action("GetDispatchData", "Haworth")';
-
+        var sOpenImageUrl = '@Url.Content("~/Content/images/details_open.png")';
+        var sGetPrintIDURL = '@Url.Action("PrintIDLabel", "Haworth")';
     </script>
 
     <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/datatables")">

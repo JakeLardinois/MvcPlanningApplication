@@ -36,7 +36,15 @@ $(document).ready(function () {
             }, 1000); //wait 1000 milliseconds (1 sec) before executing the function...
         },
         "aoColumns": [
-            { "mDataProp": "Job" },
+            {
+                "render": makePrintIDBtn,
+                "mDataProp": null, //Note that I had a problem with this column being first because when the datatable loads, it automatically sorts based on the first column; since this column had a null value
+                "sWidth": 60,
+                "sClass": "characteristics center", //applies the control class to the cell and the center class(which center aligns the image)
+                "bSortable": false,
+                "sDefaultContent": '<img src="' + sOpenImageUrl + '">'
+            },
+            { "mDataProp": "JobOrder" },
             { "mDataProp": "CustomerOrder" },
             { "mDataProp": "PurchaseOrder" },
             { "mDataProp": "SalesOrder" },
@@ -45,6 +53,7 @@ $(document).ready(function () {
             { "mDataProp": "Shell" },
             { "mDataProp": "Frame" },
             { "mDataProp": "Fabric" },
+            { "mDataProp": "ArmCaps" },
             {
                 "mDataProp": "ShipByDate",
                 "render": function (data, type, full, meta) {
@@ -61,6 +70,25 @@ $(document).ready(function () {
     });
 });
 
+function makePrintIDBtn(oObj) {
+    var sCOrderNo = oObj.CustomerOrder;
+    var sPOrderNo = oObj.PurchaseOrder;
+    var sSOrderNo = oObj.SalesOrder;
+    var sHref;
+
+    sHref = sGetPrintIDURL + '?&CustomerOrder=' + sCOrderNo + '&PurchaseOrder=' + sPOrderNo + '&SalesOrder=' + sSOrderNo; //generate the query string
+    return "<a href=\"javascript:PrintIDLabel('" + sHref + "')\" class='Process' title='Print ID Label'><img src='" + sOpenImageUrl + "' height='20' width='20'></a>";
+};
+
+function PrintIDLabel(sUrl) {
+    $.ajaxSetup({ async: false, dataType: "json" });
+
+    $.post(sUrl, {})
+        .done(function (data) {
+            //StatusCodes = data;
+        });
+    $.ajaxSetup({ async: true }); //Sets ajax back up to synchronous
+}
 
 function AppendAdditionalParameters(aoData) {
     var strTemp;
@@ -72,55 +100,79 @@ function AppendAdditionalParameters(aoData) {
     * I had previously implemented this in the server side code, but then any time my UI changed I would need to recompile the web service... So I fixed the implementation...*/
     aoData.push({
         "name": "FixedColumnHeaders",
-        "value": ["Job", "CustomerOrder", "PurchaseOrder", "SalesOrder", "QuantityOrdered", "ItemNumber", "Shell", "Frame", "Fabric", "ShipByDate", "DockDate", "StatusCode", "RequiredQty", "DockDate"]
+        "value": [null, "JobOrder", "CustomerOrder", "PurchaseOrder", "SalesOrder", "QuantityOrdered", "ItemNumber", "Shell", "Frame", "Fabric", "ArmCaps", "ShipByDate", "DockDate", "StatusCode", "RequiredQty", "DockDate"]
     });
 
     /*iterates through the array and updates the appropriate object using the below 'case' statements. I was having an issue where sSearch was getting populated twice (ie sSearch_4 & sSearch_7 would contain the same search string) 
     * I solved the issue by manually setting sSearch in my aoData array below. Note that I populate the corresponding bRegex variable; this value isn't used anywhere but could be for future implementations...*/
     for (var i = 0; i < aoData.length; i++) {
         switch (aoData[i].name) {
-            case "sSearch_0":
-                aoData[i].value = $('#JobFilter').val();
-                break;
-            case "bRegex_0":
-                aoData[i].value = true;
-                break;
             case "sSearch_1":
-                aoData[i].value = $('#OrderNumberFilter').val();
+                aoData[i].value = $('#JobNumberFilter').val();
                 break;
             case "bRegex_1":
                 aoData[i].value = true;
                 break;
+            case "sSearch_2":
+                aoData[i].value = $('#CONumberFilter').val();
+                break;
+            case "bRegex_2":
+                aoData[i].value = true;
+                break;
             case "sSearch_3":
-                aoData[i].value = $('#ShellFilter').val();
+                aoData[i].value = $('#PONumberFilter').val();
                 break;
             case "bRegex_3":
                 aoData[i].value = true;
                 break;
             case "sSearch_4":
-                aoData[i].value = $('#FrameFilter').val();
+                aoData[i].value = $('#SONumberFilter').val();
                 break;
             case "bRegex_4":
                 aoData[i].value = true;
                 break;
-            case "sSearch_5":
-                aoData[i].value = $('#FabricFilter').val();
-                break;
-            case "bRegex_5":
-                aoData[i].value = true;
-                break;
             case "sSearch_6":
-                aoData[i].value = $('#ShipByDateFromFilter').val() + '~' +
-                        $('#ShipByDateToFilter').val();
+                aoData[i].value = $('#ItemNumberFilter').val();
                 break;
             case "bRegex_6":
                 aoData[i].value = true;
                 break;
             case "sSearch_7":
+                aoData[i].value = $('#ShellFilter').val();
+                break;
+            case "bRegex_7":
+                aoData[i].value = true;
+                break;
+            case "sSearch_8":
+                aoData[i].value = $('#FrameFilter').val();
+                break;
+            case "bRegex_8":
+                aoData[i].value = true;
+                break;
+            case "sSearch_9":
+                aoData[i].value = $('#FabricFilter').val();
+                break;
+            case "bRegex_9":
+                aoData[i].value = true;
+                break;
+            case "sSearch_10":
+                aoData[i].value = $('#ArmCapsFilter').val();
+                break;
+            case "bRegex_10":
+                aoData[i].value = true;
+                break;
+            case "sSearch_11":
+                aoData[i].value = $('#ShipByDateFromFilter').val() + '~' +
+                        $('#ShipByDateToFilter').val();
+                break;
+            case "bRegex_11":
+                aoData[i].value = true;
+                break;
+            case "sSearch_12":
                 aoData[i].value = $('#DockDateFromFilter').val() + '~' +
                         $('#DockDateToFilter').val();
                 break;
-            case "bRegex_7":
+            case "bRegex_12":
                 aoData[i].value = true;
                 break;
         }

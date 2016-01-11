@@ -6,12 +6,16 @@ using System.Web;
 using System.Collections.ObjectModel;
 using System.Text;
 using MvcPlanningApplication.Models.DataTablesMVC;
+using log4net;
 
 
 namespace MvcPlanningApplication.Models.Haworth
 {
     public class HaworthDispatchJobRepository
     {
+        private static readonly ILog Logger = LogHelper.GetLogger();
+
+
         public IList<HaworthDispatchJob> GetOrders(out int searchRecordCount, JQueryDataTablesModel DataTablesModel, bool isDownloadReport = false)
         {
             ReadOnlyCollection<SortedColumn> sortedColumns = DataTablesModel.GetSortedColumns();
@@ -23,7 +27,7 @@ namespace MvcPlanningApplication.Models.Haworth
             StringBuilder objStrBldr = new StringBuilder();
             var objQueryDefinitions = new QueryDefinitions();
 
-
+            Logger.Debug("Fired 1");
             var objHaworthDispatchJobSearch = new HaworthDispatchJobSearch();
             for (int intCounter = 0; intCounter < DataTablesModel.iColumns; intCounter++)
             {
@@ -45,25 +49,25 @@ namespace MvcPlanningApplication.Models.Haworth
                 }
             }
 
-            objQueryDefinitions.GetQuery("SelectCOItemByCustNumListAndStatus", new string[] { })
             using (var db = new SytelineDbEntities())
             {
                 using (var db2 = new PlanningApplicationDb())
                 {
                     //Do your filtering here using the above objHaworthDispatchJobSearch object...
-                    orders = db.Database.SqlQuery<COItem>()
-                        .Where(c => c.stat.Equals("O"))
-                        .Where(c => c.co_cust_num.Equals("   3417"))
+                    orders = db.Database.SqlQuery<COItem>(objQueryDefinitions.GetQuery("SelectCOItemByCustNumListAndStatus", new string[] { "3417".AddSingleQuotesAndPadLeft(7), "O" }))
                         .Select(g => new HaworthDispatchJob
                         {
                             Job = g.ref_num,
                             JobSuffix = g.ref_line_suf.HasValue ? (short)g.ref_line_suf : (short)0,
                             co_num = g.co_num,
                             co_line = g.co_line,
-                            cust_po = db.coes.Where(c => c.co_num.Equals(g.co_num))
-                                .FirstOrDefault()
-                                .cust_po,
+                            cust_po = g.cust_po,
                             QuantityOrdered = g.qty_ordered,
+                            PurchaseOrder = g.PurchaseOrder,
+                            SalesOrder = db2.HaworthSupplierDemands
+                                .Where(s => !string.IsNullOrEmpty(s.OrderNumber) && s.OrderNumber.Equals(s.OrderNumber))
+                                .FirstOrDefault()
+                                .SOrderNumber,
                             ItemNumber = g.item,
                             DockDate = g.due_date.HasValue ? (DateTime)g.due_date : SharedVariables.MINDATE,
                             ShipByDate = g.promise_date.HasValue ? (DateTime)g.promise_date : SharedVariables.MINDATE,
@@ -79,56 +83,26 @@ namespace MvcPlanningApplication.Models.Haworth
                                     //QtyAvailable = g.det_QtyAvailable ?? 0
                                 })
                                 .ToList()
-                        })
-                        .Join(db2.HaworthSupplierDemands, 
-                            dj => dj.PurchaseOrder,
-                            sd => sd.OrderNumber,
-                            (dj, sd) => new { dj, sd})
-                        .Select(g => new HaworthDispatchJob
-                        {
-                            Job = g.dj.ref_num,
-                            JobSuffix = g.ref_line_suf.HasValue ? (short)g.ref_line_suf : (short)0,
-                            co_num = g.co_num,
-                            co_line = g.co_line,
-                            cust_po = db.coes.Where(c => c.co_num.Equals(g.co_num))
-                                .FirstOrDefault()
-                                .cust_po,
-                            QuantityOrdered = g.qty_ordered,
-                            ItemNumber = g.item,
-                            DockDate = g.due_date.HasValue ? (DateTime)g.due_date : SharedVariables.MINDATE,
-                            ShipByDate = g.promise_date.HasValue ? (DateTime)g.promise_date : SharedVariables.MINDATE,
-                            DispatchJobMaterials = db.jobmatls
-                                .Where(m => m.job.Equals(g.ref_num))
-                                .Select(jm => new HaworthDispatchJobMaterial
-                                {
-                                    JobMaterial = jm.item,
-                                    JobMaterialDescription = jm.description,
-                                    UnitOfMeasure = jm.u_m
-                                    //QtyRequired = g.matl_qty * objDispatchJob.QuantityOrdered,
-                                    //QtyIssued = g.qty_issued * objDispatchJob.QuantityOrdered,
-                                    //QtyAvailable = g.det_QtyAvailable ?? 0
-                                })
-                                .ToList()
-                        }))
+                        });
+
+                    //needed this to get the proper pagination values. by adding it here, i was hoping to optomize performance and still leverage deferred execution with the above queries
+                    // and the take values below...
+                    searchRecordCount = orders.Count();
+
+                    
+                    IEnumerable<HaworthDispatchJob> obj;
+                    if (isDownloadReport)
+                        obj = orders
+                            .ToList();
+                    else
+                        obj = orders
+                            .Skip(DataTablesModel.iDisplayStart)
+                            .Take(DataTablesModel.iDisplayLength)
+                            .ToList();
+
+
+                    return obj.ToList();
                 }
-
-                //needed this to get the proper pagination values. by adding it here, i was hoping to optomize performance and still leverage deferred execution with the above queries
-                // and the take values below...
-                searchRecordCount = orders.Count();
-
-
-                IEnumerable<HaworthDispatchJob> obj;
-                if (isDownloadReport)
-                    obj = orders
-                        .ToList();
-                else
-                    obj = orders
-                        .Skip(DataTablesModel.iDisplayStart)
-                        .Take(DataTablesModel.iDisplayLength)
-                        .ToList();
-
-
-                return obj.ToList();
             }
         }
     }

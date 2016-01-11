@@ -128,6 +128,21 @@ FROM HaworthSupplierDemands</value>
   <data name="ReSeedTable" xml:space="preserve">
     <value>DBCC CHECKIDENT (~p0, RESEED, 0)</value>
   </data>
+  <data name="SelectCOItemByCustNumListAndStatus" xml:space="preserve">
+    <value>SELECT coitem.co_num, 
+	coitem.co_line, 
+	coitem.co_release, 
+	coitem.item, 
+	coitem.qty_ordered, 
+	coitem.due_date, 
+	coitem.promise_date, 
+	coitem.ref_num, 
+	coitem.ref_line_suf, 
+	co.cust_po
+FROM coitem
+	INNER JOIN co ON coitem.co_num = co.co_num
+WHERE coitem.co_cust_num IN (~p0) AND coitem.stat = '~p1'</value>
+  </data>
   <data name="SelectCustomerOrdersByPO" xml:space="preserve">
     <value>SELECT co.co_num, coitem.co_line, coitem.co_release, coitem.item, coitem.qty_ordered, coitem.promise_date, coitem.co_release, coitem.due_date, co.cust_po
   FROM co
