@@ -85,15 +85,30 @@ namespace MvcPlanningApplication.Controllers
                 Logger.Info("Add the Characteristics list for each Haworth Order");
                 foreach (var objHaworthOrder in Orders)
                 {
-                    var strPOItemConfig = objSupplierDemands
+                    var objSupplierDemand = objSupplierDemands
                         .Where(s => !string.IsNullOrEmpty(s.OrderNumber) && s.OrderNumber.Equals(objHaworthOrder.OrderNumber))
-                        .DefaultIfEmpty(new HaworthSupplierDemand { POItemConfigurationText = string.Empty })
-                        .FirstOrDefault()
-                        .POItemConfigurationText;
+                        .DefaultIfEmpty(new HaworthSupplierDemand { POItemConfigurationText = string.Empty, CatalogPartNo = string.Empty })
+                        .FirstOrDefault();
 
+                    var strPOItemConfig = objSupplierDemand.POItemConfigurationText;
                     Logger.Debug(string.Format("Haworth Order: {0} has characteristics string: {1}", objHaworthOrder, strPOItemConfig));
                     if (!string.IsNullOrEmpty(strPOItemConfig))
+                    {
                         objHaworthOrder.Characteristics = BuildCharacteristics(objHaworthOrder.OrderNumber, strPOItemConfig);
+
+                        var strCatalogPartNo = objSupplierDemand.CatalogPartNo;
+                        if (!string.IsNullOrEmpty(strCatalogPartNo))
+                        {
+                            var objStrArray = strCatalogPartNo.Split(new char[] { ',' });
+                            objHaworthOrder.Characteristics.Add(new HaworthOrderCharacteristic
+                            {
+                                Characteristic = "Frame Color",
+                                Value = objStrArray[objStrArray.Length - 1],
+                                OrderNumber = objHaworthOrder.OrderNumber
+                            });
+                        }
+                            
+                    }
                         
                     Logger.Debug(strPOItemConfig);
                 }
@@ -153,7 +168,7 @@ namespace MvcPlanningApplication.Controllers
 
             if (CharacteristicMatches == null)
             {
-                Logger.Info(string.Format("Order {0} has invalid ConfigurationText: {1}", ConfigurationText));
+                Logger.Info(string.Format("Order {0} has invalid ConfigurationText: {1}", Order, ConfigurationText));
                 return Characteristics;
             }
 
@@ -428,5 +443,7 @@ namespace MvcPlanningApplication.Controllers
         {
             var temp = "dood";
         }
+
+
     }
 }

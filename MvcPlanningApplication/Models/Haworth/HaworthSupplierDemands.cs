@@ -41,6 +41,7 @@ namespace MvcPlanningApplication.Models.Haworth
                         POItemConfigurationText = objRow.Field<string>("PO Item Configuration Text"),
                         SO = objRow.Field<string>("SO No."),
                         SOLine = objRow.Field<string>("SO Item"),
+                        CatalogPartNo = objRow.Field<string>("Catalog Part Number")
                     });
                 }
                 catch (Exception objEx)

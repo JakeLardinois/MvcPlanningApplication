@@ -59,7 +59,6 @@ namespace MvcPlanningApplication.Models.Haworth
                 while (!reader.EndOfStream)
                     FtpFiles.Add(reader.ReadLine());
                 reader.Close();
-                responseStream.Close();
                 response.Close();
 
                 mStrBldrXML = new StringBuilder();

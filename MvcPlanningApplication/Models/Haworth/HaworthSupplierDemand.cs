@@ -39,5 +39,6 @@ namespace MvcPlanningApplication.Models.Haworth
         }
         public string SO { get; set; }
         public string SOLine { get; set; }
+        public string CatalogPartNo { get; set; }
     }
 }
