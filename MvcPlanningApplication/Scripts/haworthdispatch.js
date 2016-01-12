@@ -37,10 +37,9 @@ $(document).ready(function () {
         },
         "aoColumns": [
             {
-                "render": makePrintIDBtn,
                 "mDataProp": null, //Note that I had a problem with this column being first because when the datatable loads, it automatically sorts based on the first column; since this column had a null value
                 "sWidth": 60,
-                "sClass": "characteristics center", //applies the control class to the cell and the center class(which center aligns the image)
+                "sClass": "printIDLabel center", //applies the control class to the cell and the center class(which center aligns the image)
                 "bSortable": false,
                 "sDefaultContent": '<img src="' + sOpenImageUrl + '">'
             },
@@ -68,27 +67,30 @@ $(document).ready(function () {
             }
         ]
     });
+
+    $('#objItems tbody').on('click', 'td.printIDLabel', function () {
+        var nTr;
+        var rowIndex;
+        var objRecord;
+
+        nTr = this.parentNode;
+
+        rowIndex = oTable.row(nTr).index(); //get the index of the current row
+
+        //alert(oTable.fnGetData(oTable.$('tr.row_selected')[0])[rowIndex].co_num);// works!!
+        objRecord = oTable.row(rowIndex).data();
+
+        var iframe = document.createElement('iframe');
+        iframe.style.height = "0px";
+        iframe.style.width = "0px";
+        iframe.src = sGetPrintIDURL +
+            "?&CustomerOrder='" + objRecord.CustomerOrder + "'" +
+            "&PurchaseOrder='" + objRecord.PurchaseOrder + "'" +
+            "&SalesOrder='" + objRecord.SalesOrder + "'"; //parameterizes the json array aoData and appends it to the URL; HTTP GET standard only allows parameters to be sent via the URL
+        document.body.appendChild(iframe);
+    });
 });
 
-function makePrintIDBtn(oObj) {
-    var sCOrderNo = oObj.CustomerOrder;
-    var sPOrderNo = oObj.PurchaseOrder;
-    var sSOrderNo = oObj.SalesOrder;
-    var sHref;
-
-    sHref = sGetPrintIDURL + '?&CustomerOrder=' + sCOrderNo + '&PurchaseOrder=' + sPOrderNo + '&SalesOrder=' + sSOrderNo; //generate the query string
-    return "<a href=\"javascript:PrintIDLabel('" + sHref + "')\" class='Process' title='Print ID Label'><img src='" + sOpenImageUrl + "' height='20' width='20'></a>";
-};
-
-function PrintIDLabel(sUrl) {
-    $.ajaxSetup({ async: false, dataType: "json" });
-
-    $.post(sUrl, {})
-        .done(function (data) {
-            //StatusCodes = data;
-        });
-    $.ajaxSetup({ async: true }); //Sets ajax back up to synchronous
-}
 
 function AppendAdditionalParameters(aoData) {
     var strTemp;

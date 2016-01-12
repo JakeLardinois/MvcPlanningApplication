@@ -14,6 +14,7 @@ using System.Text;
 using MvcPlanningApplication.Models.Haworth;
 using MvcPlanningApplication.Models.DataTablesMVC;
 using Newtonsoft.Json;
+using Microsoft.Reporting.WebForms;
 
 
 
@@ -438,10 +439,73 @@ namespace MvcPlanningApplication.Controllers
 
         }
 
-        [HttpPost]
+        [HttpGet]
         public void PrintIDLabel(string CustomerOrder, string PurchaseOrder, string SalesOrder)
         {
-            var temp = "dood";
+            string strReportType = "PDF";
+            LocalReport objLocalReport;
+            ReportParameter[] objParameterArray;
+            string deviceInfo = "";
+            string mimeType;
+            string encoding;
+            string fileNameExtension;
+            Warning[] warnings;
+            string[] streams;
+            HaworthSupplierDemand objHaworthSupplierDemand;
+
+            using (var db = new PlanningApplicationDb())
+            {
+                objHaworthSupplierDemand = db.HaworthSupplierDemands
+                    .Where(h => h.OrderNumber.Equals("4501745826.00010.0001"))
+                    .SingleOrDefault();
+            }
+            objLocalReport = new LocalReport { ReportPath = Server.MapPath(Settings.ReportDirectory + "HaworthIDLabel.rdlc") };
+
+            objParameterArray = new ReportParameter[] {
+                new ReportParameter("ItemID", "119-2706"),
+                new ReportParameter("ItemDescription", "Description of Test Item Number"),
+                new ReportParameter("CatalogNo", objHaworthSupplierDemand.CatalogPartNo),
+                new ReportParameter("MfgDate", DateTime.Now.ToString("yyyy - MMM - dd")),
+                new ReportParameter("SalesOrderNo", objHaworthSupplierDemand.SO),
+                new ReportParameter("SalesOrderLine", objHaworthSupplierDemand.SOLine.PadLeft(6, '0')),
+                new ReportParameter("AddressLine1", "Haworth Inc"),
+                new ReportParameter("AddressLine2", "1 Haworth Ctr, Holland, MI USA"),
+                new ReportParameter("AddressLine3", "Assembled in US with US and foreign Components")
+            };
+            objLocalReport.SetParameters(objParameterArray);
+            objLocalReport.Refresh();
+
+            //The DeviceInfo settings should be changed based on the reportType
+            //http://msdn2.microsoft.com/en-us/library/ms155397.aspx
+            deviceInfo = string.Format(
+                        "<DeviceInfo>" +
+                        "<PageHeight>2in</PageHeight>" +
+                        "<PageWidth>4in</PageWidth>" +
+                        "<MarginBottom>0in</MarginBottom>" +
+                        "<MarginTop>0in</MarginTop>" +
+                        "<MarginLeft>0in</MarginLeft>" +
+                        "<MarginRight>0in</MarginRight>" +
+                        "</DeviceInfo>", strReportType);
+
+            //Render the report
+            var renderedBytes = objLocalReport.Render(
+                strReportType,
+                deviceInfo,
+                out mimeType,
+                out encoding,
+                out fileNameExtension,
+                out streams,
+                out warnings);
+
+            //Clear the response stream and write the bytes to the outputstream
+            //Set content-disposition to "attachment" so that user is prompted to take an action
+            //on the file (open or save)
+            Response.Buffer = true;
+            Response.Clear();
+            Response.ContentType = mimeType;
+            Response.AddHeader("content-disposition", "attachment; filename=WorkOrderEquip" + DateTime.Now.Year + DateTime.Now.Month + DateTime.Now.Day + "." + fileNameExtension);
+            Response.BinaryWrite(renderedBytes);
+            Response.Flush(); 
         }
 
 

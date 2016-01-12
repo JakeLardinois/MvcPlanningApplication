@@ -47,5 +47,6 @@ namespace MvcPlanningApplication.Models
         public static string HaworthFTPURI { get { return System.Configuration.ConfigurationManager.AppSettings["HaworthFTPURI"]; } }
         public static string HaworthFTPUsername { get { return System.Configuration.ConfigurationManager.AppSettings["HaworthFTPUsername"]; } }
         public static string HaworthFTPPassword { get { return System.Configuration.ConfigurationManager.AppSettings["HaworthFTPPassword"]; } }
+        public static string ReportDirectory { get { return System.Configuration.ConfigurationManager.AppSettings["ReportDirectory"]; } }
     }
 }
