@@ -159,7 +159,7 @@ $(document).ready(function () {
                 "render": makeGetCharacteristicsBtn,
                 "mDataProp": null, //Note that I had a problem with this column being first because when the datatable loads, it automatically sorts based on the first column; since this column had a null value
                 "sWidth": 60,
-                "sClass": "characteristics center", //applies the control class to the cell and the center class(which center aligns the image)
+                "sClass": "control characteristics center", //applies the control class to the cell and the center class(which center aligns the image)
                 "bSortable": false,
                 "sDefaultContent": '<img src="' + sOpenImageUrl + '">'
             },
@@ -206,6 +206,7 @@ $(document).ready(function () {
     $('input.dtSearchField').on('keyup change', function () {
         oTable.draw(); //forces the table to redraw and the search criteria is set above
     });
+
 });
 
 

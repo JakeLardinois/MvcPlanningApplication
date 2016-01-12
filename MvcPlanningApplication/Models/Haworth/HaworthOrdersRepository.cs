@@ -107,8 +107,11 @@ namespace MvcPlanningApplication.Models.Haworth
                 /*The Below was created because the Entity Framework had a problem doing a filter of a list with a list because of the difficulty it had using deferred execution and the corresponding sql creation*/
                 var StatusCodeList = objHaworthOrderSearch.StatusCode == null ? new[] { strEmptyString } : objHaworthOrderSearch.StatusCode.ToArray<string>();
                 var CharacteristicsList = objHaworthOrderSearch.Characteristics == null ? new[] { strEmptyString } : objHaworthOrderSearch.Characteristics.ToArray<string>();
-                
-                orders = db.HaworthOrders.Include("Characteristics")
+
+                /*.Include("Characteristics") forces the Characteristics list to be populated ('eager' or 'greedy') since it is virtual and therefore 'lazy' by default. This wasn't an issue until I leveraged the
+                 * 'Using' statement for my dbcontext; not including it resulted in a 'The ObjectContext instance has been disposed and can no longer be used for operations that require a connection' Error in my 
+                 * Controller class ('HaworthController')*/
+                orders = db.HaworthOrders.Include("Characteristics") 
                     .Where(c => CharacteristicsList.Contains(strEmptyString) || CharacteristicsList.Intersect(c.Characteristics.Select(n => n.Value)).Any())
                     .Where(c => c.ChangeDate >= objHaworthOrderSearch.ChangeDateGT || objHaworthOrderSearch.ChangeDateGT == DateTime.MinValue)
                     .Where(c => c.ChangeDate <= objHaworthOrderSearch.ChangeDateLT || objHaworthOrderSearch.ChangeDateLT == DateTime.MinValue)

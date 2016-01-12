@@ -23,7 +23,6 @@ namespace MvcPlanningApplication.Controllers
     {
         private static readonly ILog Logger = LogHelper.GetLogger();
         public static string VirtualFilePath { get { return @"/Content/Uploads"; } }
-        private static JsonSerializerSettings serializerSettings = new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Arrays, ReferenceLoopHandling = ReferenceLoopHandling.Serialize };
 
         public ActionResult Index()
         {
@@ -49,7 +48,14 @@ namespace MvcPlanningApplication.Controllers
 
             Logger.Info("Return a JSON object containing the required data for JQuery Datatables");
 
-            
+            /*The issue that I had here was that I wanted to include the characteristics list for each order in the returned Json. However, when I added my foreign Key 'HaworthOrder' to my 'HaworthOrderCharacteristics' class
+             * I would recieve 'A circular reference was detected while serializing an object of type...' Error. The only way to resolve this issue was to use JsonConvert for serialization and pass it the below settings object
+             * so that it could handle the cyclic reference */
+            var serializerSettings = new JsonSerializerSettings
+            {
+                PreserveReferencesHandling = PreserveReferencesHandling.Arrays,
+                ReferenceLoopHandling = ReferenceLoopHandling.Serialize
+            };
             return JsonConvert.SerializeObject(new
             {
                 iTotalRecords = TotalRecordCount,
@@ -386,29 +392,30 @@ namespace MvcPlanningApplication.Controllers
         public string GetCharacteristics(string OrderNo)
         {
             List<HaworthOrderCharacteristic> Characteristics;
-            JsonResult viewresult = new JsonResult();
 
             try
             {
-                
-
+                using (var db = new PlanningApplicationDb())
+                {
+                    Characteristics = db.HaworthOrders
+                        .Where(o => o.OrderNumber.Equals(OrderNo))
+                        .SingleOrDefault()
+                        .Characteristics
+                        .ToList();
+                }
             }
             catch (Exception objEx)
             {
-                viewresult.Data = new List<HaworthOrderCharacteristic> { new HaworthOrderCharacteristic { Characteristic = "Error", Value = objEx.Message } };
+                Characteristics = new List<HaworthOrderCharacteristic> { new HaworthOrderCharacteristic { Characteristic = "Error", Value = objEx.Message } };
                 Logger.Debug(objEx.Message);
             }
 
-            using (var db = new PlanningApplicationDb())
-            {
-                Characteristics = db.HaworthOrders
-                    .Where(o => o.OrderNumber.Equals(OrderNo))
-                    .SingleOrDefault()
-                    .Characteristics
-                    .ToList();
-            }
-
             Logger.Debug("Returning Characteristics...");
+            var serializerSettings = new JsonSerializerSettings
+            {
+                PreserveReferencesHandling = PreserveReferencesHandling.Arrays,
+                ReferenceLoopHandling = ReferenceLoopHandling.Serialize
+            };
             return JsonConvert.SerializeObject(new
             {
                 aaData = Characteristics

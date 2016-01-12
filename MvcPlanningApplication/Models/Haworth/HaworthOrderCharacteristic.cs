@@ -12,7 +12,7 @@ namespace MvcPlanningApplication.Models.Haworth
     {
         public virtual int ID { get; set; }
 
-        public virtual HaworthOrder HaworthOrder { get; set; }
+        public virtual HaworthOrder HaworthOrder { get; set; }//sets up an Entity Framework foreign key
 
         public string OrderNumber { get; set; }
         public string Characteristic { get; set; }
