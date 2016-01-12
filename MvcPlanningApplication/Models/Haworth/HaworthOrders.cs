@@ -211,6 +211,11 @@ namespace MvcPlanningApplication.Models.Haworth
                             break;
                         case "ChangeDate":
                             objOrder.ChangeDate = DateTime.TryParse(objChildNode.InnerText, out dtmTemp) ? dtmTemp : DateTime.MinValue;
+                            /*Logger.Debug(string.Format("Order: {0}\r\nFile: {1}\r\nChange Date Text: {2}\r\nConverted Change Date:{3}",
+                                objOrder.OrderNumber,
+                                objOrder.FileName,
+                                objChildNode.InnerText,
+                                objOrder.ChangeDate));*/
                             break;
                         case "BuyerID":
                             objOrder.BuyerID = objChildNode.InnerText;

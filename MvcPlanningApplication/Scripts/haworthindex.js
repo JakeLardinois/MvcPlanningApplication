@@ -156,7 +156,7 @@ $(document).ready(function () {
         },
         "aoColumns": [
             {
-                "render": makeGetCharacteristicsBtn,
+                //"render": makeGetCharacteristicsBtn,
                 "mDataProp": null, //Note that I had a problem with this column being first because when the datatable loads, it automatically sorts based on the first column; since this column had a null value
                 "sWidth": 60,
                 "sClass": "control characteristics center", //applies the control class to the cell and the center class(which center aligns the image)
@@ -166,7 +166,8 @@ $(document).ready(function () {
             {
                 "mDataProp": "ChangeDate",
                 "render": function (data, type, full, meta) {
-                    return FormatDate(data);
+                    var objDate = new Date(data);
+                    return dateFormat(objDate, "mm-dd-yyyy");  //could also use "mm-dd-yyyy HH:MMTT" which returns 11-01-2012 12:30:00...
                 }
             },
             { "mDataProp": "OrderNumber" },
@@ -181,13 +182,15 @@ $(document).ready(function () {
             {
                 "mDataProp": "DockDate",
                 "render": function (data, type, full, meta) {
-                    return FormatDate(data);
+                    var objDate = new Date(data);
+                    return dateFormat(objDate, "mm-dd-yyyy");
                 }
             },
             {
                 "mDataProp": "ImportDateTime",
                 "render": function (data, type, full, meta) {
-                    return FormatDate(data);
+                    var objDate = new Date(data);
+                    return dateFormat(objDate, "mm-dd-yyyy");
                 }
             },
             {
@@ -207,16 +210,44 @@ $(document).ready(function () {
         oTable.draw(); //forces the table to redraw and the search criteria is set above
     });
 
+    $('#objItems tbody').on('click', 'td.control', function () {
+        var nTr;
+        var rowIndex;
+        var objRecord;
+
+        nTr = this.parentNode;
+
+        rowIndex = oTable.row(nTr).index(); //get the index of the current row
+
+        //alert(oTable.fnGetData(oTable.$('tr.row_selected')[0])[rowIndex].co_num);// works!!
+        objRecord = oTable.row(rowIndex).data();
+
+        $("#CharacteristicsDialogDiv").html(GetCharacteristicsTableHTML());
+
+        oCharacteristicsTable = $('#objCharacteristics').DataTable({
+            "bJQueryUI": true,
+            "aaData": objRecord.Characteristics["$values"],
+            "sDom": "Rlfrtip", //Enables column reorder with resize
+            "sDom": '<"top">rt<"bottom"flp><"clear">', //hides footer that displays 'showing record 1 of 1'...
+            "bProcessing": true,
+            "bFilter": false,   //hides the search box
+            "bPaginate": false, //disables paging functionality
+            "aoColumns": [
+                { "mDataProp": "Characteristic" },
+                { "mDataProp": "Value" }]
+        });
+
+        // Open this Datatable as a modal dialog box.
+        $('#CharacteristicsDialogDiv').dialog({
+            modal: false,
+            resizable: true,
+            position: { my: 'center + center', at: 'center + top', of: $(this).closest('tr') },
+            width: 'auto',
+            autoResize: true,
+            title: ' Order ' + objRecord.OrderNumber
+        });
+    });
 });
-
-
-function makeGetCharacteristicsBtn(oObj) {
-    var sOrderNo = oObj.OrderNumber;
-    var sHref;
-
-    sHref = sGetCharacteristicsURL + '?&OrderNo=' + sOrderNo; //generate the query string
-    return "<a href=\"javascript:loadCharacteristicsDialog('" + sHref + "')\" class='Process' title='View Characteristics'><img src='" + sOpenImageUrl + "' height='20' width='20'></a>";
-};
 
 function FormatFileSelectColumnJSON(x) {
     var finalEdit = new Array();
@@ -258,47 +289,6 @@ function StatusCodes() {
     return StatusCodes;
 }
 var objStatusCodes = StatusCodes();
-
-function loadCharacteristicsDialog(sUrl) {
-    var oCharacteristicsTable;
-    var dataValues;
-
-
-    function GET() {
-        var data = [];
-        for (x = 0; x < arguments.length; ++x)
-            data.push(sUrl.match(new RegExp("/\?".concat(arguments[x], "=", "([^\n&]*)")))[1]);
-        return data;
-    }
-    dataValues = GET("OrderNo");
-
-    $("#CharacteristicsDialogDiv").html(GetCharacteristicsTableHTML());
-
-    oCharacteristicsTable = $('#objCharacteristics').DataTable({
-        "bJQueryUI": true,
-        "sDom": "Rlfrtip", //Enables column reorder with resize
-        "sDom": '<"top">rt<"bottom"flp><"clear">', //hides footer that displays 'showing record 1 of 1'...
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": sUrl, //document.URL,
-        "bFilter": false,   //hides the search box
-        "bPaginate": false, //disables paging functionality
-        "sServerMethod": "POST",
-        "aoColumns": [
-            { "mDataProp": "Characteristic" },
-            { "mDataProp": "Value" }]
-    });
-
-    // Open this Datatable as a modal dialog box.
-    $('#CharacteristicsDialogDiv').dialog({
-        modal: false,
-        resizable: true,
-        position: { my: 'center', at: 'top+150', of: this },
-        width: 'auto',
-        autoResize: true,
-        title: ' Order ' + dataValues[0]
-    });
-}
 
 function AppendAdditionalParameters(aoData) {
     var strTemp;
