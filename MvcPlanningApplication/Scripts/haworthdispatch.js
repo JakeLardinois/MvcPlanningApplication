@@ -1,5 +1,4 @@
 ﻿var oTable;
-var anOpen = [];
 
 
 $(document).ready(function () {
@@ -76,16 +75,13 @@ $(document).ready(function () {
 
 
         nTr = this.parentNode;
-        i = $.inArray(nTr, anOpen);
         
         rowIndex = oTable.row(nTr).index(); //get the index of the current row
+        var row = oTable.row(rowIndex);
 
-        var tr = $(this).closest('tr'); //tr = this.parentNode;
-        var row = oTable.row(tr);
         if (row.child.isShown()) {
             $('img', this).attr('src', sOpenImageUrl);// This row is already open - close it
             row.child.hide();
-            tr.removeClass('shown');
         }
         else {
             $('img', this).attr('src', sCloseImageUrl);// Open this row
@@ -95,7 +91,6 @@ $(document).ready(function () {
                 "?&CustomerOrder='" + objRecord.CustomerOrder + "'" +
                 "&PurchaseOrder='" + objRecord.PurchaseOrder + "'" +
                 "&SalesOrder='" + objRecord.SalesOrder + "'" + '\" />', 'details').show();
-            tr.addClass('shown');
         }
     });
 });
