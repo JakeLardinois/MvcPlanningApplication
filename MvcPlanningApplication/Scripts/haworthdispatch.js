@@ -1,4 +1,5 @@
 ﻿var oTable;
+var anOpen = [];
 
 
 $(document).ready(function () {
@@ -73,21 +74,29 @@ $(document).ready(function () {
         var rowIndex;
         var objRecord;
 
-        nTr = this.parentNode;
 
+        nTr = this.parentNode;
+        i = $.inArray(nTr, anOpen);
+        
         rowIndex = oTable.row(nTr).index(); //get the index of the current row
 
-        //alert(oTable.fnGetData(oTable.$('tr.row_selected')[0])[rowIndex].co_num);// works!!
-        objRecord = oTable.row(rowIndex).data();
+        var tr = $(this).closest('tr'); //tr = this.parentNode;
+        var row = oTable.row(tr);
+        if (row.child.isShown()) {
+            $('img', this).attr('src', sOpenImageUrl);// This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            $('img', this).attr('src', sCloseImageUrl);// Open this row
 
-        var iframe = document.createElement('iframe');
-        iframe.style.height = "0px";
-        iframe.style.width = "0px";
-        iframe.src = sGetPrintIDURL +
-            "?&CustomerOrder='" + objRecord.CustomerOrder + "'" +
-            "&PurchaseOrder='" + objRecord.PurchaseOrder + "'" +
-            "&SalesOrder='" + objRecord.SalesOrder + "'"; //parameterizes the json array aoData and appends it to the URL; HTTP GET standard only allows parameters to be sent via the URL
-        document.body.appendChild(iframe);
+            objRecord = oTable.row(rowIndex).data();
+            row.child('<embed id=\"IDLabel\"  src=\"' + sGetPrintIDURL +
+                "?&CustomerOrder='" + objRecord.CustomerOrder + "'" +
+                "&PurchaseOrder='" + objRecord.PurchaseOrder + "'" +
+                "&SalesOrder='" + objRecord.SalesOrder + "'" + '\" />', 'details').show();
+            tr.addClass('shown');
+        }
     });
 });
 

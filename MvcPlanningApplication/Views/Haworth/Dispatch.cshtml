@@ -93,7 +93,8 @@
     <tbody></tbody>
 </table>
 
-
+<div id="embedHolder">
+</div>
 @section styles{
     <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/datatables")" />
 }
@@ -103,6 +104,7 @@
     <script type="text/javascript">
         var sGetDataUrl = '@Url.Action("GetDispatchData", "Haworth")';
         var sOpenImageUrl = '@Url.Content("~/Content/images/details_open.png")';
+        var sCloseImageUrl = '@Url.Content("~/Content/images/details_close.png")';
         var sGetPrintIDURL = '@Url.Action("PrintIDLabel", "Haworth")';
     </script>
 
