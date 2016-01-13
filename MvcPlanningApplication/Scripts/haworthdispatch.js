@@ -72,26 +72,41 @@ $(document).ready(function () {
         var nTr;
         var rowIndex;
         var objRecord;
-
+        var sHTML;
 
         nTr = this.parentNode;
         
         rowIndex = oTable.row(nTr).index(); //get the index of the current row
-        var row = oTable.row(rowIndex);
+        objRecord = oTable.row(rowIndex).data();
 
-        if (row.child.isShown()) {
-            $('img', this).attr('src', sOpenImageUrl);// This row is already open - close it
-            row.child.hide();
+        var ua = window.navigator.userAgent;
+        var msie = ua.indexOf("MSIE ");
+        if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))//the browser is IE...
+        {
+            sHTML = '<object type=\"application/pdf\" id=\"IDLabel\"  data=\"' + sGetPrintIDURL +
+                "?&CustomerOrder=" + objRecord.CustomerOrder +
+                "&PurchaseOrder=" + objRecord.PurchaseOrder +
+                "&SalesOrder=" + objRecord.SalesOrder + '\" />';
         }
-        else {
-            $('img', this).attr('src', sCloseImageUrl);// Open this row
-
-            objRecord = oTable.row(rowIndex).data();
-            row.child('<embed id=\"IDLabel\"  src=\"' + sGetPrintIDURL +
-                "?&CustomerOrder='" + objRecord.CustomerOrder + "'" +
-                "&PurchaseOrder='" + objRecord.PurchaseOrder + "'" +
-                "&SalesOrder='" + objRecord.SalesOrder + "'" + '\" />', 'details').show();
+        else
+        {
+            sHTML = '<embed id=\"IDLabel\"  src=\"' + sGetPrintIDURL +
+                "?&CustomerOrder=" + objRecord.CustomerOrder +
+                "&PurchaseOrder=" + objRecord.PurchaseOrder +
+                "&SalesOrder=" + objRecord.SalesOrder + '\" />';
         }
+        
+        document.getElementById('embedHolder').innerHTML = sHTML;
+        // Open this Datatable as a modal dialog box.
+        $('#embedHolder').dialog({
+            modal: false,
+            resizable: true,
+            position: { my: 'center + center', at: 'center + top', of: $(this).closest('tr') },
+            width: 450,
+            height: 275,
+            autoResize: true,
+            title: 'Job ' + objRecord.JobOrder
+        });
     });
 });
 

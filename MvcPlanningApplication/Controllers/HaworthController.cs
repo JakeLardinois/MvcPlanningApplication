@@ -452,60 +452,99 @@ namespace MvcPlanningApplication.Controllers
             Warning[] warnings;
             string[] streams;
             HaworthSupplierDemand objHaworthSupplierDemand;
+            HaworthOrder objHaworthOrder;
+            StringBuilder objStrBldr = new StringBuilder();
 
-            using (var db = new PlanningApplicationDb())
+            try
             {
-                objHaworthSupplierDemand = db.HaworthSupplierDemands
-                    .Where(h => h.OrderNumber.Equals("4501745826.00010.0001"))
-                    .SingleOrDefault();
+                using (var db = new PlanningApplicationDb())
+                {
+                    objHaworthSupplierDemand = db.HaworthSupplierDemands
+                        .Where(h => h.OrderNumber.Equals(PurchaseOrder))
+                        .SingleOrDefault();
+                    objHaworthOrder = db.HaworthOrders
+                        .Where(h => h.OrderNumber.Equals(PurchaseOrder))
+                        .SingleOrDefault();
+                }
+
+                if (objHaworthSupplierDemand == null || objHaworthOrder == null)
+                {
+                    objLocalReport = new LocalReport { ReportPath = Server.MapPath(Settings.ReportDirectory + "HaworthIDLabelError.rdlc") };
+
+                    objStrBldr.Clear();
+                    objStrBldr.Append(string.Format("Missing Info!!\r\n\tCustomerOrder:{0}\r\n\tPurchaseOrder:{1}\r\n\tSalesOrder:{2}\r\n\r\n", CustomerOrder, PurchaseOrder, SalesOrder));
+                    if (objHaworthSupplierDemand == null)
+                        objStrBldr.Append("Missing Haworth Supplier Demand Record...\r\n");
+                    if (objHaworthOrder == null)
+                        objStrBldr.Append("Missing Haworth Order Record...\r\n");
+
+                    objParameterArray = new ReportParameter[] {
+                        new ReportParameter("ErrorText", objStrBldr.ToString()),
+                    };
+                }
+                else
+                {
+                    objLocalReport = new LocalReport { ReportPath = Server.MapPath(Settings.ReportDirectory + "HaworthIDLabel.rdlc") };
+
+                    objParameterArray = new ReportParameter[] {
+                        new ReportParameter("ItemID", objHaworthOrder.ItemNumber),
+                        new ReportParameter("ItemDescription", objHaworthOrder.PartInformation.Description),
+                        new ReportParameter("CatalogNo", objHaworthSupplierDemand.CatalogPartNo),
+                        new ReportParameter("MfgDate", DateTime.Now.ToString("yyyy - MMM - dd")),
+                        new ReportParameter("SalesOrderNo", objHaworthSupplierDemand.SO),
+                        new ReportParameter("SalesOrderLine", objHaworthSupplierDemand.SOLine.PadLeft(6, '0')),
+                        new ReportParameter("AddressLine1", "Haworth Inc"),
+                        new ReportParameter("AddressLine2", "1 Haworth Ctr, Holland, MI USA"),
+                        new ReportParameter("AddressLine3", "Assembled in US with US and foreign Components")
+                    };
+                }
+                
+                objLocalReport.SetParameters(objParameterArray);
+                objLocalReport.Refresh();
+
+                //The DeviceInfo settings should be changed based on the reportType
+                //http://msdn2.microsoft.com/en-us/library/ms155397.aspx
+                deviceInfo = string.Format(
+                            "<DeviceInfo>" +
+                            "<PageHeight>2in</PageHeight>" +
+                            "<PageWidth>4in</PageWidth>" +
+                            "<MarginBottom>0in</MarginBottom>" +
+                            "<MarginTop>0in</MarginTop>" +
+                            "<MarginLeft>0in</MarginLeft>" +
+                            "<MarginRight>0in</MarginRight>" +
+                            "</DeviceInfo>", strReportType);
+
+                //Render the report
+                var renderedBytes = objLocalReport.Render(
+                    strReportType,
+                    deviceInfo,
+                    out mimeType,
+                    out encoding,
+                    out fileNameExtension,
+                    out streams,
+                    out warnings);
+
+                //Clear the response stream and write the bytes to the outputstream
+                //Set content-disposition to "attachment" so that user is prompted to take an action
+                //on the file (open or save)
+                Response.Buffer = true;
+                Response.Clear();
+                Response.ContentType = mimeType;
+                Response.AddHeader("content-disposition", "attachment; filename=WorkOrderEquip" + DateTime.Now.Year + DateTime.Now.Month + DateTime.Now.Day + "." + fileNameExtension);
+                Response.BinaryWrite(renderedBytes);
+                Response.Flush(); 
             }
-            objLocalReport = new LocalReport { ReportPath = Server.MapPath(Settings.ReportDirectory + "HaworthIDLabel.rdlc") };
+            catch(Exception objEx)
+            {
+                objStrBldr.Clear();
 
-            objParameterArray = new ReportParameter[] {
-                new ReportParameter("ItemID", "119-2706"),
-                new ReportParameter("ItemDescription", "Description of Test Item Number"),
-                new ReportParameter("CatalogNo", objHaworthSupplierDemand.CatalogPartNo),
-                new ReportParameter("MfgDate", DateTime.Now.ToString("yyyy - MMM - dd")),
-                new ReportParameter("SalesOrderNo", objHaworthSupplierDemand.SO),
-                new ReportParameter("SalesOrderLine", objHaworthSupplierDemand.SOLine.PadLeft(6, '0')),
-                new ReportParameter("AddressLine1", "Haworth Inc"),
-                new ReportParameter("AddressLine2", "1 Haworth Ctr, Holland, MI USA"),
-                new ReportParameter("AddressLine3", "Assembled in US with US and foreign Components")
-            };
-            objLocalReport.SetParameters(objParameterArray);
-            objLocalReport.Refresh();
+                objStrBldr.Append("Exception Thrown!\r\n\t" + objEx.Message);
+                if (objEx.InnerException != null)
+                    objStrBldr.Append("Inner Exception...\r\n\t" + objEx.InnerException.Message);
 
-            //The DeviceInfo settings should be changed based on the reportType
-            //http://msdn2.microsoft.com/en-us/library/ms155397.aspx
-            deviceInfo = string.Format(
-                        "<DeviceInfo>" +
-                        "<PageHeight>2in</PageHeight>" +
-                        "<PageWidth>4in</PageWidth>" +
-                        "<MarginBottom>0in</MarginBottom>" +
-                        "<MarginTop>0in</MarginTop>" +
-                        "<MarginLeft>0in</MarginLeft>" +
-                        "<MarginRight>0in</MarginRight>" +
-                        "</DeviceInfo>", strReportType);
-
-            //Render the report
-            var renderedBytes = objLocalReport.Render(
-                strReportType,
-                deviceInfo,
-                out mimeType,
-                out encoding,
-                out fileNameExtension,
-                out streams,
-                out warnings);
-
-            //Clear the response stream and write the bytes to the outputstream
-            //Set content-disposition to "attachment" so that user is prompted to take an action
-            //on the file (open or save)
-            Response.Buffer = true;
-            Response.Clear();
-            Response.ContentType = mimeType;
-            Response.AddHeader("content-disposition", "attachment; filename=WorkOrderEquip" + DateTime.Now.Year + DateTime.Now.Month + DateTime.Now.Day + "." + fileNameExtension);
-            Response.BinaryWrite(renderedBytes);
-            Response.Flush(); 
+                Logger.Debug(objStrBldr.ToString());
+            }
+            
         }
 
 

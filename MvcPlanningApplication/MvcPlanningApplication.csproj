@@ -456,6 +456,9 @@
     <EmbeddedResource Include="Reports\HaworthIDLabel.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reports\HaworthIDLabelError.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MvcFileUploader\MvcFileUploader.csproj">
