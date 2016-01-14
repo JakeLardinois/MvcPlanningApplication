@@ -48,6 +48,7 @@ $(document).ready(function () {
             { "mDataProp": "PurchaseOrder" },
             { "mDataProp": "SalesOrder" },
             { "mDataProp": "QuantityOrdered" },
+            { "mDataProp": "QuantityRemaining" },
             { "mDataProp": "ItemNumber" },
             { "mDataProp": "Shell" },
             { "mDataProp": "Frame" },
@@ -121,7 +122,7 @@ function AppendAdditionalParameters(aoData) {
     * I had previously implemented this in the server side code, but then any time my UI changed I would need to recompile the web service... So I fixed the implementation...*/
     aoData.push({
         "name": "FixedColumnHeaders",
-        "value": [null, "JobOrder", "CustomerOrder", "PurchaseOrder", "SalesOrder", "QuantityOrdered", "ItemNumber", "Shell", "Frame", "Fabric", "ArmCaps", "ShipByDate", "DockDate", "StatusCode", "RequiredQty", "DockDate"]
+        "value": [null, "JobOrder", "CustomerOrder", "PurchaseOrder", "SalesOrder", "QuantityOrdered", "QuantityRemaining", "ItemNumber", "Shell", "Frame", "Fabric", "ArmCaps", "ShipByDate", "DockDate", "StatusCode", "RequiredQty", "DockDate"]
     });
 
     /*iterates through the array and updates the appropriate object using the below 'case' statements. I was having an issue where sSearch was getting populated twice (ie sSearch_4 & sSearch_7 would contain the same search string) 
@@ -152,48 +153,48 @@ function AppendAdditionalParameters(aoData) {
             case "bRegex_4":
                 aoData[i].value = true;
                 break;
-            case "sSearch_6":
-                aoData[i].value = $('#ItemNumberFilter').val();
-                break;
-            case "bRegex_6":
-                aoData[i].value = true;
-                break;
             case "sSearch_7":
-                aoData[i].value = $('#ShellFilter').val();
+                aoData[i].value = $('#ItemNumberFilter').val();
                 break;
             case "bRegex_7":
                 aoData[i].value = true;
                 break;
             case "sSearch_8":
-                aoData[i].value = $('#FrameFilter').val();
+                aoData[i].value = $('#ShellFilter').val();
                 break;
             case "bRegex_8":
                 aoData[i].value = true;
                 break;
             case "sSearch_9":
-                aoData[i].value = $('#FabricFilter').val();
+                aoData[i].value = $('#FrameFilter').val();
                 break;
             case "bRegex_9":
                 aoData[i].value = true;
                 break;
             case "sSearch_10":
-                aoData[i].value = $('#ArmCapsFilter').val();
+                aoData[i].value = $('#FabricFilter').val();
                 break;
             case "bRegex_10":
                 aoData[i].value = true;
                 break;
             case "sSearch_11":
-                aoData[i].value = $('#ShipByDateFromFilter').val() + '~' +
-                        $('#ShipByDateToFilter').val();
+                aoData[i].value = $('#ArmCapsFilter').val();
                 break;
             case "bRegex_11":
                 aoData[i].value = true;
                 break;
             case "sSearch_12":
+                aoData[i].value = $('#ShipByDateFromFilter').val() + '~' +
+                        $('#ShipByDateToFilter').val();
+                break;
+            case "bRegex_12":
+                aoData[i].value = true;
+                break;
+            case "sSearch_13":
                 aoData[i].value = $('#DockDateFromFilter').val() + '~' +
                         $('#DockDateToFilter').val();
                 break;
-            case "bRegex_12":
+            case "bRegex_13":
                 aoData[i].value = true;
                 break;
         }

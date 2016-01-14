@@ -18,6 +18,7 @@ namespace MvcPlanningApplication.Models
         public Nullable<short> ref_line_suf { get; set; }
 
         public string cust_po { get; set; } //field is from the co table...
+        public decimal qty_complete { get; set; } //field is from the job table...
 
         public string PurchaseOrder
         {

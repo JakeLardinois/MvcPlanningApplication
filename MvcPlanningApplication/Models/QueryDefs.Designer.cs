@@ -109,9 +109,11 @@ namespace MvcPlanningApplication.Models {
         ///	coitem.promise_date, 
         ///	coitem.ref_num, 
         ///	coitem.ref_line_suf, 
-        ///	co.cust_po
+        ///	co.cust_po,
+        ///	ISNULL(job.qty_complete,0) AS qty_complete
         ///FROM coitem
-        ///	INNER JOIN co ON coitem.co_num = co.co_num
+        ///	LEFT JOIN co ON coitem.co_num = co.co_num
+        ///	LEFT JOIN job ON job.job = coitem.ref_num AND job.suffix = coitem.ref_line_suf
         ///WHERE coitem.co_cust_num IN (~p0) AND coitem.stat = &apos;~p1&apos;.
         /// </summary>
         internal static string SelectCOItemByCustNumListAndStatus {

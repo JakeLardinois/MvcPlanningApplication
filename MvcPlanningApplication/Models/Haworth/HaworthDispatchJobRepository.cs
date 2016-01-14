@@ -63,6 +63,7 @@ namespace MvcPlanningApplication.Models.Haworth
                             co_line = g.co_line,
                             cust_po = g.cust_po,
                             QuantityOrdered = g.qty_ordered,
+                            QuantityRemaining = g.qty_ordered - g.qty_complete,
                             PurchaseOrder = g.PurchaseOrder,
                             SalesOrder = db2.HaworthSupplierDemands
                                 .Where(s => !string.IsNullOrEmpty(s.OrderNumber) && s.OrderNumber.Equals(s.OrderNumber))

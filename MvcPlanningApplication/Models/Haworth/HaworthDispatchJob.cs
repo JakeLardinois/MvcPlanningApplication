@@ -25,6 +25,7 @@ namespace MvcPlanningApplication.Models.Haworth
         public string cust_po { get; set; }
         public string SalesOrder { get; set; }
         public decimal QuantityOrdered { get; set; }
+        public decimal QuantityRemaining { get; set; }
         public string ItemNumber { get; set; }
         public DateTime ShipByDate { get; set; }
         public DateTime DockDate { get; set; }
