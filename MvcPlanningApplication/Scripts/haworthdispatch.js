@@ -87,14 +87,16 @@ $(document).ready(function () {
             sHTML = '<object type=\"application/pdf\" id=\"IDLabel\"  data=\"' + sGetPrintIDURL +
                 "?&CustomerOrder=" + objRecord.CustomerOrder +
                 "&PurchaseOrder=" + objRecord.PurchaseOrder +
-                "&SalesOrder=" + objRecord.SalesOrder + '\" />';
+                "&SalesOrder=" + objRecord.SalesOrder +
+                "&JobOrder=" + objRecord.JobOrder + '\" />';
         }
         else
         {
             sHTML = '<embed id=\"IDLabel\"  src=\"' + sGetPrintIDURL +
                 "?&CustomerOrder=" + objRecord.CustomerOrder +
                 "&PurchaseOrder=" + objRecord.PurchaseOrder +
-                "&SalesOrder=" + objRecord.SalesOrder + '\" />';
+                "&SalesOrder=" + objRecord.SalesOrder +
+                "&JobOrder=" + objRecord.JobOrder + '\" />';
         }
         
         document.getElementById('embedHolder').innerHTML = sHTML;

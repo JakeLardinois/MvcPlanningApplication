@@ -440,7 +440,7 @@ namespace MvcPlanningApplication.Controllers
         }
 
         [HttpGet]
-        public void PrintIDLabel(string CustomerOrder, string PurchaseOrder, string SalesOrder)
+        public void PrintIDLabel(string CustomerOrder, string PurchaseOrder, string SalesOrder, string JobOrder)
         {
             string strReportType = "PDF";
             LocalReport objLocalReport;
@@ -491,9 +491,11 @@ namespace MvcPlanningApplication.Controllers
                         new ReportParameter("ItemDescription", objHaworthOrder.PartInformation.Description),
                         new ReportParameter("CatalogNo", objHaworthSupplierDemand.CatalogPartNo),
                         new ReportParameter("MfgDate", DateTime.Now.ToString("yyyy - MMM - dd")),
-                        new ReportParameter("SalesOrderNo", objHaworthSupplierDemand.SO),
-                        new ReportParameter("SalesOrderLine", objHaworthSupplierDemand.SOLine.PadLeft(6, '0')),
-                        new ReportParameter("AddressLine1", "Haworth Inc"),
+                        new ReportParameter("SO", objHaworthSupplierDemand.SO),
+                        new ReportParameter("SOLine", objHaworthSupplierDemand.SOLine.PadLeft(6, '0')),
+                        new ReportParameter("OrderNumber", objHaworthSupplierDemand.OrderNumber),
+                        new ReportParameter("JobOrder", JobOrder),
+                        new ReportParameter("AddressLine1", "Made for Haworth Inc"),
                         new ReportParameter("AddressLine2", "1 Haworth Ctr, Holland, MI USA"),
                         new ReportParameter("AddressLine3", "Assembled in US with US and foreign Components")
                     };
@@ -546,7 +548,6 @@ namespace MvcPlanningApplication.Controllers
             }
             
         }
-
 
     }
 }

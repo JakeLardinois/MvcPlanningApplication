@@ -45,7 +45,7 @@
         <Top>0.54042in</Top>
         <Left>0.22222in</Left>
         <Height>0.1875in</Height>
-        <Width>3.65847in</Width>
+        <Width>2.08208in</Width>
         <ZIndex>1</ZIndex>
         <Style>
           <Border>
@@ -60,7 +60,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>="Sales Order #:  " + Parameters!SalesOrderNo.Value</Value>
+                <Value>="Sales Order #:  " + Parameters!SO.Value</Value>
                 <Style />
               </TextRun>
             </TextRuns>
@@ -69,7 +69,7 @@
         </Paragraphs>
         <rd:DefaultName>SalesOrderNo</rd:DefaultName>
         <Top>0.74181in</Top>
-        <Left>0.23611in</Left>
+        <Left>0.22222in</Left>
         <Height>0.1875in</Height>
         <Width>2.08208in</Width>
         <ZIndex>2</ZIndex>
@@ -164,7 +164,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>="Sales Order:  " + Parameters!SalesOrderLine.Value</Value>
+                <Value>="Sales Order:  " + Parameters!SOLine.Value</Value>
                 <Style />
               </TextRun>
             </TextRuns>
@@ -173,7 +173,7 @@
         </Paragraphs>
         <rd:DefaultName>SalesOrderLine</rd:DefaultName>
         <Top>0.74181in</Top>
-        <Left>2.34597in</Left>
+        <Left>2.33208in</Left>
         <Height>0.1875in</Height>
         <Width>1.54861in</Width>
         <ZIndex>6</ZIndex>
@@ -199,10 +199,62 @@
         </Paragraphs>
         <rd:DefaultName>CatalogNo</rd:DefaultName>
         <Top>0.33903in</Top>
-        <Left>0.22222in</Left>
+        <Left>0.23611in</Left>
         <Height>0.1875in</Height>
         <Width>3.65847in</Width>
         <ZIndex>7</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+        </Style>
+      </Textbox>
+      <Textbox Name="SalesOrderNo2">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Parameters!OrderNumber.Value</Value>
+                <Style />
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>SalesOrderNo</rd:DefaultName>
+        <Top>0.9432in</Top>
+        <Left>0.22222in</Left>
+        <Height>0.1875in</Height>
+        <Width>3.65847in</Width>
+        <ZIndex>8</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+        </Style>
+      </Textbox>
+      <Textbox Name="SalesOrderLine2">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>="Job: " + Parameters!JobOrder.Value</Value>
+                <Style />
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>SalesOrderLine</rd:DefaultName>
+        <Top>0.54042in</Top>
+        <Left>2.33208in</Left>
+        <Height>0.1875in</Height>
+        <Width>1.54861in</Width>
+        <ZIndex>9</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -241,13 +293,13 @@
       <AllowBlank>true</AllowBlank>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
-    <ReportParameter Name="SalesOrderNo">
+    <ReportParameter Name="SO">
       <DataType>String</DataType>
       <Nullable>true</Nullable>
       <AllowBlank>true</AllowBlank>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
-    <ReportParameter Name="SalesOrderLine">
+    <ReportParameter Name="SOLine">
       <DataType>String</DataType>
       <Nullable>true</Nullable>
       <AllowBlank>true</AllowBlank>
@@ -270,6 +322,18 @@
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
     <ReportParameter Name="CatalogNo">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="OrderNumber">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="JobOrder">
       <DataType>String</DataType>
       <Nullable>true</Nullable>
       <AllowBlank>true</AllowBlank>
