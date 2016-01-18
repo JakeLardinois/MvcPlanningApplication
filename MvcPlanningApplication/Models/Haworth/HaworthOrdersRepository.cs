@@ -6,12 +6,17 @@ using System.Web;
 using System.Collections.ObjectModel;
 using System.Text;
 using MvcPlanningApplication.Models.DataTablesMVC;
+using System.Linq.Dynamic;
+using log4net;
 
 
 namespace MvcPlanningApplication.Models.Haworth
 {
     public class HaworthOrdersRepository
     {
+        private static readonly ILog Logger = LogHelper.GetLogger();
+
+
         public IList<HaworthOrder> GetOrders(out int searchRecordCount, JQueryDataTablesModel DataTablesModel, bool isDownloadReport = false)
         {
             ReadOnlyCollection<SortedColumn> sortedColumns = DataTablesModel.GetSortedColumns();
@@ -127,6 +132,7 @@ namespace MvcPlanningApplication.Models.Haworth
                     .Where(c => c.DockDate <= objHaworthOrderSearch.DockDateLT || objHaworthOrderSearch.DockDateLT == DateTime.MinValue)
                     .Where(c => c.ImportDateTime >= objHaworthOrderSearch.ImportDateTimeGT || objHaworthOrderSearch.ImportDateTimeGT == DateTime.MinValue)
                     .Where(c => c.ImportDateTime <= objHaworthOrderSearch.ImportDateTimeLT || objHaworthOrderSearch.ImportDateTimeLT == DateTime.MinValue)
+                    .OrderBy(sortedColumns[0].PropertyName + " " + sortedColumns[0].Direction) //Uses Dynamic Linq to have sorting occur in the query
                     .ToList();
 
 

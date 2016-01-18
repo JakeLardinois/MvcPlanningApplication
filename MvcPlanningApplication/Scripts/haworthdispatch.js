@@ -37,11 +37,13 @@ $(document).ready(function () {
         },
         "aoColumns": [
             {
-                "mDataProp": null, //Note that I had a problem with this column being first because when the datatable loads, it automatically sorts based on the first column; since this column had a null value
+                "mDataProp": "JobOrder", //Note that I had a problem with this column being first because when the datatable loads, it automatically sorts based on the first column; since this column had a null value
                 "sWidth": 60,
                 "sClass": "printIDLabel center", //applies the control class to the cell and the center class(which center aligns the image)
                 "bSortable": false,
-                "sDefaultContent": '<img src="' + sOpenImageUrl + '">'
+                "render": function (data, type, full, meta) {
+                    return '<img src="' + sOpenImageUrl + '">'
+                }
             },
             { "mDataProp": "JobOrder" },
             { "mDataProp": "CustomerOrder" },
@@ -67,6 +69,11 @@ $(document).ready(function () {
                 }
             }
         ]
+    });
+
+    //This is so that you can cause a search to occur on keyup for input field by adding class="dtSearchField" to it's html...
+    $('input.dtSearchField').on('keyup change', function () {
+        oTable.draw(); //forces the table to redraw and the search criteria is set above
     });
 
     $('#objItems tbody').on('click', 'td.printIDLabel', function () {
@@ -124,7 +131,7 @@ function AppendAdditionalParameters(aoData) {
     * I had previously implemented this in the server side code, but then any time my UI changed I would need to recompile the web service... So I fixed the implementation...*/
     aoData.push({
         "name": "FixedColumnHeaders",
-        "value": [null, "JobOrder", "CustomerOrder", "PurchaseOrder", "SalesOrder", "QuantityOrdered", "QuantityRemaining", "ItemNumber", "Shell", "Frame", "Fabric", "ArmCaps", "ShipByDate", "DockDate", "StatusCode", "RequiredQty", "DockDate"]
+        "value": [null, "JobOrder", "CustomerOrder", "PurchaseOrder", "SalesOrder", "QuantityOrdered", "QuantityRemaining", "ItemNumber", "Shell", "Frame", "Fabric", "ArmCaps", "ShipByDate", "DockDate"]
     });
 
     /*iterates through the array and updates the appropriate object using the below 'case' statements. I was having an issue where sSearch was getting populated twice (ie sSearch_4 & sSearch_7 would contain the same search string) 

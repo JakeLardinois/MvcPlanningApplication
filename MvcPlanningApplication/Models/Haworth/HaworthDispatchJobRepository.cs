@@ -6,6 +6,7 @@ using System.Web;
 using System.Collections.ObjectModel;
 using System.Text;
 using MvcPlanningApplication.Models.DataTablesMVC;
+using System.Linq.Dynamic;
 using log4net;
 
 
@@ -27,7 +28,7 @@ namespace MvcPlanningApplication.Models.Haworth
             StringBuilder objStrBldr = new StringBuilder();
             var objQueryDefinitions = new QueryDefinitions();
 
-            Logger.Debug("Fired 1");
+
             var objHaworthDispatchJobSearch = new HaworthDispatchJobSearch();
             for (int intCounter = 0; intCounter < DataTablesModel.iColumns; intCounter++)
             {
@@ -43,6 +44,49 @@ namespace MvcPlanningApplication.Models.Haworth
                     /*Notice that i had to use mDataProp2_ due to datatables multi-column filtering not placing sSearch into proper array position when columns are reordered; See VendorRequestsController.cs Search method for details...*/
                     switch (DataTablesModel.mDataProp2_[intCounter])
                     {
+                        case "JobOrder":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthDispatchJobSearch.JobOrder = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
+                            break;
+                        case "CustomerOrder":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthDispatchJobSearch.CustomerOrder = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
+                            break;
+                        case "PurchaseOrder":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthDispatchJobSearch.PurchaseOrder = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
+                            break;
+                        case "SalesOrder":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthDispatchJobSearch.SalesOrder = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
+                            break;
+                        case "ItemNumber":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthDispatchJobSearch.ItemNumber = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
+                            break;
+                        case "Shell":
+                            break;
+                        case "Frame":
+                            break;
+                        case "Fabric":
+                            break;
+                        case "ArmCaps":
+                            break;
+                        case "ShipByDate":
+                            objResults = DataTablesModel.sSearch_[intCounter].Split('~');//results returned from a daterange are delimited by the tilde char
+                            objHaworthDispatchJobSearch.ShipByDateGT = DateTime.TryParse(objResults[0], out dtmTemp) ? dtmTemp : DateTime.MinValue;
+                            objHaworthDispatchJobSearch.ShipByDateLT = DateTime.TryParse(objResults[1], out dtmTemp) ? dtmTemp : DateTime.MinValue;
+                            break;
+                        case "DockDate":
+                            objResults = DataTablesModel.sSearch_[intCounter].Split('~');//results returned from a daterange are delimited by the tilde char
+                            objHaworthDispatchJobSearch.DockDateGT = DateTime.TryParse(objResults[0], out dtmTemp) ? dtmTemp : DateTime.MinValue;
+                            objHaworthDispatchJobSearch.DockDateLT = DateTime.TryParse(objResults[1], out dtmTemp) ? dtmTemp : DateTime.MinValue;
+                            break;
                         default:
                             break;
                     }
@@ -84,7 +128,18 @@ namespace MvcPlanningApplication.Models.Haworth
                                     //QtyAvailable = g.det_QtyAvailable ?? 0
                                 })
                                 .ToList()
-                        });
+                        })
+                        .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.JobOrder) || j.JobOrder.ToUpper().Contains(objHaworthDispatchJobSearch.JobOrder.ToUpper()))
+                        .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.CustomerOrder) || j.CustomerOrder.ToUpper().Contains(objHaworthDispatchJobSearch.CustomerOrder.ToUpper()))
+                        .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.PurchaseOrder) || j.PurchaseOrder.ToUpper().Contains(objHaworthDispatchJobSearch.PurchaseOrder.ToUpper()))
+                        .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.SalesOrder) || j.SalesOrder.ToUpper().Contains(objHaworthDispatchJobSearch.SalesOrder.ToUpper()))
+                        .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.ItemNumber) || j.ItemNumber.ToUpper().Contains(objHaworthDispatchJobSearch.ItemNumber.ToUpper()))
+                        .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.CustomerOrder) || j.CustomerOrder.ToUpper().Contains(objHaworthDispatchJobSearch.CustomerOrder.ToUpper()))
+                        .Where(c => c.ShipByDate >= objHaworthDispatchJobSearch.ShipByDateGT || objHaworthDispatchJobSearch.ShipByDateGT == DateTime.MinValue)
+                        .Where(c => c.ShipByDate <= objHaworthDispatchJobSearch.ShipByDateLT || objHaworthDispatchJobSearch.ShipByDateLT == DateTime.MinValue)
+                        .Where(c => c.DockDate >= objHaworthDispatchJobSearch.DockDateGT || objHaworthDispatchJobSearch.DockDateGT == DateTime.MinValue)
+                        .Where(c => c.DockDate <= objHaworthDispatchJobSearch.DockDateLT || objHaworthDispatchJobSearch.DockDateLT == DateTime.MinValue)
+                        .OrderBy(sortedColumns[0].PropertyName + " " + sortedColumns[0].Direction); //Uses Dynamic Linq to have sorting occur in the query
 
                     //needed this to get the proper pagination values. by adding it here, i was hoping to optomize performance and still leverage deferred execution with the above queries
                     // and the take values below...
