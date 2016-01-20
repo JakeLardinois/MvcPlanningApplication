@@ -103,7 +103,7 @@ namespace MvcPlanningApplication.Models.Haworth
                     //this.Last().FileName = strFile;
                 }
 
-                MoveCompletedOrderFiles();
+                //MoveCompletedOrderFiles();
                 RemoveDuplicates();
             }
             else

@@ -15,6 +15,7 @@ using MvcPlanningApplication.Models.Haworth;
 using MvcPlanningApplication.Models.DataTablesMVC;
 using Newtonsoft.Json;
 using Microsoft.Reporting.WebForms;
+using System.Data;
 
 
 
@@ -101,11 +102,11 @@ namespace MvcPlanningApplication.Controllers
                         if (!string.IsNullOrEmpty(strCatalogPartNo))
                         {
                             var objStrArray = strCatalogPartNo.Split(new char[] { ',' });
-                            objHaworthOrder.Characteristics.Add(new HaworthOrderCharacteristic
-                            {
+                            objHaworthOrder.Characteristics.Add(new HaworthOrderCharacteristic{
                                 Characteristic = "Frame Color",
                                 Value = objStrArray[objStrArray.Length - 1],
-                                OrderNumber = objHaworthOrder.OrderNumber
+                                OrderNumber = objHaworthOrder.OrderNumber,
+                                CharacteristicKey = "Frame Color: " + objStrArray[objStrArray.Length - 1].Replace(',', ' ')
                             });
                         }
                             
@@ -178,7 +179,12 @@ namespace MvcPlanningApplication.Controllers
                 var strArray = objStr.Value.Split(':');
 
                 if (strArray.Count() > 1)
-                    Characteristics.Add(new HaworthOrderCharacteristic { OrderNumber = Order, Characteristic = strArray[0], Value = strArray[1] });
+                    Characteristics.Add(new HaworthOrderCharacteristic {
+                        OrderNumber = Order,
+                        Characteristic = strArray[0],
+                        Value = strArray[1],
+                        CharacteristicKey = strArray[0].Replace(',', ' ') + ": " + strArray[1].Replace(',', ' ')
+                    });
                 else
                     Characteristics.Add(new HaworthOrderCharacteristic { OrderNumber = Order, Characteristic = strArray[0], Value = string.Empty });
             }
@@ -436,6 +442,31 @@ namespace MvcPlanningApplication.Controllers
             {
                 aaData = Characteristics
             }, serializerSettings);
+
+        }
+
+        [HttpPost]
+        public JsonResult GetCharacteristicList()
+        {
+            Logger.Debug("Getting Characteristics");
+            JsonResult viewresult = Json(new[] { "Error" });
+            IEnumerable<string[]> jsonCharacteristics;
+            var objQueryDefinitions = new QueryDefinitions();
+
+
+            using (var db = new PlanningApplicationDb())
+            {
+                var Characteristics = db.HaworthOrderCharacteristics
+                    .GroupBy(s => s.CharacteristicKey)
+                    .Select(s => new { CharacteristicKey = s.Key })
+                    .ToList();
+                jsonCharacteristics = Characteristics
+                    .Select(c => new[] { c.CharacteristicKey });
+            }
+            viewresult = Json(jsonCharacteristics);
+
+            Logger.Debug("Returning Characteristics...");
+            return viewresult;
 
         }
 

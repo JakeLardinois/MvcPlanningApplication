@@ -12,6 +12,7 @@ using log4net;
 
 namespace MvcPlanningApplication.Models.Haworth
 {
+
     public class HaworthDispatchJobRepository
     {
         private static readonly ILog Logger = LogHelper.GetLogger();
@@ -110,7 +111,9 @@ namespace MvcPlanningApplication.Models.Haworth
                             QuantityRemaining = g.qty_ordered - g.qty_complete,
                             PurchaseOrder = g.PurchaseOrder,
                             SalesOrder = db2.HaworthSupplierDemands
-                                .Where(s => !string.IsNullOrEmpty(s.OrderNumber) && s.OrderNumber.Equals(s.OrderNumber))
+                                .Where(s => s.PO == g.cust_po && s.POLine == g.co_line.ToString())
+                                .ToList()
+                                .DefaultIfEmpty(new HaworthSupplierDemand { SO = "0", SOLine = "0"})
                                 .FirstOrDefault()
                                 .SOrderNumber,
                             ItemNumber = g.item,

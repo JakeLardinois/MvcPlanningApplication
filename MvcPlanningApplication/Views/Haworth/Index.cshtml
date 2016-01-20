@@ -39,7 +39,7 @@
     <thead>
         <tr class="dtSearchFields">
             <th>
-                <input class="dtSearchField" style="width: 100px" placeholder="Characteristics" id="CharacteristicsFilter">
+                <select id="CharacteristicsFilter" multiple="multiple"></select>
             </th>
             <th>
                 <input class="dtSearchField" style="width: 100px" placeholder="From" id="ChangeDateFromFilter">
@@ -154,7 +154,7 @@
         var sGenerateDataURL = '@Url.Action("GeneratePlanningData", "Haworth")';
         var sGetExcelRanges = '@Url.Action("GetExcelRanges", "Haworth")';
         var sGetStatusCodesURL = '@Url.Action("GetStatusCodes", "Haworth")';
-        var sGetCharacteristicsURL = '@Url.Action("GetCharacteristics", "Haworth")';
+        var sGetCharacteristicsURL = '@Url.Action("GetCharacteristicList", "Haworth")';
     
 
         function GetCharacteristicsTableHTML() {

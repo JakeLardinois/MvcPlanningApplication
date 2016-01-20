@@ -17,5 +17,6 @@ namespace MvcPlanningApplication.Models.Haworth
         public string OrderNumber { get; set; }
         public string Characteristic { get; set; }
         public string Value { get; set; }
+        public string CharacteristicKey { get; set; }
     }
 }

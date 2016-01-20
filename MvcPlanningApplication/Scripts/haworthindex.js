@@ -1,4 +1,5 @@
 ﻿var oTable;
+var blnCheckChanged;
 
 
 $(document).ready(function () {
@@ -22,6 +23,18 @@ $(document).ready(function () {
         minWidth: 300,
         //header: false, // "Select a Work Order Type",
         noneSelectedText: "Select Type",
+        //selectedList: 1 //this is what puts the selected value onto the select box...
+    });
+
+    objCharacteristics.forEach(function (obj) {
+        $("#CharacteristicsFilter").append("<option value=\"" + obj + "\">" + obj + "</option>");
+    });
+    $("#CharacteristicsFilter").multiselect({
+        multiple: true,
+        hide: "explode",
+        minWidth: 300,
+        //header: false, // "Select a Work Order Type",
+        noneSelectedText: "Select Type"
         //selectedList: 1 //this is what puts the selected value onto the select box...
     });
 
@@ -292,6 +305,20 @@ function StatusCodes() {
 }
 var objStatusCodes = StatusCodes();
 
+function Characteristics() {
+    $.ajaxSetup({ async: false, dataType: "json" });
+
+
+    $.post(sGetCharacteristicsURL, {})
+        .done(function (data) {
+            Characteristics = data;
+        });
+    $.ajaxSetup({ async: true }); //Sets ajax back up to synchronous
+
+    return Characteristics;
+}
+var objCharacteristics = Characteristics();
+
 function AppendAdditionalParameters(aoData) {
     var strTemp;
 
@@ -310,9 +337,15 @@ function AppendAdditionalParameters(aoData) {
     * I solved the issue by manually setting sSearch in my aoData array below. Note that I populate the corresponding bRegex variable; this value isn't used anywhere but could be for future implementations...*/
     for (var i = 0; i < aoData.length; i++) {
         switch (aoData[i].name) {
-            case "sSearch_0":0
+            case "sSearch_0":
+                strTemp = String($('#CharacteristicsFilter').val());
+                if (strTemp !== 'null')
+                    aoData[i].value = strTemp.split(',').join('|');
+                else
+                    aoData[i].value = '';
                 break;
-            case "bRegex_0":0
+            case "bRegex_0": 0
+                aoData[i].value = true;
                 break;
             case "sSearch_1":
                 aoData[i].value = $('#ChangeDateFromFilter').val() + '~' +
@@ -369,7 +402,6 @@ function AppendAdditionalParameters(aoData) {
                     aoData[i].value = strTemp.split(',').join('|');
                 else
                     aoData[i].value = '';
-                break;
                 break;
             case "bRegex_9":
                 aoData[i].value = true;

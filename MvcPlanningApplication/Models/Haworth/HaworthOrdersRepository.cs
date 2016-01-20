@@ -117,7 +117,7 @@ namespace MvcPlanningApplication.Models.Haworth
                  * 'Using' statement for my dbcontext; not including it resulted in a 'The ObjectContext instance has been disposed and can no longer be used for operations that require a connection' Error in my 
                  * Controller class ('HaworthController')*/
                 orders = db.HaworthOrders.Include("Characteristics") 
-                    .Where(c => CharacteristicsList.Contains(strEmptyString) || CharacteristicsList.Intersect(c.Characteristics.Select(n => n.Value)).Any())
+                    .Where(c => CharacteristicsList.Contains(strEmptyString) || CharacteristicsList.Intersect(c.Characteristics.Select(n => n.CharacteristicKey)).Any())
                     .Where(c => c.ChangeDate >= objHaworthOrderSearch.ChangeDateGT || objHaworthOrderSearch.ChangeDateGT == DateTime.MinValue)
                     .Where(c => c.ChangeDate <= objHaworthOrderSearch.ChangeDateLT || objHaworthOrderSearch.ChangeDateLT == DateTime.MinValue)
                     .Where(c => string.IsNullOrEmpty(objHaworthOrderSearch.OrderNumber) || c.OrderNumber.ToUpper().Contains(objHaworthOrderSearch.OrderNumber.ToUpper()))
