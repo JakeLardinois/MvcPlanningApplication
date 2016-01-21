@@ -4,10 +4,17 @@
 
 <h2>Haworth Dispatch</h2>
 
-@Html.ActionLink("Planning", "Index")
-<br />
-<input type="checkbox" class="dtSearchField" checked id="RemainingOrdersOnly"><label for="RemainingOrdersOnly" id="RemainingOrdersOnlyLabel">Only Show Remaining Orders</label>
-<br />
+
+<div>
+    <input type="checkbox" class="dtSearchField" checked id="RemainingOrdersOnly"><label for="RemainingOrdersOnly" id="RemainingOrdersOnlyLabel">Only Show Remaining Orders</label>
+    <br />
+    <input type="checkbox" class="dtSearchField" checked id="UseLiveData"><label for="UseLiveData" id="UseLiveDataLabel">Use Live Data</label>
+</div>
+<div class="well">
+    <div>
+        <input id="GenerateDispatch" type="button" value="Generate Dispatch">
+    </div>
+</div>
 <table id="objItems">
     <thead>
         <tr class="dtSearchFields">
@@ -100,10 +107,14 @@
     <tbody></tbody>
 </table>
 
+<div>
+    <input id="btnDownload" type="button" value="Download in Excel" />
+</div>
 <div id="embedHolder">
 </div>
 @section styles{
     <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/datatables")" />
+    <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/impromptu")" />
 }
 
 
@@ -113,9 +124,12 @@
         var sOpenImageUrl = '@Url.Content("~/Content/images/details_open.png")';
         var sCloseImageUrl = '@Url.Content("~/Content/images/details_close.png")';
         var sGetPrintIDURL = '@Url.Action("PrintIDLabel", "Haworth")';
+        var sGenerateDispatchDataUrl = '@Url.Action("GenerateDispatchData", "Haworth")';
     </script>
 
     <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/datatables")">
+    </script>
+    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/impromptu")">
     </script>
     <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/haworthdispatch")">
     </script>

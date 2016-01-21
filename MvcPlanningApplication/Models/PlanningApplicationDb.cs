@@ -16,5 +16,6 @@ namespace MvcPlanningApplication.Models
         public DbSet<HaworthOrder> HaworthOrders { get; set; }
         public DbSet<HaworthSupplierDemand> HaworthSupplierDemands { get; set; }
         public DbSet<HaworthOrderCharacteristic> HaworthOrderCharacteristics { get; set; }
+        public DbSet<HaworthDispatchJobRecord> HaworthDispatchJobRecords { get; set; }
     }
 }

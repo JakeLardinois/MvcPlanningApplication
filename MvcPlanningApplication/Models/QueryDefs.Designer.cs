@@ -62,6 +62,16 @@ namespace MvcPlanningApplication.Models {
         
         /// <summary>
         ///   Looks up a localized string similar to DELETE
+        ///  FROM HaworthDispatchJobRecords.
+        /// </summary>
+        internal static string DeleteAllHaworthDispatchJobRecords {
+            get {
+                return ResourceManager.GetString("DeleteAllHaworthDispatchJobRecords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DELETE
         ///  FROM HaworthOrderCharacteristics.
         /// </summary>
         internal static string DeleteAllHaworthOrderCharacteristics {

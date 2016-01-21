@@ -82,8 +82,8 @@ namespace MvcPlanningApplication.Controllers
         {
             var result = new JsonResult();
 
-            //try
-            //{
+            try
+            {
                 var objQueryDefs = new QueryDefinitions();
 
                 Logger.Info("Retreive Haworth XML Orders from FTP Site");
@@ -159,15 +159,15 @@ namespace MvcPlanningApplication.Controllers
                 
                 result.Data = new { Success = true, Message = "The planning data was sucessfully generated!" };
                 return result;
-            //}
-            //catch(Exception objEx)
-            //{
-            //    Logger.Info("The planning data generation had an error..." + 
-            //        Environment.NewLine +
-            //        "/t" + objEx.Message);
-            //    result.Data = new { Success = false, Message = objEx.Message };
-            //    return result;
-            //}
+            }
+            catch(Exception objEx)
+            {
+                Logger.Info("The planning data generation had an error..." + 
+                    Environment.NewLine +
+                    "/t" + objEx.Message);
+                result.Data = new { Success = false, Message = objEx.Message };
+                return result;
+            }
         }
 
         private List<HaworthOrderCharacteristic> BuildCharacteristics(string Order, string ConfigurationText)
@@ -213,8 +213,7 @@ namespace MvcPlanningApplication.Controllers
             int TotalRecordCount, searchRecordCount;
             var result = new JsonResult();
             var objQueryDefinitions = new QueryDefinitions();
-            bool RemainingOrdersOnly, blnTemp;
-            
+            bool RemainingOrdersOnly, UseLiveData, blnTemp;
 
 
             Request.InputStream.Seek(0, SeekOrigin.Begin);
@@ -224,17 +223,29 @@ namespace MvcPlanningApplication.Controllers
                 RemainingOrdersOnly = bool.TryParse(objDictionary["RemainingOrdersOnly"], out blnTemp) ? blnTemp : true;
             else
                 RemainingOrdersOnly = true;
+            if (objDictionary.ContainsKey("UseLiveData"))
+                UseLiveData = bool.TryParse(objDictionary["UseLiveData"], out blnTemp) ? blnTemp : true;
+            else
+                UseLiveData = true;
 
             Logger.Info("Use HaworthDispatchJobRepository to search Haworth Jobs in the Database");
             var objHaworthDispatchJobRepository = new HaworthDispatchJobRepository();
-            var objItems = objHaworthDispatchJobRepository.GetOrders(RemainingOrdersOnly, searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel);
+            var objItems = objHaworthDispatchJobRepository.GetOrders(RemainingOrdersOnly, UseLiveData, searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel);
 
             Logger.Info("Get total number of Haworth orders in the database");
-            using (var db = new SytelineDbEntities())
-                TotalRecordCount = db.coitems
-                    .Where(c => c.stat.Equals("O"))
-                    .Where(c => c.co_cust_num.Equals("   3417"))
-                    .Count();
+            if (UseLiveData)
+            {
+                using (var db = new SytelineDbEntities())
+                    TotalRecordCount = db.coitems
+                        .Where(c => c.stat.Equals("O"))
+                        .Where(c => c.co_cust_num.Equals("   3417"))
+                        .Count();
+            }
+            else
+                using (var db = new PlanningApplicationDb())
+                    TotalRecordCount = db.HaworthDispatchJobRecords
+                        .Count();
+            
 
             Logger.Info("Return a JSON object containing the required data for JQuery Datatables");
             result.Data = new
@@ -247,6 +258,96 @@ namespace MvcPlanningApplication.Controllers
 
             return result;
 
+        }
+
+        [HttpPost]
+        public JsonResult GenerateDispatchData()
+        {
+            var result = new JsonResult();
+            var objQueryDefs = new QueryDefinitions();
+
+            try
+            {
+                using (var db = new SytelineDbEntities())
+                {
+                    using (var db2 = new PlanningApplicationDb())
+                    {
+                        //Do your filtering here using the above objHaworthDispatchJobSearch object...
+                        var objHaworthDispatchJobRecords = db.Database.SqlQuery<COItem>(objQueryDefs.GetQuery("SelectCOItemByCustNumListAndStatus", new string[] { "3417".AddSingleQuotesAndPadLeft(7), "O" }))
+                            .Select(g => new HaworthDispatchJob
+                            {
+                                Job = g.ref_num,
+                                JobSuffix = g.ref_line_suf.HasValue ? (short)g.ref_line_suf : (short)0,
+                                co_num = g.co_num,
+                                co_line = g.co_line,
+                                cust_po = g.cust_po,
+                                QuantityOrdered = g.qty_ordered,
+                                QuantityRemaining = g.qty_ordered - g.qty_complete,
+                                PurchaseOrder = g.PurchaseOrder,
+                                SalesOrder = db2.HaworthSupplierDemands
+                                    .Where(s => s.PO == g.cust_po && s.POLine == g.co_line.ToString())
+                                    .ToList()
+                                    .DefaultIfEmpty(new HaworthSupplierDemand { SO = "0", SOLine = "0" })
+                                    .FirstOrDefault()
+                                    .SOrderNumber,
+                                ItemNumber = g.item,
+                                DockDate = g.due_date.HasValue ? (DateTime)g.due_date : SharedVariables.MINDATE,
+                                ShipByDate = g.promise_date.HasValue ? (DateTime)g.promise_date : SharedVariables.MINDATE,
+                                DispatchJobMaterials = db.jobmatls
+                                    .Where(m => m.job.Equals(g.ref_num))
+                                    .Select(jm => new HaworthDispatchJobMaterial
+                                    {
+                                        JobMaterial = jm.item,
+                                        JobMaterialDescription = jm.description,
+                                        UnitOfMeasure = jm.u_m
+                                        //QtyRequired = g.matl_qty * objDispatchJob.QuantityOrdered,
+                                        //QtyIssued = g.qty_issued * objDispatchJob.QuantityOrdered,
+                                        //QtyAvailable = g.det_QtyAvailable ?? 0
+                                    })
+                                    .ToList()
+                            })
+                            .Select(d => new HaworthDispatchJobRecord
+                            {
+                                JobOrder = d.JobOrder,
+                                CustomerOrder = d.CustomerOrder,
+                                PurchaseOrder = d.PurchaseOrder,
+                                SalesOrder = d.SalesOrder,
+                                QuantityOrdered = d.QuantityOrdered,
+                                QuantityRemaining = d.QuantityRemaining,
+                                ItemNumber = d.ItemNumber,
+                                Shell = d.Shell,
+                                Frame = d.Frame,
+                                Fabric = d.Fabric,
+                                ArmCaps = d.ArmCaps,
+                                ShipByDate = d.ShipByDate,
+                                DockDate = d.DockDate
+                            })
+                            .ToList();
+
+                        Logger.Info("Delete All Existing HaworthDispatchJobRecordc");
+                        db2.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("DeleteAllHaworthDispatchJobRecords"));
+                        Logger.Info("Re-Seed the Haworth Dispatch Job Records Table");
+                        db2.Database.ExecuteSqlCommand(objQueryDefs.GetQuery("ReSeedTable", new[] { "HaworthDispatchJobRecords" }));
+
+                        Logger.Info("Upload and Save the new Haworth Supplier Demand to the Database");
+                        db2.HaworthDispatchJobRecords.AddRange(objHaworthDispatchJobRecords);
+                        db2.SaveChanges();
+                    }
+                }
+            }
+            catch(Exception objEx)
+            {
+                Logger.Info("The planning data generation had an error..." + 
+                    Environment.NewLine +
+                    "/t" + objEx.Message);
+                result.Data = new { Success = false, Message = objEx.Message };
+                return result;
+            }
+
+            Logger.Info("The Dispatch list data was sucessfully generated!");
+
+            result.Data = new { Success = true, Message = "The dispatch list data was sucessfully generated!" };
+            return result;
         }
 
         public ActionResult UploadFile(int? entityId) // optionally receive values specified with Html helper

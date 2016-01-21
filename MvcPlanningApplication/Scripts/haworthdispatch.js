@@ -5,6 +5,26 @@ $(document).ready(function () {
     var oTimerId;
 
 
+    $("#btnDownload").button()
+        .click(function (event) {
+            event.preventDefault();
+            alert('Clicked');
+        });
+
+    $("#GenerateDispatch")
+        .button()
+        .click(function (event) {
+            $.post(sGenerateDispatchDataUrl, null, function (data) {
+                if (data.Success) {
+                    $.prompt(data.Message);
+                    oTable.draw();
+                }
+                else {
+                    $.prompt(data.Message);
+                }
+            });
+        });
+
     $("#RemainingOrdersOnly").button();
     $("#RemainingOrdersOnlyLabel").text("Show All Orders");
     $("#RemainingOrdersOnly").prop('checked', false);
@@ -18,6 +38,18 @@ $(document).ready(function () {
         }
     });
 
+    $("#UseLiveData").button();
+    $("#UseLiveDataLabel").text("Use Live Data");
+    $("#UseLiveData").prop('checked', false);
+    $("#UseLiveData").change(function () {
+        if (this.checked) {
+            $("#UseLiveDataLabel").text("Use Static Data");
+        }
+        else {
+            $("#UseLiveDataLabel").text("Use Live Data");
+        }
+    });
+
     $("#ShipByDateFromFilter").datepicker();
     $("#ShipByDateToFilter").datepicker();
     $("#DockDateFromFilter").datepicker();
@@ -28,6 +60,7 @@ $(document).ready(function () {
         "bProcessing": true,
         "bServerSide": true,
         "bFilter": true,
+        "sDom": 'T<"clear">Rlrtip',
         "sAjaxSource": sGetDataUrl,// document.URL,
         "sServerMethod": "POST",
         "fnServerData": function (sSource, aoData, fnCallback, oSettings) {
@@ -149,6 +182,10 @@ function AppendAdditionalParameters(aoData) {
     aoData.push({
         "name": "RemainingOrdersOnly",
         "value": $("#RemainingOrdersOnly").is(':checked')
+    });
+    aoData.push({
+        "name": "UseLiveData",
+        "value": $("#UseLiveData").is(':checked')
     });
 
     /*iterates through the array and updates the appropriate object using the below 'case' statements. I was having an issue where sSearch was getting populated twice (ie sSearch_4 & sSearch_7 would contain the same search string) 

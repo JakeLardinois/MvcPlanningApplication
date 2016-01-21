@@ -9,15 +9,17 @@ using System.Text;
 
 namespace MvcPlanningApplication.Models.Haworth
 {
-    public class HaworthDispatchJob
+    public class HaworthDispatchJob : IHaworthDispatchJob
     {
         public string JobOrder {
             get { return Job + "." + JobSuffix; }
+            set { }
         }
         public string Job { get; set; }
         public Int16 JobSuffix { get; set; }
         public string CustomerOrder {
             get { return co_num + "." + co_line; }
+            set { }
         }
         public string co_num { get; set; }
         public short co_line { get; set; }
@@ -47,7 +49,8 @@ namespace MvcPlanningApplication.Models.Haworth
                         .FirstOrDefault().JobMaterial;
                 else
                     return "None";
-            } 
+            }
+            set { }
         }
 
         public string Frame {
@@ -60,7 +63,8 @@ namespace MvcPlanningApplication.Models.Haworth
                         .FirstOrDefault().JobMaterial;
                 else
                     return "None";
-            } 
+            }
+            set { }
         }
 
         public string Fabric {
@@ -75,6 +79,7 @@ namespace MvcPlanningApplication.Models.Haworth
                 else
                     return "None";
             }
+            set { }
         }
 
         public string ArmCaps
@@ -83,6 +88,7 @@ namespace MvcPlanningApplication.Models.Haworth
             {
                 return string.Empty;
             }
+            set { }
         }
     }
 }

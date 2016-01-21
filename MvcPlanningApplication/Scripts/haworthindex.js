@@ -123,6 +123,7 @@ $(document).ready(function () {
                                     SelectedRange: $('#ExcelRanges').val()
                                 }
 
+                                $.ajaxSetup({ async: false, dataType: "json" });
                                 $.post(sGenerateDataURL, objData, function (data) {
                                     if (data.Success) {
                                         $.prompt(data.Message);
@@ -132,7 +133,7 @@ $(document).ready(function () {
                                         $.prompt(data.Message);
                                     }
                                 });
-
+                                $.ajaxSetup({ async: true }); //Sets ajax back up to synchronous
                             }
                             else {
                                 e.preventDefault();

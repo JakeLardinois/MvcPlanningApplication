@@ -31,15 +31,22 @@ namespace MvcPlanningApplication
             //modify bootstrap-theme.css to perform theming, whereas bootswatch themes only want you to implement the single css file...
             //When the bundle was named ~/Content/bootstrap I kept getting 403 Forbidden errors. This was because a bundle cannot have the same name as a real directory
             //The default css bundle route cannot match a valid folder name because MVC cannot resolve the conflict between a route and a folder.
-            bundles.Add(new StyleBundle("~/Content/bootstrapcss").Include(
+            /*bundles.Add(new StyleBundle("~/Content/bootstrapcss").Include(
                 "~/Content/bootstrap.css",
-                "~/Content/bootstrap-theme.css"));
+                "~/Content/bootstrap-theme.css"));*/
+            //Reference at https://vsn4ik.github.io/bootstrap-submenu/
+            bundles.Add(new StyleBundle("~/Content/bootstrapcss",
+                "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"));
+            bundles.Add(new StyleBundle("~/Content/bootstrapcsstheme",
+                "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"));
+            bundles.Add(new StyleBundle("~/Content/bootstrapcsssubmenu").Include(
+                "~/Content/bootstrap-submenu.min.css"));
 
             bundles.Add(new StyleBundle("~/Content/multiselect").Include(
                 "~/Content/jquery.multiselect.css"));
 
             bundles.Add(new StyleBundle("~/Content/datatables",
-                "https://cdn.datatables.net/r/ju-1.11.4/jq-2.1.4,dt-1.10.9,b-1.0.3,b-print-1.0.3/datatables.css"));
+                "https://cdn.datatables.net/s/ju/dt-1.10.10/datatables.min.css"));
 
             bundles.Add(new StyleBundle("~/Content/impromptu").Include(
                 "~/Content/jquery-impromptu.css"));
@@ -58,8 +65,12 @@ namespace MvcPlanningApplication
             bundles.Add(new ScriptBundle("~/bundles/themeswitcher").Include(
                         "~/Scripts/jquery.themeswitcher.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                        "~/Scripts/bootstrap.js"));
+            /*bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
+                        "~/Scripts/bootstrap.js"));*/
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap",
+                "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/bootstrapsubmenu").Include(
+                        "~/Scripts/bootstrap-submenu.min.js"));
 
             //The Templates plugin is included to render the upload/download listings
             bundles.Add(new ScriptBundle("~/bundles/blueimpTemplates",
@@ -106,7 +117,7 @@ namespace MvcPlanningApplication
                         "~/Scripts/jquery.multiselect.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/datatables",
-                "https://cdn.datatables.net/r/ju-1.11.4/jq-2.1.4,dt-1.10.9,b-1.0.3,b-print-1.0.3/datatables.js"));
+                "https://cdn.datatables.net/s/ju/dt-1.10.10/datatables.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/impromptu").Include(
                         "~/Scripts/jquery-impromptu.js"));

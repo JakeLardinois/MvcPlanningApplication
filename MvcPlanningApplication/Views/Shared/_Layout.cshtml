@@ -9,6 +9,8 @@
 
     @Styles.Render("~/Content/reset")
     @Styles.Render("~/Content/bootstrapcss")
+    @Styles.Render("~/Content/bootstrapcsstheme")
+    @Styles.Render("~/Content/bootstrapcsssubmenu")
     @RenderSection("styles", false)
     @Styles.Render("~/Content/css")
 </head>
@@ -52,9 +54,17 @@
                 Html.Raw("<li>" + Html.ActionLink("Husqvarna", "Index", "Husqvarna") + "</li>"))
 
                             @(strController.Equals("Haworth") ?
-                Html.Raw("<li class=\"active\">" + Html.ActionLink("Haworth", "Index", "Haworth") +  "<span class=\"sr-only\">(current)</span></li>") :
-                Html.Raw("<li>" + Html.ActionLink("Haworth", "Index", "Haworth") + "</li>"))
+                Html.Raw("<li class=\"active dropdown\">" + 
+                            "<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">Haworth <span class=\"caret\"></span></a><span class=\"sr-only\">(current)</span>") :
+                Html.Raw("<li class=\"dropdown\">" +
+                            "<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">Haworth <span class=\"caret\"></span></a>"))
+                @Html.Raw("<ul class=\"dropdown-menu\" role=\"menu\">" +
+                                "<li>" + Html.ActionLink("Planning", "Index", "Haworth") + "</li>" +
+                                "<li>" + Html.ActionLink("Dispatch", "Dispatch", "Haworth") + "</li>" +
+                            "</ul>" +
+                         "</li>")
                         </ul>
+
                         <ul class="nav navbar-nav navbar-right">
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Customer Portals <span class="caret"></span></a>
@@ -81,6 +91,7 @@
     
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/bootstrapsubmenu")
     @Scripts.Render("~/bundles/jqueryui")
     @Scripts.Render("~/bundles/datetimeformatter")
 
