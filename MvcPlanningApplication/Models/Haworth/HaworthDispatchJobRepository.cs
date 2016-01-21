@@ -18,7 +18,7 @@ namespace MvcPlanningApplication.Models.Haworth
         private static readonly ILog Logger = LogHelper.GetLogger();
 
 
-        public IList<HaworthDispatchJob> GetOrders(out int searchRecordCount, JQueryDataTablesModel DataTablesModel, bool isDownloadReport = false)
+        public IList<HaworthDispatchJob> GetOrders(bool RemainingOrdersOnly, out int searchRecordCount, JQueryDataTablesModel DataTablesModel, bool isDownloadReport = false)
         {
             ReadOnlyCollection<SortedColumn> sortedColumns = DataTablesModel.GetSortedColumns();
             IEnumerable<HaworthDispatchJob> orders;
@@ -98,8 +98,14 @@ namespace MvcPlanningApplication.Models.Haworth
             {
                 using (var db2 = new PlanningApplicationDb())
                 {
+                    string strQuery = string.Empty;
+                    if (RemainingOrdersOnly)
+                        strQuery = "SelectCOItemByCustNumListAndStatus";
+                    else
+                        strQuery = "SelectRemainingCOItemByCustNumListAndStatus";
+
                     //Do your filtering here using the above objHaworthDispatchJobSearch object...
-                    orders = db.Database.SqlQuery<COItem>(objQueryDefinitions.GetQuery("SelectCOItemByCustNumListAndStatus", new string[] { "3417".AddSingleQuotesAndPadLeft(7), "O" }))
+                    orders = db.Database.SqlQuery<COItem>(objQueryDefinitions.GetQuery(strQuery, new string[] { "3417".AddSingleQuotesAndPadLeft(7), "O" }))
                         .Select(g => new HaworthDispatchJob
                         {
                             Job = g.ref_num,

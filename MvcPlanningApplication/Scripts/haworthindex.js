@@ -7,6 +7,18 @@ $(document).ready(function () {
     var oTimerId;
 
 
+    $("#RemainingOrdersOnly").button();
+    $("#RemainingOrdersOnlyLabel").text("Show All Orders");
+    $("#RemainingOrdersOnly").prop('checked', true);
+    $("#RemainingOrdersOnly").change(function () {
+        if (this.checked) {
+            $("#RemainingOrdersOnlyLabel").text("Show All Orders");
+        }
+        else {
+            $("#RemainingOrdersOnlyLabel").text("Show Only Remaining Orders");
+        }
+    });
+
     $("#ChangeDateFromFilter").datepicker();
     $("#ChangeDateToFilter").datepicker();
     $("#DockDateFromFilter").datepicker();
@@ -331,6 +343,10 @@ function AppendAdditionalParameters(aoData) {
         "name": "FixedColumnHeaders",
         "value": ["Characteristics", "ChangeDate", "OrderNumber", "ItemNumber", "Description", "Description2", "ColorCode", "ColorPattern", "ColorDescription", "StatusCode", "RequiredQty", "DockDate", "ImportDateTime",
             "PlantAddress", "UnitPrice"]
+    });
+    aoData.push({
+        "name": "RemainingOrdersOnly",
+        "value": $("#RemainingOrdersOnly").is(':checked')
     });
 
     /*iterates through the array and updates the appropriate object using the below 'case' statements. I was having an issue where sSearch was getting populated twice (ie sSearch_4 & sSearch_7 would contain the same search string) 

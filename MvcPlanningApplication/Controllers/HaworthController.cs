@@ -32,17 +32,27 @@ namespace MvcPlanningApplication.Controllers
         }
 
         [HttpPost]
-        public string GetPlanningData(JQueryDataTablesModel jQueryDataTablesModel, bool RemainingOrdersOnly = false)
+        public string GetPlanningData(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int TotalRecordCount, searchRecordCount;
+            bool RemainingOrdersOnly, blnTemp;
             var result = new JsonResult();
+
 
             Logger.Info("Use HaworthOrdersRepository to search Haworth Orders in the Database");
             var objHaworthOrdersRepository = new HaworthOrdersRepository();
 
             var objItems = objHaworthOrdersRepository.GetOrders(searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel);
+
+            Request.InputStream.Seek(0, SeekOrigin.Begin);
+            string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
+            var objDictionary = HttpUtility.UrlDecode(jsonData).Split('&').ToDictionary(x => x.Split('=')[0], x => x.Split('=')[1]);
+            if (objDictionary.ContainsKey("RemainingOrdersOnly"))
+                RemainingOrdersOnly = bool.TryParse(objDictionary["RemainingOrdersOnly"], out blnTemp) ? blnTemp : true;
+            else
+                RemainingOrdersOnly = true;
             if (RemainingOrdersOnly)
-                objItems = objItems.RemainingOrders();
+                RemainingOrdersOnly = true; //objItems = objItems.RemainingOrders();
 
             Logger.Info("Get total number of Haworth orders in the database");
             using (var db = new PlanningApplicationDb())
@@ -203,11 +213,21 @@ namespace MvcPlanningApplication.Controllers
             int TotalRecordCount, searchRecordCount;
             var result = new JsonResult();
             var objQueryDefinitions = new QueryDefinitions();
+            bool RemainingOrdersOnly, blnTemp;
+            
 
+
+            Request.InputStream.Seek(0, SeekOrigin.Begin);
+            string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
+            var objDictionary = HttpUtility.UrlDecode(jsonData).Split('&').ToDictionary(x => x.Split('=')[0], x => x.Split('=')[1]);
+            if (objDictionary.ContainsKey("RemainingOrdersOnly"))
+                RemainingOrdersOnly = bool.TryParse(objDictionary["RemainingOrdersOnly"], out blnTemp) ? blnTemp : true;
+            else
+                RemainingOrdersOnly = true;
 
             Logger.Info("Use HaworthDispatchJobRepository to search Haworth Jobs in the Database");
             var objHaworthDispatchJobRepository = new HaworthDispatchJobRepository();
-            var objItems = objHaworthDispatchJobRepository.GetOrders(searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel);
+            var objItems = objHaworthDispatchJobRepository.GetOrders(RemainingOrdersOnly, searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel);
 
             Logger.Info("Get total number of Haworth orders in the database");
             using (var db = new SytelineDbEntities())

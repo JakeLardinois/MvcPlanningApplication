@@ -136,6 +136,29 @@ namespace MvcPlanningApplication.Models {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT coitem.co_num, 
+        ///	coitem.co_line, 
+        ///	coitem.co_release, 
+        ///	coitem.item, 
+        ///	coitem.qty_ordered, 
+        ///	coitem.due_date, 
+        ///	coitem.promise_date, 
+        ///	coitem.ref_num, 
+        ///	coitem.ref_line_suf, 
+        ///	co.cust_po,
+        ///	ISNULL(job.qty_complete,0) AS qty_complete
+        ///FROM coitem
+        ///	LEFT JOIN co ON coitem.co_num = co.co_num
+        ///	LEFT JOIN job ON job.job = coitem.ref_num AND job.suffix = coitem.ref_line_suf
+        ///WHERE coitem.co_cust_num IN (~p0) AND coitem.stat = &apos;~p1&apos; AND (coitem.qty_ordered - ISNULL(job.qty_complete,0)) &gt; 0.
+        /// </summary>
+        internal static string SelectRemainingCOItemByCustNumListAndStatus {
+            get {
+                return ResourceManager.GetString("SelectRemainingCOItemByCustNumListAndStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to EXEC WTF_App.[dbo].[Rpt_JobPickListSp] @Job = &apos;~p0&apos;,
         ///		@Suffix = &apos;~p1&apos;,
         ///		@Item = NULL,
