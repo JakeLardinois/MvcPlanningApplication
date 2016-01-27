@@ -26,9 +26,21 @@ namespace MvcPlanningApplication.Controllers
         private static readonly ILog Logger = LogHelper.GetLogger();
         public static string VirtualFilePath { get { return @"/Content/Uploads"; } }
 
+
         public ActionResult Index()
         {
             return View();
+        }
+
+        private string ExtractPostParameter(string ParameterName)
+        {
+            Request.InputStream.Seek(0, SeekOrigin.Begin);
+            string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
+            var objDictionary = HttpUtility.UrlDecode(jsonData).Split('&').ToDictionary(x => x.Split('=')[0], x => x.Split('=')[1]);
+            if (objDictionary.ContainsKey(ParameterName))
+                return objDictionary[ParameterName];
+            else
+                return string.Empty;
         }
 
         [HttpPost]
@@ -42,15 +54,9 @@ namespace MvcPlanningApplication.Controllers
             Logger.Info("Use HaworthOrdersRepository to search Haworth Orders in the Database");
             var objHaworthOrdersRepository = new HaworthOrdersRepository();
 
-            var objItems = objHaworthOrdersRepository.GetOrders(searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel);
+            var HaworthOrders = objHaworthOrdersRepository.GetOrders(searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel);
 
-            Request.InputStream.Seek(0, SeekOrigin.Begin);
-            string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
-            var objDictionary = HttpUtility.UrlDecode(jsonData).Split('&').ToDictionary(x => x.Split('=')[0], x => x.Split('=')[1]);
-            if (objDictionary.ContainsKey("RemainingOrdersOnly"))
-                RemainingOrdersOnly = bool.TryParse(objDictionary["RemainingOrdersOnly"], out blnTemp) ? blnTemp : true;
-            else
-                RemainingOrdersOnly = true;
+            RemainingOrdersOnly = bool.TryParse(ExtractPostParameter("RemainingOrdersOnly"), out blnTemp) ? blnTemp : true;
             if (RemainingOrdersOnly)
                 RemainingOrdersOnly = true; //objItems = objItems.RemainingOrders();
 
@@ -73,7 +79,7 @@ namespace MvcPlanningApplication.Controllers
                 iTotalRecords = TotalRecordCount,
                 jQueryDataTablesModel.sEcho,
                 iTotalDisplayRecords = searchRecordCount,
-                aaData = objItems
+                aaData = HaworthOrders
             }, serializerSettings);
         }
 
@@ -216,21 +222,13 @@ namespace MvcPlanningApplication.Controllers
             bool RemainingOrdersOnly, UseLiveData, blnTemp;
 
 
-            Request.InputStream.Seek(0, SeekOrigin.Begin);
-            string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
-            var objDictionary = HttpUtility.UrlDecode(jsonData).Split('&').ToDictionary(x => x.Split('=')[0], x => x.Split('=')[1]);
-            if (objDictionary.ContainsKey("RemainingOrdersOnly"))
-                RemainingOrdersOnly = bool.TryParse(objDictionary["RemainingOrdersOnly"], out blnTemp) ? blnTemp : true;
-            else
-                RemainingOrdersOnly = true;
-            if (objDictionary.ContainsKey("UseLiveData"))
-                UseLiveData = bool.TryParse(objDictionary["UseLiveData"], out blnTemp) ? blnTemp : true;
-            else
-                UseLiveData = true;
+            //Extrapolate a couple extra parameters from the post data...
+            RemainingOrdersOnly = bool.TryParse(ExtractPostParameter("RemainingOrdersOnly"), out blnTemp) ? blnTemp : true;
+            UseLiveData = bool.TryParse(ExtractPostParameter("UseLiveData"), out blnTemp) ? blnTemp : true;
 
             Logger.Info("Use HaworthDispatchJobRepository to search Haworth Jobs in the Database");
             var objHaworthDispatchJobRepository = new HaworthDispatchJobRepository();
-            var objItems = objHaworthDispatchJobRepository.GetOrders(RemainingOrdersOnly, UseLiveData, searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel);
+            var DispatchList = objHaworthDispatchJobRepository.GetOrders(RemainingOrdersOnly, UseLiveData, searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel);
 
             Logger.Info("Get total number of Haworth orders in the database");
             if (UseLiveData)
@@ -253,11 +251,74 @@ namespace MvcPlanningApplication.Controllers
                 iTotalRecords = TotalRecordCount,
                 jQueryDataTablesModel.sEcho,
                 iTotalDisplayRecords = searchRecordCount,
-                aaData = objItems
+                aaData = DispatchList
             };
 
             return result;
 
+        }
+
+        [HttpGet]
+        public void GetDispatchData(JQueryDataTablesModel jQueryDataTablesModel, bool RemainingOrdersOnly, bool UseLiveData, string Format = "Excel")
+        {
+            int searchRecordCount;
+
+
+            var objHaworthDispatchJobRepository = new HaworthDispatchJobRepository();
+            var DispatchList = objHaworthDispatchJobRepository.GetOrders(RemainingOrdersOnly, UseLiveData, searchRecordCount: out searchRecordCount, DataTablesModel: jQueryDataTablesModel, isDownloadReport: true);
+            RenderDispatchExcelReport(DispatchList);
+        }
+
+        private void RenderDispatchExcelReport(IList<IHaworthDispatchJob> DispatchJobList)
+        {
+            string strReportType = "Excel";
+            LocalReport objLocalReport;
+            ReportDataSource DispatchListSource;
+            string mimeType;
+            string encoding;
+            string fileNameExtension;
+            string deviceInfo = "";
+            Warning[] warnings;
+            string[] streams;
+            
+
+            objLocalReport = new LocalReport { ReportPath = Server.MapPath(Settings.ReportDirectory + "HaworthDispatch.rdlc") };
+
+            //Give the reportdatasource a name so that we can reference it in our report designer
+            DispatchListSource = new ReportDataSource("IHaworthDispatchJob", DispatchJobList);
+
+            objLocalReport.DataSources.Add(DispatchListSource);
+            objLocalReport.Refresh();
+
+            //The DeviceInfo settings should be changed based on the reportType
+            //http://msdn2.microsoft.com/en-us/library/ms155397.aspx
+            deviceInfo = string.Format(
+                        "<DeviceInfo>" +
+                        "<OmitDocumentMap>True</OmitDocumentMap>" +
+                        "<OmitFormulas>True</OmitFormulas>" +
+                        "<SimplePageHeaders>True</SimplePageHeaders>" +
+                        "</DeviceInfo>", strReportType);
+
+            //Render the report
+            var renderedBytes = objLocalReport.Render(
+                strReportType,
+                deviceInfo,
+                out mimeType,
+                out encoding,
+                out fileNameExtension,
+                out streams,
+                out warnings);
+
+            //Clear the response stream and write the bytes to the outputstream
+            //Set content-disposition to "attachment" so that user is prompted to take an action
+            //on the file (open or save)
+            Response.Clear();
+            Response.ClearHeaders();
+            Response.ClearContent();
+            Response.ContentType = mimeType;
+            Response.AddHeader("content-disposition", "attachment; filename=DispatchList" + DateTime.Now.Year + DateTime.Now.Month + DateTime.Now.Day + "." + fileNameExtension);
+            Response.BinaryWrite(renderedBytes);
+            Response.End();
         }
 
         [HttpPost]
@@ -701,5 +762,6 @@ namespace MvcPlanningApplication.Controllers
             
         }
 
+        
     }
 }

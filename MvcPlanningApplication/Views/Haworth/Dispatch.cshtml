@@ -18,47 +18,47 @@
 <table id="objItems">
     <thead>
         <tr class="dtSearchFields">
-            <th></th>
-            <th>
-                <input class="dtSearchField" style="width: 100px" placeholder="JobNumber" id="JobNumberFilter">
+            <th style="padding: 0px 0px"></th>
+            <th style="padding: 0px 0px">
+                <input class="dtSearchField" style="width: 100%" placeholder="JobNumber" id="JobNumberFilter">
             </th>
-            <th>
-                <input class="dtSearchField" style="width: 100px" placeholder="CONumber" id="CONumberFilter">
+            <th style="padding: 0px 0px">
+                <input class="dtSearchField" style="width: 100%" placeholder="CONumber" id="CONumberFilter">
             </th>
-            <th>
-                <input class="dtSearchField" style="width: 100px" placeholder="PONumber" id="PONumberFilter">
+            <th style="padding: 0px 0px">
+                <input class="dtSearchField" style="width: 100%" placeholder="PONumber" id="PONumberFilter">
             </th>
-            <th>
-                <input class="dtSearchField" style="width: 100px" placeholder="SONumber" id="SONumberFilter">
+            <th style="padding: 0px 0px">
+                <input class="dtSearchField" style="width: 100%" placeholder="SONumber" id="SONumberFilter">
             </th>
-            <th>
+            <th style="padding: 0px 0px">
             </th>
-            <th>
+            <th style="padding: 0px 0px">
             </th>
-            <th>
-                <input class="dtSearchField" style="width: 100px" placeholder="ItemNumber" id="ItemNumberFilter">
+            <th style="padding: 0px 0px">
+                <input class="dtSearchField" style="width: 100%" placeholder="ItemNumber" id="ItemNumberFilter">
             </th>
-            <th>
-                <input class="dtSearchField" style="width: 100px" placeholder="Shell" id="ShellFilter">
+            <th style="padding: 0px 0px">
+                <input class="dtSearchField" style="width: 100%" placeholder="Shell" id="ShellFilter">
             </th>
-            <th>
-                <input class="dtSearchField" style="width: 100px" placeholder="Frame" id="FrameFilter">
+            <th style="padding: 0px 0px">
+                <input class="dtSearchField" style="width: 100%" placeholder="Frame" id="FrameFilter">
             </th>
-            <th>
-                <input class="dtSearchField" style="width: 100px" placeholder="Fabric" id="FabricFilter">
+            <th style="padding: 0px 0px">
+                <input class="dtSearchField" style="width: 100%" placeholder="Fabric" id="FabricFilter">
             </th>
-            <th>
-                <input class="dtSearchField" style="width: 100px" placeholder="ArmCaps" id="ArmCapsFilter">
+            <th style="padding: 0px 0px">
+                <input class="dtSearchField" style="width: 100%" placeholder="ArmCaps" id="ArmCapsFilter">
             </th>
-            <th>
-                <input class="dtSearchField" style="width: 100px" placeholder="From" id="ShipByDateFromFilter">
+            <th style="padding: 0px 0px">
+                <input class="dtSearchField" style="width: 100%" placeholder="From" id="ShipByDateFromFilter">
                 <br />
-                <input class="dtSearchField" style="width: 100px" placeholder="To" id="ShipByDateToFilter">
+                <input class="dtSearchField" style="width: 100%" placeholder="To" id="ShipByDateToFilter">
             </th>
-            <th>
-                <input class="dtSearchField" style="width: 100px" placeholder="From" id="DockDateFromFilter">
+            <th style="padding: 0px 0px">
+                <input class="dtSearchField" style="width: 100%" placeholder="From" id="DockDateFromFilter">
                 <br />
-                <input class="dtSearchField" style="width: 100px" placeholder="To" id="DockDateToFilter">
+                <input class="dtSearchField" style="width: 100%" placeholder="To" id="DockDateToFilter">
             </th>
         </tr>
         <tr>
@@ -114,6 +114,7 @@
 </div>
 @section styles{
     <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/datatables")" />
+    <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/datatablesButtons")" />
     <link rel="Stylesheet" href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/impromptu")" />
 }
 
@@ -129,6 +130,17 @@
 
     <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/datatables")">
     </script>
+    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/DataTablesButtons")">
+    </script>
+    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/DataTablesJSZip")">
+    </script>
+    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/DataTablesPDFMake")">
+    </script>
+    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/DataTablesFonts")">
+    </script>
+    <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/DataTablesHTML5Buttons")">
+    </script>
+
     <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/impromptu")">
     </script>
     <script type="text/javascript" src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/bundles/haworthdispatch")">

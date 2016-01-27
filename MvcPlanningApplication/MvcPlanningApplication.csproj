@@ -214,6 +214,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>QueryDefs.resx</DependentUpon>
     </Compile>
+    <Compile Include="Models\ReportDataLists.cs" />
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\SpJobPickListMaterial.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -462,6 +463,9 @@
     <EmbeddedResource Include="Models\QueryDefs.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>QueryDefs.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\HaworthDispatch.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\HaworthIDLabel.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

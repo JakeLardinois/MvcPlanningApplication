@@ -7,22 +7,70 @@ $(document).ready(function () {
 
     $("#btnDownload").button()
         .click(function (event) {
-            event.preventDefault();
-            alert('Clicked');
+            //event.preventDefault();
+            var blah = oTable.ajax;
+
+            var params = oTable.ajax.params();
+            //var aoData = $.makeArray(params)
+            //var additionalParams = [];
+            var aoData = [];
+
+            AppendAdditionalParameters(aoData);
+
+            $.each(params, function (index, value) {
+                aoData.push({
+                    "name": index,
+                    "value": value
+                });
+            });
+            //aoData = $.extend(aoData, params)
+            //aoData = $.extend(aoData, additionalParams)
+            /*$.each(additionalParams, function (index, value) {
+                var object = {};
+                var name = value.name;
+                object[name] = value.value;
+                aoData = $.extend(params, [value.name, value.value])
+            });*/
+            
+            var iframe = document.createElement('iframe');
+            iframe.style.height = "0px";
+            iframe.style.width = "0px";
+            iframe.src = sGetDataUrl + "?" + $.param(aoData) + "&Format=Excel" //parameterizes the json array aoData and appends it to the URL; HTTP GET standard only allows parameters to be sent via the URL
+            document.body.appendChild(iframe);
         });
 
     $("#GenerateDispatch")
         .button()
         .click(function (event) {
-            $.post(sGenerateDispatchDataUrl, null, function (data) {
-                if (data.Success) {
-                    $.prompt(data.Message);
-                    oTable.draw();
+
+            var statesdemo = {
+                state0: {
+                    title: 'Generate Dispatch List...',
+                    buttons: { Cancel: 0, 'Generate': 1 },
+                    focus: 1, //sets the focus on to the Generate button...
+                    submit: function (e, v, m, f) {
+                        if (v == 0) { }
+                        else if (v == 1) {
+                            $.ajaxSetup({ async: false, dataType: "json" });
+                            $.post(sGenerateDispatchDataUrl, null, function (data) {
+                                if (data.Success) {
+                                    $.prompt(data.Message);
+                                    oTable.draw();
+                                }
+                                else {
+                                    $.prompt(data.Message);
+                                }
+                            });
+                            $.ajaxSetup({ async: true }); //Sets ajax back up to synchronous
+                        }
+                    }
                 }
-                else {
-                    $.prompt(data.Message);
-                }
-            });
+            };
+            $.prompt(statesdemo);
+
+
+
+            
         });
 
     $("#RemainingOrdersOnly").button();
@@ -60,7 +108,17 @@ $(document).ready(function () {
         "bProcessing": true,
         "bServerSide": true,
         "bFilter": true,
-        "sDom": 'T<"clear">Rlrtip',
+        "sDom": 'T<"clear">RlrtBip',
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            {
+                extend: 'pdfHtml5',
+                orientation: 'landscape',
+                pageSize: 'Legal'
+            }
+        ],
         "sAjaxSource": sGetDataUrl,// document.URL,
         "sServerMethod": "POST",
         "fnServerData": function (sSource, aoData, fnCallback, oSettings) {
@@ -177,7 +235,7 @@ function AppendAdditionalParameters(aoData) {
     * I had previously implemented this in the server side code, but then any time my UI changed I would need to recompile the web service... So I fixed the implementation...*/
     aoData.push({
         "name": "FixedColumnHeaders",
-        "value": [null, "JobOrder", "CustomerOrder", "PurchaseOrder", "SalesOrder", "QuantityOrdered", "QuantityRemaining", "ItemNumber", "Shell", "Frame", "Fabric", "ArmCaps", "ShipByDate", "DockDate"]
+        "value": [0, "JobOrder", "CustomerOrder", "PurchaseOrder", "SalesOrder", "QuantityOrdered", "QuantityRemaining", "ItemNumber", "Shell", "Frame", "Fabric", "ArmCaps", "ShipByDate", "DockDate"]
     });
     aoData.push({
         "name": "RemainingOrdersOnly",

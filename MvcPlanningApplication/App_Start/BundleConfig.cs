@@ -47,6 +47,8 @@ namespace MvcPlanningApplication
 
             bundles.Add(new StyleBundle("~/Content/datatables",
                 "https://cdn.datatables.net/s/ju/dt-1.10.10/datatables.min.css"));
+            bundles.Add(new StyleBundle("~/Content/datatablesButtons",
+                "https://cdn.datatables.net/buttons/1.1.1/css/buttons.dataTables.min.css"));
 
             bundles.Add(new StyleBundle("~/Content/impromptu").Include(
                 "~/Content/jquery-impromptu.css"));
@@ -118,6 +120,16 @@ namespace MvcPlanningApplication
 
             bundles.Add(new ScriptBundle("~/bundles/datatables",
                 "https://cdn.datatables.net/s/ju/dt-1.10.10/datatables.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/DataTablesButtons",
+                "https://cdn.datatables.net/buttons/1.1.1/js/dataTables.buttons.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/DataTablesJSZip",
+                "https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/DataTablesPDFMake",
+                "https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/DataTablesFonts",
+                "https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"));
+            bundles.Add(new ScriptBundle("~/bundles/DataTablesHTML5Buttons",
+                "https://cdn.datatables.net/buttons/1.1.1/js/buttons.html5.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/impromptu").Include(
                         "~/Scripts/jquery-impromptu.js"));

@@ -15,6 +15,7 @@ namespace MvcPlanningApplication.Models.Haworth
         public string Shell { get; set; }
         public string Frame { get; set; }
         public string Fabric { get; set; }
+        public string ArmCaps { get; set; }
         public DateTime ShipByDateGT { get; set; }
         public DateTime ShipByDateLT { get; set; }
         public DateTime DockDateGT { get; set; }

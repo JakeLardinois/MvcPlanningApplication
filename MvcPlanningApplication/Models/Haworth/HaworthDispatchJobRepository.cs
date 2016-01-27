@@ -71,12 +71,24 @@ namespace MvcPlanningApplication.Models.Haworth
                             objHaworthDispatchJobSearch.ItemNumber = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
                             break;
                         case "Shell":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthDispatchJobSearch.Shell = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
                             break;
                         case "Frame":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthDispatchJobSearch.Frame = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
                             break;
                         case "Fabric":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthDispatchJobSearch.Fabric = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
                             break;
                         case "ArmCaps":
+                            objStrBldr.Clear();
+                            objStrBldr.Append(DataTablesModel.sSearch_[intCounter]);
+                            objHaworthDispatchJobSearch.ArmCaps = string.IsNullOrEmpty(objStrBldr.ToString()) ? strEmptyString : DataTablesModel.sSearch_[intCounter];
                             break;
                         case "ShipByDate":
                             objResults = DataTablesModel.sSearch_[intCounter].Split('~');//results returned from a daterange are delimited by the tilde char
@@ -147,6 +159,10 @@ namespace MvcPlanningApplication.Models.Haworth
                             .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.SalesOrder) || j.SalesOrder.ToUpper().Contains(objHaworthDispatchJobSearch.SalesOrder.ToUpper()))
                             .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.ItemNumber) || j.ItemNumber.ToUpper().Contains(objHaworthDispatchJobSearch.ItemNumber.ToUpper()))
                             .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.CustomerOrder) || j.CustomerOrder.ToUpper().Contains(objHaworthDispatchJobSearch.CustomerOrder.ToUpper()))
+                            .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.Shell) || j.Shell.ToUpper().Contains(objHaworthDispatchJobSearch.Shell.ToUpper()))
+                            .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.Frame) || j.Frame.ToUpper().Contains(objHaworthDispatchJobSearch.Frame.ToUpper()))
+                            .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.Fabric) || j.Fabric.ToUpper().Contains(objHaworthDispatchJobSearch.Fabric.ToUpper()))
+                            .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.ArmCaps) || j.ArmCaps.ToUpper().Contains(objHaworthDispatchJobSearch.ArmCaps.ToUpper()))
                             .Where(c => c.ShipByDate >= objHaworthDispatchJobSearch.ShipByDateGT || objHaworthDispatchJobSearch.ShipByDateGT == DateTime.MinValue)
                             .Where(c => c.ShipByDate <= objHaworthDispatchJobSearch.ShipByDateLT || objHaworthDispatchJobSearch.ShipByDateLT == DateTime.MinValue)
                             .Where(c => c.DockDate >= objHaworthDispatchJobSearch.DockDateGT || objHaworthDispatchJobSearch.DockDateGT == DateTime.MinValue)
@@ -162,6 +178,10 @@ namespace MvcPlanningApplication.Models.Haworth
                             .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.SalesOrder) || j.SalesOrder.ToUpper().Contains(objHaworthDispatchJobSearch.SalesOrder.ToUpper()))
                             .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.ItemNumber) || j.ItemNumber.ToUpper().Contains(objHaworthDispatchJobSearch.ItemNumber.ToUpper()))
                             .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.CustomerOrder) || j.CustomerOrder.ToUpper().Contains(objHaworthDispatchJobSearch.CustomerOrder.ToUpper()))
+                            .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.Shell) || j.Shell.ToUpper().Contains(objHaworthDispatchJobSearch.Shell.ToUpper()))
+                            .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.Frame) || j.Frame.ToUpper().Contains(objHaworthDispatchJobSearch.Frame.ToUpper()))
+                            .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.Fabric) || j.Fabric.ToUpper().Contains(objHaworthDispatchJobSearch.Fabric.ToUpper()))
+                            .Where(j => string.IsNullOrEmpty(objHaworthDispatchJobSearch.ArmCaps) || j.ArmCaps.ToUpper().Contains(objHaworthDispatchJobSearch.ArmCaps.ToUpper()))
                             .Where(c => c.ShipByDate >= objHaworthDispatchJobSearch.ShipByDateGT || objHaworthDispatchJobSearch.ShipByDateGT == DateTime.MinValue)
                             .Where(c => c.ShipByDate <= objHaworthDispatchJobSearch.ShipByDateLT || objHaworthDispatchJobSearch.ShipByDateLT == DateTime.MinValue)
                             .Where(c => c.DockDate >= objHaworthDispatchJobSearch.DockDateGT || objHaworthDispatchJobSearch.DockDateGT == DateTime.MinValue)
