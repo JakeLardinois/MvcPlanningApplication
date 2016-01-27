@@ -39,6 +39,7 @@ namespace MvcPlanningApplication.Models.Haworth
         private static string mstrShellRegEx { get { return "^TR-"; } }
         private static string mstrSeatFabricRegEx { get { return "^MIS SEAT COVER "; } }
         private static string mstrBackFabricRegEx { get { return "^MIS BACK COVER "; } }
+        private static string mstrArmCapRegEx { get { return "^MIS 5([7][7-9]|[8][0])"; } }
 
         public string Shell {
             get {
@@ -86,7 +87,13 @@ namespace MvcPlanningApplication.Models.Haworth
         {
             get
             {
-                return string.Empty;
+                if (DispatchJobMaterials != null)
+                    return DispatchJobMaterials
+                        .Where(m => Regex.Match(m.JobMaterial, mstrArmCapRegEx, RegexOptions.IgnoreCase).Success)
+                        .DefaultIfEmpty(new HaworthDispatchJobMaterial { JobMaterial = "None" })
+                        .Aggregate(new StringBuilder(), (a, b) => a.Append(b.JobMaterial).Append("<br/>")).ToString();
+                else
+                    return "None";
             }
             set { }
         }

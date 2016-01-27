@@ -183,9 +183,6 @@ namespace MvcPlanningApplication.Controllers
                     .Matches(ConfigurationText + " ", @".*?:\w+\s") //must match: multiple words(.*?)->colon(:)->single word(\w+)->space(\s) Note that I add a space at the end so the last 
                     .Cast<Match>();                                 //characteristic is also flagged as a match.
 
-            if (Order.Contains("4501759380"))
-                Logger.Debug("Got It!");
-
             if (CharacteristicMatches == null)
             {
                 Logger.Info(string.Format("Order {0} has invalid ConfigurationText: {1}", Order, ConfigurationText));
