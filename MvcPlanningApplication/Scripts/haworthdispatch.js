@@ -15,14 +15,16 @@ $(document).ready(function () {
             //var additionalParams = [];
             var aoData = [];
 
-            AppendAdditionalParameters(aoData);
-
             $.each(params, function (index, value) {
                 aoData.push({
                     "name": index,
                     "value": value
                 });
             });
+
+            AppendAdditionalParameters(aoData);
+
+            
             //aoData = $.extend(aoData, params)
             //aoData = $.extend(aoData, additionalParams)
             /*$.each(additionalParams, function (index, value) {
