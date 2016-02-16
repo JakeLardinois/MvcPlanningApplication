@@ -77,14 +77,14 @@ $(document).ready(function () {
 
     $("#RemainingOrdersOnly").button();
     $("#RemainingOrdersOnlyLabel").text("Show All Orders");
-    $("#RemainingOrdersOnly").prop('checked', false);
+    $("#RemainingOrdersOnly").prop('checked', true);
     $("#RemainingOrdersOnly").change(function () {
         if (this.checked) {
-            $("#RemainingOrdersOnlyLabel").text("Show Only Remaining Orders");
+            $("#RemainingOrdersOnlyLabel").text("Show All Orders");
         }
         else
         {
-            $("#RemainingOrdersOnlyLabel").text("Show All Orders");
+            $("#RemainingOrdersOnlyLabel").text("Show Only Remaining Orders");
         }
     });
 

@@ -187,6 +187,10 @@ namespace MvcPlanningApplication.Models.Haworth
                             .Where(c => c.DockDate >= objHaworthDispatchJobSearch.DockDateGT || objHaworthDispatchJobSearch.DockDateGT == DateTime.MinValue)
                             .Where(c => c.DockDate <= objHaworthDispatchJobSearch.DockDateLT || objHaworthDispatchJobSearch.DockDateLT == DateTime.MinValue)
                             .OrderBy(sortedColumns[0].PropertyName + " " + sortedColumns[0].Direction); //Uses Dynamic Linq to have sorting occur in the query
+
+                        if (RemainingOrdersOnly)
+                            orders = orders
+                                .Where(o => o.QuantityRemaining > 0);
                     }
 
                     
